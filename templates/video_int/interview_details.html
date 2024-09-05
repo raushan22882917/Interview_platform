@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Interview Details</title>
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+  <style>
+    .background-container {
+      position: relative;
+      height: 100vh; /* Full viewport height */
+      overflow: hidden;
+      background-color: #f8f9fa; /* Light background color */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #333;
+    }
+
+    .background-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      font-size: 1rem; /* Adjust the size as needed */
+      color: black; /* Light text color for background */
+      z-index: 1;
+      pointer-events: none; /* Allow clicking through */
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 20px; /* Adjust the gap between text blocks */
+    }
+
+    .background-text div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      white-space: nowrap;
+      transform: rotate(-30deg); /* Rotate for a scattered effect */
+      opacity: 0.1; /* Faint text */
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+      background: rgba(207, 169, 169, 0.9); /* Semi-transparent background for readability */
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 70%;
+      height: 700px;
+      margin-top: 150px;
+  }
+  table, th, td {
+      border: 1px solid #ddd;
+  }
+  th, td {
+      padding: 8px;
+      text-align: left;
+  }
+  th {
+      background-color: #f4f4f4;
+  }
+  .button-container {
+      display: flex;
+      flex-direction: column;
+  }
+  .button-container a {
+      display: block;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007bff;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 5px;
+  }
+  .button-container a:hover {
+      background-color: #0056b3;
+  }
+  </style>
+</head>
+
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+          <a href="{{url_for('index')}}" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Prep TechSkill</a></li>
+              <li><a href="blog.html">Video Interview</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="login.html">Login</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+      </header>
+  <div class="background-container">
+    <div class="background-text">
+      {% for i in range(50) %} <!-- Repeat 50 times to cover the page -->
+        <div>{{ name }}</div>
+        <div>{{ email }}</div>
+      {% endfor %}
+    </div>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>Machine Learning Engineer</td>
+            <td><a href="{{ url_for('int') }}" target="_blank">Start</a></td>
+        </tr>
+        
+            <tr>
+                <td>Senior Machine Learning Engineer</td>
+                <td><a href="https://example.com/senior-machine-learning-engineer" target="_blank">Start</a></td>
+            </tr>
+            <tr>
+                <td>AI Engineer</td>
+                <td><a href="https://example.com/ai-engineer" target="_blank">Start</a></td>
+            </tr>
+            <tr>
+                <td>Junior DevOps Engineer</td>
+                <td><a href="https://example.com/junior-devops-engineer" target="_blank">Start</a></td>
+            </tr>
+            <tr>
+                <td>DevOps Engineer</td>
+                <td><a href="https://example.com/devops-engineer" target="_blank">Start</a></td>
+            </tr>
+            <tr>
+                <td>Senior DevOps Engineer</td>
+                <td><a href="https://example.com/senior-devops-engineer" target="_blank">Start</a></td>
+            </tr>
+            <tr>
+                <td>Site Reliability Engineer (SRE)</td>
+                <td><a href="https://example.com/site-reliability-engineer" target="_blank">Start</a></td>
+            </tr>
+        
+           
+            
+        </tbody>
+    </table>
+
+
+    
+  </div>
+
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+  <!-- Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+
+</html>

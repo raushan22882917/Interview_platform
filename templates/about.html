@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - TechPrep</title>
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <!-- Custom CSS for About Page -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding-top: 56px; /* Adjusted for fixed navbar */
+        }
+
+        .header {
+            background: #333;
+        
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        .header .logo {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .navmenu ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .navmenu ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .navmenu ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .navmenu ul li a:hover,
+        .navmenu ul li a.active {
+            color: #e2e2e2;
+        }
+
+        .about-box {
+            padding: 40px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 900px;
+        }
+
+        .about-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .about-box p {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .about-box img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .collapsible {
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+
+        .content {
+            padding: 15px;
+            display: none;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+
+    </style>
+</head>
+<body class="index-page">
+
+    <!-- Header with Navbar -->
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+                <h1 class="sitename">TechPrep</h1>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                    <li><a href="{{ url_for('topics') }}">Prep TechSkill</a></li>
+                    <li><a href="{{ url_for('topics') }}">Hr Round</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="videoInterviewDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Video Interview
+                        </a>
+                    </li>
+                    <div id="interviewBox" class="interview-box" style="display: none;">
+                        <a class="btn btn-primary btn-sm" href="#">Daily Interview</a>
+                        <a class="btn btn-secondary btn-sm" href="{{ url_for('instructions') }}">Weekly Interview</a>
+                    </div>
+                    <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                    <li><a href="#about" class="active">About</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section id="overview">
+            <div class="about-box">
+                <h2>Overview</h2>
+                <p>TechPrep is an innovative platform dedicated to helping aspiring professionals excel in technical interviews. Whether you’re a fresh graduate preparing for your first coding interview or a seasoned developer aiming to refine your skills, TechPrep provides the tools and resources necessary to succeed in the competitive world of technical interviews.</p>
+
+                <h2>Our Mission</h2>
+                <p>At TechPrep, our mission is to empower candidates by providing comprehensive preparation resources tailored to the demands of technical interviews. We strive to create an environment where users can learn, practice, and master the skills required to excel in their careers.</p>
+
+                <h2>Key Features</h2>
+                <button class="collapsible">+Technical Interview Prep</button>
+                <div class="content">
+                    <ul>
+                        <li><strong>Coding Challenges:</strong> Dive into a vast collection of coding problems that range from basic to advanced levels. Each problem is designed to enhance your problem-solving abilities and coding proficiency.</li>
+                        <li><strong>System Design Problems:</strong> Explore complex system design challenges that simulate real-world scenarios. Learn how to architect solutions that are scalable, maintainable, and efficient.</li>
+                        <li><strong>Expert Tips & Strategies:</strong> Gain insights from industry experts on how to approach and solve technical problems effectively. Our resources are crafted to help you think like a top-tier software engineer.</li>
+                    </ul>
+                </div>
+
+                <button class="collapsible">+HR Round Preparation</button>
+                <div class="content">
+                    <ul>
+                        <li><strong>Comprehensive Guides:</strong> Navigate through the HR interview process with ease. Our guides cover everything from common HR questions to effective communication strategies that leave a lasting impression.</li>
+                        <li><strong>Mock Interviews:</strong> Practice with simulated HR interviews that mimic real-world scenarios. Receive constructive feedback to improve your performance and boost your confidence.</li>
+                    </ul>
+                </div>
+
+                <button class="collapsible">+Video Interview Resources</button>
+                <div class="content">
+                    <ul>
+                        <li><strong>Daily Tips:</strong> Get daily updates with actionable tips and best practices for video interviews. Stay informed about the latest trends and techniques to make a great impression.</li>
+                        <li><strong>Weekly Challenges:</strong> Participate in weekly video interview challenges to refine your skills. These challenges are designed to test your ability to handle various interview scenarios effectively.</li>
+                    </ul>
+                </div>
+
+                <h2>Get in Touch</h2>
+                <p>If you have any questions or need further information, feel free to reach out to us via the contact form or through our social media channels. We’re here to help you succeed!</p>
+                <a href="{{ url_for('contact') }}" class="btn">Contact Us</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-skype"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+            <div class="credits">
+              Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    <script>
+        // JavaScript for Collapsible Sections
+        document.querySelectorAll('.collapsible').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                const content = button.nextElementSibling;
+                content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Sakshatkar'</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+<style>
+  .interview-box {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.interview-box a {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.carousel-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.carousel-container h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #ff6f61;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-container h2 span {
+  color: #2ec4b6;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-container p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+  color: #ebeff4;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.carousel-container p::first-letter {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ff6f61;
+}
+
+.btn-get-started {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+  color: #fff;
+  background-color: #ff6f61;
+  padding: 10px 25px;
+  border-radius: 30px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.btn-get-started:hover {
+  background-color: #2ec4b6;
+  color: #fff;
+}
+
+.animate__animated.animate__fadeInDown {
+  animation-duration: 1s;
+}
+
+.animate__animated.animate__fadeInUp {
+  animation-duration: 1.2s;
+}
+
+
+
+</style>
+
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+        <h1 class="sitename">Sakshatkar'</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="{{url_for('topics')}}">Prep TechSkill</a></li>
+          <li><a href="{{url_for('hrinst')}}">Hr Round</a></li>
+          
+          <!-- Navbar with Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="videoInterviewDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Video Interview
+        </a>
+      </li>
+
+      <!-- Box with Buttons (Initially Hidden) -->
+      <div id="interviewBox" class="interview-box" style="display: none;">
+        <a class="btn btn-primary btn-sm" href="#">Daily Interview</a>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('instructions') }}">Weekly Interview</a>
+      </div>
+
+          <li><a href="{{url_for('blog')}}">Blog</a></li>
+          <li><a href="{{url_for('about')}}">About</a></li>
+          <li><a href="{{url_for('login')}}">Login</a></li>
+          <li><a href="{{url_for('contact')}}">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel">
+
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <div class="carousel-container">
+              <h2 class="animate__animated animate__fadeInDown">Sakshatkar' <br><span>Your Gateway to Mastering Technical Interviews</span></h2>
+              <p class="animate__animated animate__fadeInUp">
+                  At Sakshatkar', we provide the ultimate preparation platform for technical interviews. Whether you're gearing up for coding challenges or system design interviews, our extensive resources and real-world practice problems are designed to help you succeed.
+              </p>
+              <a href="{{url_for('about')}}" class="btn-get-started animate__animated animate__fadeInUp scrollto">Learn More</a>
+          </div>
+      </div>
+      
+        
+
+       
+
+      </div>
+
+      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <defs>
+          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+          <use xlink:href="#wave-path" x="50" y="3"></use>
+        </g>
+        <g class="wave2">
+          <use xlink:href="#wave-path" x="50" y="0"></use>
+        </g>
+        <g class="wave3">
+          <use xlink:href="#wave-path" x="50" y="9"></use>
+        </g>
+      </svg>
+
+    </section><!-- /Hero Section -->
+
+    <!-- Services Section -->
+    <section id="services" class="services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Services</h2>
+        <p>Discover what we offer to elevate your career</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-laptop" style="color: #28a745;"></i>
+              </div>
+              <a href="service-details.html" class="stretched-link">
+                <h3>Technical Interview Prep</h3>
+              </a>
+              <p>Prepare for your technical interviews with our extensive resources. We offer coding challenges, system design problems, and expert tips to help you tackle complex technical questions and showcase your skills effectively.</p>
+            </div>
+          </div>
+          
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-person-check" style="color: #007bff;"></i>
+              </div>
+              <a href="service-details.html" class="stretched-link">
+                <h3>HR Round Preparation</h3>
+              </a>
+              <p>Get ready for your HR interviews with our comprehensive preparation guides. From common questions to effective strategies, we provide everything you need to impress your future employers and ace your HR round.</p>
+            </div>
+          </div>
+          <!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-camera-video" style="color: #17a2b8;"></i>
+              </div>
+              <a href="service-details.html" class="stretched-link">
+                <h3>Video Interview Prep</h3>
+              </a>
+              <p>Master the art of video interviews with our tailored preparation resources. Learn best practices for video presentation, common technical issues, and how to effectively communicate your skills and experience through a virtual medium.</p>
+            </div>
+          </div>
+          
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-file-earmark-text" style="color: #6f42c1;"></i>
+              </div>
+              <a href="blog-details.html" class="stretched-link">
+                <h3>Recent Technical Blog</h3>
+              </a>
+              <p>Stay updated with the latest trends and insights in technology through our recent blog posts. Explore articles on new technologies, industry best practices, and expert opinions to enhance your knowledge and stay ahead in your field.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section><!-- /Services Section -->
+
+
+
+
+
+    <!-- Pricing Section -->
+
+
+
+
+<!-- Recent Posts Section -->
+<section id="recent-posts" class="recent-posts section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Recent Posts</h2>
+    <p>Recent Blog Posts</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+      {% for item in data[:3] %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <img src="{{ item['Image URL'] }}" alt="{{ item.Title }}" class="rounded-circle me-3" style="width: 60px; height: 60px;">
+              <a href="/blog/article?url={{ item['Read More Link'] }}" target="_blank" class="stretched-link">
+                <h5 class="card-title">{{ item.Title }}</h5>
+              </a>
+            </div>
+            <p class="card-text"><strong>Date:</strong> {{ item.Date }}</p>
+            <p class="card-text"><strong>Tag:</strong> {{ item.Tag }}</p>
+            <p class="card-text">{{ item.Excerpt }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div><!-- End Container -->
+
+</section><!-- /Recent Posts Section -->
+
+
+
+  </main>
+
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+<!-- Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+<script>
+// Show the box when the dropdown is clicked
+document.getElementById('videoInterviewDropdown').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent default link behavior
+  var interviewBox = document.getElementById('interviewBox');
+  var dropdownRect = this.getBoundingClientRect();
+
+  // Position the box just below the dropdown
+  interviewBox.style.top = (dropdownRect.bottom + window.scrollY) + "px";
+  interviewBox.style.left = (dropdownRect.left + window.scrollX) + "px";
+  interviewBox.style.display = 'block';
+});
+
+// Hide the box when the mouse leaves the box area
+document.getElementById('interviewBox').addEventListener('mouseleave', function() {
+  this.style.display = 'none';
+});
+
+
+</script>
+
+
+</body>
+
+</html>

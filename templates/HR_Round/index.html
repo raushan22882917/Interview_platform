@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Editor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs/loader.js"></script>
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+  
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  
+    <!-- Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        /* styles.css */
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+#containers {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-top: 100px;
+}
+
+/* Header Styles */
+#header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Content Styles */
+#content {
+    display: flex;
+    flex: 1;
+    padding: 1rem;
+}
+
+/* Sidebar Styles */
+#sidebar {
+    flex: 1;
+    background-color: #ffffff;
+    border-right: 2px solid #ddd;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.question-content {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.test-cases {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+/* Editor Container Styles */
+#editorContainer {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Editor Styles */
+#editor {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+/* Editor Controls Styles */
+#editorControls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+#editorControls button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#editorControls button:hover {
+    background-color: #45a049;
+}
+
+/* Output Styles */
+#output {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+    white-space: pre-wrap;
+}
+
+#camera {
+    position: fixed;
+    top: 100px;
+    right: 10px;
+    width: 150px;
+    height: 100px;
+    background-color: #000;
+    border: 2px solid #ddd;
+}
+
+
+    </style>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            var editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '',
+                language: 'python'
+            });
+
+            let questions = {};
+            let currentQuestionId = null;
+
+            document.getElementById('runCode').addEventListener('click', function() {
+                var code = editor.getValue();
+                fetch('/run_code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'code=' + encodeURIComponent(code) + '&question_id=' + encodeURIComponent(currentQuestionId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById('output').textContent = data.message;
+                    } else {
+                        let outputDiv = document.getElementById('output');
+                        outputDiv.innerHTML = '';
+                        data.results.forEach(result => {
+                            let input = document.createElement('div');
+                            input.textContent = 'Input: ' + result.input;
+                            let expectedOutput = document.createElement('div');
+                            expectedOutput.textContent = 'Expected Output: ' + result.expected_output;
+                            let actualOutput = document.createElement('div');
+                            actualOutput.textContent = 'Actual Output: ' + result.actual_output;
+                            outputDiv.appendChild(input);
+                            outputDiv.appendChild(expectedOutput);
+                            outputDiv.appendChild(actualOutput);
+                            outputDiv.appendChild(document.createElement('hr'));
+                        });
+                    }
+                });
+            });
+
+            function loadQuestions() {
+                fetch('/codequestion')
+                .then(response => response.json())
+                .then(data => {
+                    questions = data;
+                    var questionsSelect = document.getElementById('questions');
+                    questionsSelect.innerHTML = '';
+                    for (const [id, question] of Object.entries(questions)) {
+                        let option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = `Question ${id}`;
+                        questionsSelect.appendChild(option);
+                    }
+                    // Load the first question by default
+                    if (questionsSelect.options.length > 0) {
+                        questionsSelect.value = questionsSelect.options[0].value;
+                        currentQuestionId = questionsSelect.value;
+                        loadQuestionContent();
+                    }
+                });
+            }
+
+            function loadQuestionContent() {
+                var question = questions[currentQuestionId];
+                if (question) {
+                    document.getElementById('questionContent').textContent = question.question;
+                    let testCaseDiv = document.getElementById('testCases');
+                    testCaseDiv.innerHTML = '';
+                    question.test_cases.forEach((testCase) => {
+                        let input = document.createElement('div');
+                        input.textContent = 'Input: ' + testCase.input;
+                        let expectedOutput = document.createElement('div');
+                        expectedOutput.textContent = 'Expected Output: ' + testCase.expected_output;
+                        testCaseDiv.appendChild(input);
+                        testCaseDiv.appendChild(expectedOutput);
+                        testCaseDiv.appendChild(document.createElement('hr'));
+                    });
+                }
+            }
+
+            document.getElementById('questions').addEventListener('change', function() {
+                currentQuestionId = this.value;
+                loadQuestionContent();
+            });
+
+            document.getElementById('nextQuestion').addEventListener('click', function() {
+                let currentIndex = Array.from(document.getElementById('questions').options).findIndex(option => option.value === currentQuestionId);
+                if (currentIndex < document.getElementById('questions').options.length - 1) {
+                    currentQuestionId = document.getElementById('questions').options[currentIndex + 1].value;
+                    document.getElementById('questions').value = currentQuestionId;
+                    loadQuestionContent();
+                }
+            });
+
+            document.getElementById('prevQuestion').addEventListener('click', function() {
+                let currentIndex = Array.from(document.getElementById('questions').options).findIndex(option => option.value === currentQuestionId);
+                if (currentIndex > 0) {
+                    currentQuestionId = document.getElementById('questions').options[currentIndex - 1].value;
+                    document.getElementById('questions').value = currentQuestionId;
+                    loadQuestionContent();
+                }
+            });
+
+            loadQuestions();
+        });
+
+
+
+        async function startCamera() {
+            const video = document.getElementById('camera');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Error accessing webcam: " + err);
+            }
+        }
+
+        window.onload = function () {
+            startCamera();
+        };
+
+    </script>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero" class="active">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Prep TechSkill</a></li>
+              <li><a href="blog.html">Video Interview</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="login.html">Login</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+      </header>
+    <div id="containers">
+        <div id="content">
+            <div id="sidebar">
+                <select id="questions"></select>
+                <div id="questionContent" class="question-content"></div>
+                <div id="testCases" class="test-cases"></div>
+            </div>
+            <div id="editorContainer">
+                <div id="editor" style="height: 60vh;"></div>
+                <div id="editorControls">
+                    <button id="runCode">Run Code</button>
+                    <div>
+                    <button id="prevQuestion">Previous</button>
+                    <button id="nextQuestion">Next</button>
+                </div>
+                </div>
+                <pre id="output" class="output"></pre>
+                <video id="camera" autoplay></video>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-skype"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+            <div class="credits">
+              Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+
+      <script>
+        // Function to open the page in fullscreen mode
+        function openFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        // Attempt to open in full screen on page load
+        window.onload = function() {
+            openFullscreen();
+        }
+    </script>
+</body>
+</html>

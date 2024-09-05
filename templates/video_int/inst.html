@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Record and Download Example</title>
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+/* Container Styling */
+body{
+    background-color:transparent
+}
+
+#loader {
+    display: none; /* Hide the loader by default */
+    position: fixed; /* Fixes the loader in place */
+    top: 50%; /* Centers the loader vertically */
+    left: 50%; /* Centers the loader horizontally */
+    transform: translate(-50%, -50%); /* Offsets the loader by half its own width and height */
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+    z-index: 9999; /* Ensures the loader is on top of other elements */
+}
+
+/* Optional: Add the spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Button Styling */
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+/* Video Element Styling */
+#recorded-video {
+    width: 100%;
+    max-width: 640px;
+    margin: 20px 0;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+}
+
+/* Instructions Section Styling */
+.instructions {
+    background-color: #ffffff;
+    padding: 20px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.instructions h2 {
+    color: #0066cc;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.instructions ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    color: #333333;
+}
+
+.instructions ul li {
+    margin-bottom: 10px;
+}
+
+.instructions ul li strong {
+    color: #444444;
+}
+
+    
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .visible-button {
+            display: block; 
+            background-color: transparent !important;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+        .image-container img {
+            width: 100%; /* Adjust as needed */
+            height: auto;
+        }
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white; /* Text color */
+            font-size: 24px; /* Text size */
+            background: rgba(0, 0, 0, 0.5); /* Background color with opacity */
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+
+        .background-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.2;
+            font-size: 1rem; /* Adjust the size as needed */
+            color: black(253, 10, 10); /* Light text color for background */
+            z-index: 1;
+            pointer-events: none; /* Allow clicking through */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px; /* Adjust the gap between text blocks */
+          }
+          .skill, .topic {
+            font-weight: bold;
+            color: #FFD700; /* Gold */
+        }
+        
+        .skill-item {
+            color: #00FF7F; /* Spring Green */
+            margin-left: 20px;
+        }
+        
+        .topic-item {
+            color: #1E90FF; /* Dodger Blue */
+            margin-left: 20px;
+        }
+          
+    </style>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+          <a href="{{url_for('index')}}" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Prep TechSkill</a></li>
+              <li><a href="blog.html">Video Interview</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="login.html">Login</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+      </header>
+      <div class="background-text">
+        {% for i in range(50) %} <!-- Repeat 50 times to cover the page -->
+          <div>{{ name }}</div>
+          <div>{{ email }}</div>
+        {% endfor %}
+      </div>
+    <div style="display: flex; margin-top: 100px" >
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='assets/img/back/interview_back.jpg') }}" alt="Image">
+            <div class="overlay-text">
+                <p>Video Interview</p>
+            </div>
+        </div>
+        
+        
+        <div>
+            <div id="loader"></div>
+            <section class="instructions">
+                    <h2>Guidelines</h2>
+                    <ul>
+                        <li><strong>Test Your Equipment:</strong> Ensure your camera, microphone, and internet connection are working properly.</li>
+                        <li><strong>Choose a Quiet Location:</strong> Find a quiet, well-lit space where you won't be disturbed.</li>
+                        <li><strong>Dress Appropriately:</strong> Wear professional attire, just as you would for an in-person interview.</li>
+                        <li><strong>Practice Common Questions:</strong> Be ready to answer common interview questions. Consider practicing with a friend or recording yourself.</li>
+                        <li><strong>Be on Time:</strong> Log in at least 10 minutes before your scheduled interview time to avoid any last-minute issues.</li>
+                        <li><strong>Maintain Eye Contact:</strong> Look at the camera, not the screen, to make eye contact with the interviewer.</li>
+                        <li><strong>Speak Clearly:</strong> Speak slowly and clearly, and make sure you are easily understood.</li>
+                        <li><strong>Stay Calm:</strong> It's natural to be nervous, but try to stay calm and composed throughout the interview.</li>
+                        <button id="share-screen-button">Share Screen</button>
+                        <button id="stop-recording-button" class="visible-button"></button>
+                        <button id="next-page-button" style="display: none;" disabled>Go to Next Page</button>
+                        <video id="recorded-video" controls style="display: none;"></video>
+                    </ul>
+                    
+            </section>
+            
+        </div>
+    </div>
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-skype"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+            <div class="credits">
+              Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let screenStream;
+
+        document.getElementById('share-screen-button').addEventListener('click', async () => {
+            try {
+                // Show the loader
+                document.getElementById('loader').style.display = 'block';
+
+                // Request screen sharing
+                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+
+                // Create a MediaRecorder to record the screen
+                mediaRecorder = new MediaRecorder(screenStream);
+
+                // Event handler for when data is available
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                // Start recording
+                mediaRecorder.start();
+
+                // Hide the loader after 3 seconds
+                setTimeout(() => {
+                    document.getElementById('loader').style.display = 'none';
+                }, 3000);
+
+                // Enable the next page button and display it
+                document.getElementById('next-page-button').disabled = false;
+                document.getElementById('next-page-button').style.display = 'inline-block';
+                document.getElementById('stop-recording-button').style.display = 'inline-block';
+                document.getElementById('share-screen-button').style.display = 'none';
+
+                // Stop recording button
+                document.getElementById('stop-recording-button').addEventListener('click', () => {
+                    mediaRecorder.stop();
+                    screenStream.getTracks().forEach(track => track.stop()); // Stop the screen sharing
+                    document.getElementById('stop-recording-button').style.display = 'none';
+                    document.getElementById('share-screen-button').style.display = 'inline-block';
+                    document.getElementById('next-page-button').style.display = 'none';
+                });
+
+                // Event handler for when recording stops
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+
+                    // Create a link element for downloading
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'recorded-video.webm'; // Filename for the downloaded video
+                    document.body.appendChild(a);
+                    a.click(); // Programmatically click the link to trigger download
+                    document.body.removeChild(a); // Clean up the link element
+
+                    // Reset recorded chunks for the next recording
+                    recordedChunks = [];
+                };
+            } catch (err) {
+                console.error('Error sharing screen:', err);
+            }
+        });
+
+        document.getElementById('next-page-button').addEventListener('click', () => {
+            // Navigate to the next page without stopping the screen sharing
+            window.open('{{url_for('question_page')}}', '_blank'); // Open the next page in a new tab
+        });
+    </script>
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <script>
+                // To show the button
+        document.getElementById('stop-recording-button').style.display = 'block';
+
+        // To hide the button
+        document.getElementById('stop-recording-button').style.display = 'none';
+
+    </script>
+</body>
+</html>

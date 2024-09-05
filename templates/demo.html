@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Question Answering</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+/* General Container Styles */
+.containers {
+    width: 700px;
+    background-color: #f4f4f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 200px;
+    margin-bottom: 50px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #343a40;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Flexbox for Image and Form */
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-container {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+
+.form-container {
+    flex: 2;
+    padding: 10px;
+}
+
+/* AI Image Styling */
+.ai-img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 50%;
+    border: 5px solid #007bff;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    margin-right: 100px;
+
+}
+
+
+
+/* Form Styling */
+.form-group label {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 2px solid #007bff;
+    padding: 10px;
+    background-color: #e8f0fe;
+    color: #495057;
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+.btn {
+    margin-top: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: scale(1.05);
+}
+
+.rotating-icon {
+    display: none;
+    font-size: 24px;
+    color: #007bff;
+    animation: spin 2s linear infinite;
+    margin-left: 10px;
+}
+
+/* Feedback Box */
+#feedback .alert {
+    margin-top: 20px;
+    background-color: #e2f0d9;
+    border: 1px solid #28a745;
+    color: #155724;
+}
+
+/* Modal Styling */
+#waitModal .modal-content {
+    background-color: #f4f4f9;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#waitModal .modal-header,
+#waitModal .modal-footer {
+    border: none;
+}
+
+#waitModal .modal-title {
+    color: #007bff;
+}
+
+#waitModal .modal-body {
+    text-align: center;
+}
+
+/* Keyframes for Animation */
+@keyframes lip-sync {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.video-feed-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    margin-top:100px ;
+    margin-right: 100px;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">TechPrrep</h1>
+          </a>
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero" class="active">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Prep TechSkill</a></li>
+              <li><a href="blog.html">Video Interview</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="blog.html">Login</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+      </header>
+    <div style="display:flex; justify-content: center;margin-top: 100px">
+        <div class="ai-container">
+            <!-- AI SVG Image -->
+            <img src="{{ url_for('static', filename='assets/img/interview/ai1.png') }}" alt="AI" class="ai-img" id="ai-speaking-image">
+            
+            
+        </div>
+        
+    <div class="containers mt-5">
+        <h2 class="text-center">Connect with HR</h2>        
+        <form id="qa-form" method="post">
+            <div class="form-group">
+                <label for="question"><i class="fas fa-question-circle"></i> Question:</label>
+                <input type="text" class="form-control" id="question" name="question" value="{{ question }}" readonly>
+                <input type="hidden" id="current_index" name="current_index" value="{{ current_index }}">
+            </div>
+            <div class="form-group">
+                <label for="answer"><i class="fas fa-pen"></i> Your Answer:</label>
+                <textarea class="form-control" id="answer" name="answer" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="mic"></label><br>
+                <button type="button" id="mic" class="btn btn-secondary"><i class="fas fa-microphone-alt"></i> Start Recording</button>
+                <span id="mic-status"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" name="action" value="submit">
+                <i class="fas fa-paper-plane"></i> Submit
+                <i class="fas fa-spinner rotating-icon" id="loading-icon"></i>
+            </button>
+            <button type="button" class="btn btn-secondary" id="previous-btn">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" class="btn btn-secondary" id="next-btn">
+                <i class="fas fa-arrow-right"></i> Next
+            </button>
+            <div id="feedback" class="mt-3"></div>
+
+        </form>
+    </div>
+</div>
+<div class="video-feed-container">
+    <video id="video" autoplay muted></video>
+</div>
+
+<footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+    <script>
+        const form = document.getElementById('qa-form');
+        const feedbackDiv = document.getElementById('feedback');
+        const micButton = document.getElementById('mic');
+        const micStatus = document.getElementById('mic-status');
+        const loadingIcon = document.getElementById('loading-icon');
+        const aiSpeakingImage = document.getElementById('ai-speaking-image');
+
+        // Function to read text aloud and animate AI lips
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                // Start lip-sync animation
+                utterance.onstart = function () {
+                    aiSpeakingImage.classList.add('ai-speaking');
+                };
+
+                // Stop lip-sync animation when speech ends
+                utterance.onend = function () {
+                    aiSpeakingImage.classList.remove('ai-speaking');
+                };
+
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Function to update question and reset form
+        function updateQuestion(question, currentIndex) {
+            document.getElementById('question').value = question;
+            document.getElementById('current_index').value = currentIndex;
+            document.getElementById('answer').value = '';
+            feedbackDiv.innerHTML = '';
+            speakText(question);  // Read the question aloud
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            // Show the rotating search icon
+            loadingIcon.style.display = 'inline-block';
+
+            // Show the "Wait for Feedback" modal
+            $('#waitModal').modal('show');
+
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            // Hide the modal and the rotating search icon when the response is received
+            $('#waitModal').modal('hide');
+            loadingIcon.style.display = 'none';
+
+            feedbackDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <strong>Your score: ${result.score}</strong><br>
+                    <strong>Correct Answer:</strong> ${result.correct_answer || 'N/A'}<br>
+                    <strong>Grammar Feedback:</strong><ul>${result.grammar_feedback.map(fb => `<li>${fb}</li>`).join('')}</ul>
+                </div>`;
+        });
+
+        document.getElementById('next-btn').addEventListener('click', async () => {
+            const formData = new FormData(form);
+            formData.set('action', 'next');
+
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            updateQuestion(result.question, result.current_index);
+        });
+
+        document.getElementById('previous-btn').addEventListener('click', async () => {
+            const formData = new FormData(form);
+            formData.set('action', 'previous');
+
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            updateQuestion(result.question, result.current_index);
+        });
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = "en-US";
+
+            recognition.onstart = function () {
+                micStatus.textContent = "Recording...";
+                micButton.disabled = true;
+            };
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('answer').value = transcript;
+            };
+
+            recognition.onerror = function (event) {
+                micStatus.textContent = "Error occurred in recognition: " + event.error;
+            };
+
+            recognition.onend = function () {
+                micStatus.textContent = "Not recording";
+                micButton.disabled = false;
+            };
+
+            micButton.addEventListener('click', function () {
+                recognition.start();
+            });
+        } else {
+            micButton.disabled = true;
+            micStatus.textContent = "Speech recognition not supported in this browser.";
+        }
+
+        // Speak the first question when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialQuestion = document.getElementById('question').value;
+            speakText(initialQuestion);
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('video');
+        
+            // Request access to the user's camera
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                        video.play();
+                    })
+                    .catch(error => {
+                        console.error('Error accessing webcam: ', error);
+                    });
+            } else {
+                console.error('getUserMedia not supported on this browser.');
+            }
+        });
+        
+
+    </script>
+
+    <!-- Include Bootstrap's JS for the modal functionality -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

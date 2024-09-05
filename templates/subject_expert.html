@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Subjects Cards</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            width: 300px;
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        .card h3 {
+            margin: 0;
+            padding: 10px 0;
+            font-size: 1.5em;
+        }
+        .card p {
+            color: #555;
+            margin: 0 0 20px;
+            font-size: 1em;
+        }
+        .card button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .card button:hover {
+            background-color: #0056b3;
+        }
+        .card[data-subject="DSA"] {
+            background-color: #e7f1ff;
+            border-left: 5px solid #007bff;
+        }
+        .card[data-subject="Programming Languages"] {
+            background-color: #fff7e7;
+            border-left: 5px solid #ff9800;
+        }
+        .card[data-subject="System Design"] {
+            background-color: #e7ffe7;
+            border-left: 5px solid #4caf50;
+        }
+        .card[data-subject="Databases"] {
+            background-color: #e7e7ff;
+            border-left: 5px solid #2196f3;
+        }
+        .card[data-subject="Operating Systems"] {
+            background-color: #fff0f0;
+            border-left: 5px solid #f44336;
+        }
+        .card[data-subject="Networking"] {
+            background-color: #e7ffe7;
+            border-left: 5px solid #8bc34a;
+        }
+        .card[data-subject="Web Development"] {
+            background-color: #f0e7ff;
+            border-left: 5px solid #9c27b0;
+        }
+        .card[data-subject="Software Engineering"] {
+            background-color: #e7f5f5;
+            border-left: 5px solid #00bcd4;
+        }
+        .card[data-subject="Machine Learning and Data Science"] {
+            background-color: #f7f7e7;
+            border-left: 5px solid #ff5722;
+        }
+        .card[data-subject="Others"] {
+            background-color: #e7e7e7;
+            border-left: 5px solid #9e9e9e;
+        }
+        .header {
+            background: #333;
+
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        .all_card{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero" class="active">Home</a></li>
+              <li><a href="{{url_for('topics')}}">Prep TechSkill</a></li>
+              <li><a href="{{url_for('topics')}}">Hr Round</a></li>
+              
+              <!-- Navbar with Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="videoInterviewDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Video Interview
+                </a>
+              </li>
+    
+              <!-- Box with Buttons (Initially Hidden) -->
+              <div id="interviewBox" class="interview-box" style="display: none;">
+                <a class="btn btn-primary btn-sm" href="#">Daily Interview</a>
+                <a class="btn btn-secondary btn-sm" href="{{ url_for('instructions') }}">Weekly Interview</a>
+              </div>
+    
+              <li><a href="{{url_for('blog')}}">Blog</a></li>
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <li><a href="{{url_for('login')}}">Login</a></li>
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+<div class="all_card">
+    <div class="card" data-subject="DSA">
+        <img src="https://via.placeholder.com/50?text=DSA" alt="DSA Icon">
+        <h3>Data Structures and Algorithms</h3>
+        <p>Arrays, Linked Lists, Trees, Graphs, and more.</p>
+        <a href="{{url_for('dsa_subject')}}"><button>Start</button></a>
+    </div>
+    <div class="card" data-subject="Programming Languages">
+        <img src="https://via.placeholder.com/50?text=Lang" alt="Programming Languages Icon">
+        <h3>Programming Languages</h3>
+        <p>C++, Python, Java, JavaScript, and more.</p>
+        <a href="{{url_for('dsa_subject')}}"><button>Start</button></a>
+    </div>
+    <div class="card" data-subject="System Design">
+        <img src="https://via.placeholder.com/50?text=Sys" alt="System Design Icon">
+        <h3>System Design</h3>
+        <p>Microservices, APIs, Scalability, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Databases">
+        <img src="https://via.placeholder.com/50?text=DB" alt="Databases Icon">
+        <h3>Databases</h3>
+        <p>SQL, NoSQL, Database Design, Indexing, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Operating Systems">
+        <img src="https://via.placeholder.com/50?text=OS" alt="Operating Systems Icon">
+        <h3>Operating Systems</h3>
+        <p>Processes, Threads, Memory Management, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Networking">
+        <img src="https://via.placeholder.com/50?text=Net" alt="Networking Icon">
+        <h3>Networking</h3>
+        <p>TCP/IP, HTTP/HTTPS, DNS, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Web Development">
+        <img src="https://via.placeholder.com/50?text=Web" alt="Web Development Icon">
+        <h3>Web Development</h3>
+        <p>Frontend, Backend, APIs, Security, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Software Engineering">
+        <img src="https://via.placeholder.com/50?text=SE" alt="Software Engineering Icon">
+        <h3>Software Engineering</h3>
+        <p>Design Patterns, Agile, Git, Testing, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Machine Learning and Data Science">
+        <img src="https://via.placeholder.com/50?text=ML" alt="Machine Learning Icon">
+        <h3>Machine Learning and Data Science</h3>
+        <p>Regression, Classification, NLP, and more.</p>
+        <button>Start</button>
+    </div>
+    <div class="card" data-subject="Others">
+        <img src="https://via.placeholder.com/50?text=Misc" alt="Others Icon">
+        <h3>Others</h3>
+        <p>Cloud Computing, DevOps, Security, and more.</p>
+        <button>Start</button>
+    </div>
+</div>
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>

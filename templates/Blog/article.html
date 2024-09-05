@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog</title>
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; color: #343a40; margin: 0; padding: 0; }
+        .containers { width: 80%;padding: 20px;margin-top: 50px; margin-left: 250px;}
+        .blog-post { 
+            background: #fff; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            width: 300px; 
+            height: 350px; 
+            display: inline-block; 
+            vertical-align: top; 
+            box-sizing: border-box; 
+            overflow: hidden; 
+        }
+        .blog-post h2 { 
+            color: #007bff; 
+            margin-top: 0; 
+            font-size: 16px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        .blog-post img { 
+            max-width: 100%; 
+            max-height: 200px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+        }
+        .blog-post p { 
+            color: #6c757d; 
+            font-size: 14px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        .blog-post a { 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .blog-post a:hover { 
+            text-decoration: underline; 
+        }
+        .pagination { 
+            display: none; /* Hide pagination controls since all data is shown on one page */ 
+        }
+
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+        .content{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top:100px;
+            margin-bottom:100px;
+            margin-left:200px;
+            margin-right:100px;
+            width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">TechPrep</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero" class="active">Home</a></li>
+              <li><a href="{{url_for('topics')}}">Prep TechSkill</a></li>
+              <li><a href="{{url_for('topics')}}">Hr Round</a></li>
+              
+              <!-- Navbar with Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="videoInterviewDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Video Interview
+                </a>
+              </li>
+    
+              <!-- Box with Buttons (Initially Hidden) -->
+              <div id="interviewBox" class="interview-box" style="display: none;">
+                <a class="btn btn-primary btn-sm" href="#">Daily Interview</a>
+                <a class="btn btn-secondary btn-sm" href="{{ url_for('instructions') }}">Weekly Interview</a>
+              </div>
+    
+              <li><a href="{{url_for('blog')}}">Blog</a></li>
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <li><a href="{{url_for('login')}}">Login</a></li>
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+    <div class="content">
+        <div>{{ content | safe }}</div>
+    </div>
+
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">TechPrep</h3>
+          <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href="https://twitter.com/TechPrep" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://facebook.com/TechPrep" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://instagram.com/TechPrep" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://linkedin.com/company/techprep" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">TechPrep</strong> <span>All Rights Reserved</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>

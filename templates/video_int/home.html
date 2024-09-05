@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Instructions - Video Interview</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.css" rel="stylesheet" />
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+
+  <style>
+    .card {
+      width: 100%;
+      border: 0;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004080;
+    }
+
+    #main {
+      padding: 2rem;
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .img-container {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .img-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+    }
+  </style>
+
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <h1 class="sitename">Sakshatkar'</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Prep TechSkill</a></li>
+          <li><a href="blog.html">Video Interview</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="signup.html">Signup</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container">
+      <div style="display: flex;">
+        <div class="card" style="margin-top:5rem;">
+          <div class="card-body">
+            <h2 class="card-title">How to Join a Video Interview</h2>
+            <p>Welcome to the video interview instructions page. Follow the steps below to join your video interview:</p>
+            <ul>
+              <li>Click the "Book a Slot" button below to select a date and time for your interview.</li>
+              <li>Once you select a slot, you will receive a confirmation email with the details.</li>
+              <li>On the day of the interview, ensure you have a stable internet connection and join the video call using the link provided in the email.</li>
+            </ul>
+            <div style="display: flex;">
+              <div>
+            <a href="{{url_for('book_slot')}}" class="btn btn-primary">Book a Slot</a></div>
+            <div>
+            <button class="btn btn-primary btn-join-interview" style="margin-left:50px;">Join Interview</button></div>
+          </div>
+          </div>
+        </div>
+        <div class="img-container">
+          <img src="{{ url_for('static', filename='assets/img/back/interview.webp') }}" alt="Video Interview Instructions">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Join Interview Modal -->
+  <div class="modal fade" id="joinInterviewModal" tabindex="-50" aria-labelledby="joinInterviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="joinInterviewModalLabel">Enter Unique Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="joinInterviewForm" action="{{ url_for('join_interview') }}" method="post">
+            <div class="mb-3">
+              <label for="unique_number" class="form-label">Unique Number</label>
+              <input type="text" class="form-control" id="unique_number" name="unique_number" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script>
+    // Script to open the modal
+    document.addEventListener('DOMContentLoaded', function() {
+      var joinButton = document.querySelector('.btn-join-interview');
+      joinButton.addEventListener('click', function() {
+        var joinInterviewModal = new bootstrap.Modal(document.getElementById('joinInterviewModal'));
+        joinInterviewModal.show();
+      });
+    });
+  </script>
+</body>
+
+</html>

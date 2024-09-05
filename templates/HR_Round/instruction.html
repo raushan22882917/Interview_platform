@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Crack HR Round</title>
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+
+
+    .containers {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 100px;
+      margin-left: 200px;
+      margin-bottom: 50px;
+
+    }
+
+    .image-side {
+      flex: 1;
+      min-width: 300px;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-side img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .content-side {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-container button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .button-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="#hero" class="active">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Prep TechSkill</a></li>
+              <li><a href="blog.html">Video Interview</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="blog.html">Login</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+      </header>
+
+  <div class="containers">
+    <!-- Image Side -->
+    <div class="image-side">
+      <img src="{{ url_for('static', filename='assets/img/interview/tips.png') }}" alt="HR Interview">
+    </div>
+
+    <!-- Content Side -->
+    <div class="content-side">
+      <h1>How to Crack the HR Round</h1>
+      <p><strong>1. Know the Company:</strong> Research the company’s background, values, and culture. Understand what they’re looking for in a candidate.</p>
+      <p><strong>2. Be Confident:</strong> Maintain a calm demeanor and answer questions confidently. Your posture and tone should reflect confidence.</p>
+      <p><strong>3. Practice Common Questions:</strong> Prepare for questions like "Tell me about yourself", "Why should we hire you?", and "What are your strengths and weaknesses?"</p>
+      <p><strong>4. Showcase Soft Skills:</strong> Highlight skills such as communication, teamwork, adaptability, and problem-solving during your answers.</p>
+      <p><strong>5. Ask Thoughtful Questions:</strong> Show your interest in the role by asking questions about the company's growth, team structure, or challenges.</p>
+      <p><strong>6. Be Honest:</strong> Answer questions truthfully and align your values with the company’s values.</p>
+
+      <!-- Button -->
+      <div class="button-container">
+        <a href="{{ url_for('hrai')}}"><button>Start prepration</button></a>
+      </div>
+    </div>
+  </div>
+
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

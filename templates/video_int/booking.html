@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Book a Slot</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+
+  <style>
+    #main {
+      padding: 2rem;
+    }
+    .form-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      margin-left: 50px;
+    }
+    .btn-back {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+    .btn-back:hover {
+      background-color: #5a6268;
+      border-color: #4e555b;
+    }
+    .form-image {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .form-image img {
+      width: 100%;
+      height: auto;
+    }
+    #booking-form{
+        width: 300px;
+    }
+  </style>
+
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+      <a href="{{url_for('index')}}" class="logo d-flex align-items-center">
+        <h1 class="sitename">Sakshatkar'</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Prep TechSkill</a></li>
+          <li><a href="blog.html">Video Interview</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main">
+    <div class="container form-container">
+      <div style="display:flex; margin-top:5rem;">
+        <div class="form-image">
+          <img src="{{ url_for('static', filename='assets/img/back/scheudle.webp') }}" alt="Booking Image">
+        </div>
+        <div>
+          <h2 class="text-center">Book a Slot</h2>
+          <form id="booking-form" method="POST" action="{{ url_for('book_slot') }}">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="date" class="form-label">Date</label>
+              <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="mb-3">
+              <label for="time" class="form-label">Time</label>
+              <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{url_for('instructions')}}" class="btn btn-back">Back</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+  <!-- Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>
