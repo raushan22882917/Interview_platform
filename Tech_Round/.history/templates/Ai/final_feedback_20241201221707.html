@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Feedback</title>
+</head>
+<body>
+    <h1>Final Feedback</h1>
+    <p><strong>Question:</strong> {{ feedback['question'] }}</p>
+
+    <ul>
+        {% for step in feedback.keys() if step != 'question' and step != 'current_step' %}
+            <li>
+                <h3>{{ step }}</h3>
+                <p><strong>User Input:</strong> {{ feedback[step]['input'] }}</p>
+                <p><strong>Assistant Response:</strong> {{ feedback[step]['output'] }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Thank you for using the E.S.T.C.V chatbot!</p>
+</body>
+</html>

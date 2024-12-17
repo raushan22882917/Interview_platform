@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile with Performance Table</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Profile with Performance Table</h1>
+
+        <!-- Performance Table -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title">Performance Metrics</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Attempt Number</th>
+                            <th>Score (%)</th>
+                            <th>%Q/A (Adjusted)</th>
+                            <th>Status</th>
+                            <th>Interview Date</th>
+                            <th>Download PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through each result -->
+                        {% set percentage = ((result[2]|float) / 50) * 100 if result[2] is not none else 0 %}
+                        {% if 15 <= percentage <= 20 %}
+                            {% set adjusted_percentage = 20 %}
+                        {% elif 35 <= percentage <= 40 %}
+                            {% set adjusted_percentage = 40 %}
+                        {% elif 55 <= percentage <= 60 %}
+                            {% set adjusted_percentage = 60 %}
+                        {% elif 75 <= percentage <= 80 %}
+                            {% set adjusted_percentage = 80 %}
+                        {% elif 95 <= percentage <= 100 %}
+                            {% set adjusted_percentage = 100 %}
+                        {% else %}
+                            {% set adjusted_percentage = 0 %}
+                        {% endif %}
+
+                        <tr>
+                            <td>{{ result[1] }}</td> <!-- Attempt Number -->
+                            <td>{{ percentage }}%</td> <!-- Converted Score Percentage -->
+                            <td>{{ adjusted_percentage }}%</td> <!-- Adjusted Percentage -->
+                            <td>
+                                {% if adjusted_percentage >= 70 %}
+                                <span class="badge badge-success">Passed</span>
+                                {% else %}
+                                <span class="badge badge-danger">Failed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ result[3] }}</td> <!-- Interview Date -->
+                            <td>
+                                <a href="{{ url_for('download_pdf', position_name=result[0], part_number=result[1]) }}" class="btn btn-primary btn-sm">Download PDF</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

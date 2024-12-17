@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Round</title>
+</head>
+<body>
+    <h1>Select Your Company</h1>
+    <form id="company-form">
+        <select name="company" id="company-select">
+            {% for company in companies %}
+                <option value="{{ company }}">{{ company }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Start HR Round</button>
+    </form>
+    
+    <script>
+        document.getElementById('company-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const company = document.getElementById('company-select').value;
+
+            // Check if company value is selected
+            if (!company) {
+                alert("Please select a company!");
+                return;
+            }
+
+            fetch('/start_hr_round', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ company: company }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert("Error starting HR round.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

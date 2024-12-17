@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <title>Questions</title>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light blue background */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4b0082; /* Indigo */
+            text-align: center;
+        }
+
+        h2 {
+            color: #ff4500; /* OrangeRed */
+        }
+
+        h3 {
+            color: #4682b4; /* SteelBlue */
+        }
+
+        form {
+            background-color: #fff; /* White background for the form */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2e8b57; /* SeaGreen */
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            resize: none; /* Prevent resizing */
+        }
+
+        button {
+            background-color: #ff69b4; /* HotPink */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff1493; /* DeepPink */
+        }
+
+        #timer, #timeUp {
+            font-size: 20px;
+            color: red;
+            text-align: center;
+        }
+
+        /* Style for the video feed */
+        video {
+            display: none; 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            width: 200px; 
+            height: auto; 
+            border: 2px solid blue;
+        }
+
+        .icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #ff69b4; /* HotPink */
+            margin-right: 10px;
+        }
+
+        .icon-button:hover {
+            color: #ff1493; /* DeepPink */
+        }
+
+        .icon-button i {
+            margin-right: 5px;
+        }
+    </style>
+    <script>
+        let timeLimit = 300; // Time limit for each question in seconds
+        let timer;
+        let useVoiceMode = false; // Flag to indicate voice mode
+        let useVideoMode = false; // Flag to indicate video mode
+        let recognition;
+
+        function startTimer() {
+            let timeLeft = timeLimit;
+            timer = setInterval(function () {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById("timeUp").innerHTML = "Time's up! Redirecting to retry...";
+                    document.querySelector("button[type='submit']").disabled = true; // Disable submit button
+                    // Redirect to retry.html after 3 seconds
+                    setTimeout(function() {
+                        window.location.href = "{{ url_for('restart_test', topic=topic) }}"; // Ensure you have a corresponding Flask route
+                    }, 3000);
+                } else {
+                    document.getElementById("timer").innerHTML = timeLeft + " seconds remaining";
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        function toggleVoiceMode() {
+            useVoiceMode = !useVoiceMode;
+            if (useVoiceMode) {
+                startVoiceRecognition();
+            } else {
+                stopVoiceRecognition();
+            }
+        }
+
+        function startVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = false; // Stop automatically after the first result
+                recognition.interimResults = false; // Do not show interim results
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById("answer").value = transcript; // Set the recognized text in the answer input
+                    stopVoiceRecognition(); // Stop recognition after getting the input
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Speech recognition error: ", event.error);
+                    stopVoiceRecognition(); // Stop recognition on error
+                };
+
+                recognition.start();
+                document.getElementById("voiceButton").innerText = "Stop Voice Input";
+            } else {
+                alert("Your browser does not support speech recognition.");
+            }
+        }
+
+        function stopVoiceRecognition() {
+            if (recognition) {
+                recognition.stop();
+                document.getElementById("voiceButton").innerText = "Start Voice Input";
+            }
+        }
+
+        function toggleVideoMode() {
+            useVideoMode = !useVideoMode;
+            const videoElement = document.getElementById("videoFeed");
+            if (useVideoMode) {
+                // Start video stream
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        videoElement.srcObject = stream;
+                        videoElement.play();
+                        videoElement.style.display = "block"; // Show video
+                        document.getElementById("videoButton").innerText = "Stop Video";
+                    })
+                    .catch(function(error) {
+                        console.error("Error accessing the camera: ", error);
+                        alert("Could not access camera. Please check permissions.");
+                    });
+            } else {
+                // Stop video stream
+                const stream = videoElement.srcObject;
+                if (stream) {
+                    const tracks = stream.getTracks();
+                    tracks.forEach(function(track) {
+                        track.stop();
+                    });
+                }
+                videoElement.srcObject = null;
+                videoElement.style.display = "none"; // Hide video
+                document.getElementById("videoButton").innerText = "Start Video";
+            }
+        }
+
+        function adjustUIForMode() {
+            const mode = "{{ mode }}"; // Get the mode from the backend
+            const textArea = document.getElementById("answerArea");
+            const voiceButton = document.getElementById("voiceButton");
+            const videoButton = document.getElementById("videoButton");
+            const videoElement = document.getElementById("videoFeed");
+
+            if (mode === "text") {
+                textArea.style.display = "block";
+                voiceButton.style.display = "none";
+                videoButton.style.display = "none";
+                videoElement.style.display = "none"; // Hide video feed
+            } else if (mode === "audio") {
+                textArea.style.display = "block";
+                voiceButton.style.display = "block";
+                videoButton.style.display = "none";
+                videoElement.style.display = "none"; // Hide video feed
+            } else if (mode === "video") {
+                textArea.style.display = "block";
+                voiceButton.style.display = "block";
+                videoButton.style.display = "block";
+                videoElement.style.display = "block"; // Show video feed
+                toggleVideoMode(); // Start video mode
+            }
+        }
+
+        window.onload = function () {
+            startTimer();
+            adjustUIForMode(); // Adjust UI based on the mode
+        };
+    </script>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('published_data')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    <ul class="menu-list">
+                      {% if session.get('user_name') %}
+                        <li class="online-indicator">
+                          <a href="{{ url_for('user') }}" class="notification-icon">
+                            <div class="alerts alert-infos" role="alert">
+                              <i class="fas fa-bell position-relative">
+                                {% if unread_count > 0 %}
+                                  <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                                {% endif %}
+                              </i>
+                            </div>
+                          </a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+              <ul>
+                {% if session.get('user_name') %}
+                    <li style="list-style: none; font-size: 18px; position: relative;">
+                      <a href="#" style="text-decoration: none; color: white; font-weight: bold;" id="userDropdown">
+                        {% if session.get('profile_image') %}
+                            <!-- If user has uploaded a profile image, display it -->
+                            <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
+                        {% else %}
+                            <!-- If no profile image, show a default human icon -->
+                            <i class="fas fa-user-circle" style="font-size: 30px; margin-right: 10px;"></i>
+                        {% endif %}
+                        {{ session['user_name'] }}
+                        <!-- Dropdown icon (Font Awesome) -->
+                        <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+                    </a>
+                    
+                        
+                        <!-- Dropdown menu -->
+                        <ul id="dropdownMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: #333; list-style: none; padding: 10px; border-radius: 5px;">
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('profile') }}" style="color: white; text-decoration: none;">
+                                    <!-- Dashboard icon (Font Awesome) -->
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li style="padding: 5px 0;">
+                              <a href="{{ url_for('privacy') }}" style="color: white; text-decoration: none;">
+                                  <!-- Shield icon for privacy (Font Awesome) -->
+                                  <i class="fas fa-shield-alt"></i> Privacy Policy
+                              </a>
+                          </li>
+                          
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
+                                    <!-- Logout icon (Font Awesome) -->
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+            
+                    <!-- Script to toggle dropdown -->
+                    <script>
+                        document.getElementById('userDropdown').addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+                        });
+            
+                        // Optional: Hide dropdown when clicking outside
+                        window.addEventListener('click', function(event) {
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            if (!event.target.closest('#userDropdown')) {
+                                dropdownMenu.style.display = 'none';
+                            }
+                        });
+                    </script>
+            
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                {% endif %}
+            </ul>
+    
+            <ul>
+              <li>
+                  <button id="theme-toggle" onclick="toggleTheme()" style="background-color: transparent; border: none;">
+                      <i class="fas fa-sun" id="theme-icon"></i>
+                  </button>
+              </li>
+          </ul>
+    
+          <script>
+            // Function to toggle between light and dark modes
+            function toggleTheme() {
+                // Toggle dark mode class on body
+                document.body.classList.toggle('dark-mode');
+    
+                // Change the icon based on the current theme
+                const themeIcon = document.getElementById('theme-icon');
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+        </script>
+            
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+    <h1>Questions</h1>
+    <h2>Topic: {{ topic }}</h2>
+    
+    <div id="timer" style="font-size: 20px; color: red;"></div>
+    <div id="timeUp" style="font-size: 20px; color: green;"></div>
+
+    <!-- Displaying question number -->
+    <h3>Question {{ question_index + 1 }} of {{ questions | length }}</h3>
+
+    <form id="answerForm" method="POST" action="{{ url_for('questionstech', topic=topic, mode=mode) }}">
+        <input type="hidden" name="question_index" value="{{ question_index }}">
+        <label for="answer">{{ questions[question_index]['question'] }}</label>
+        
+        <!-- Text area for answer -->
+
+        <!-- UI for modes -->
+        <div id="answerArea">
+            <textarea id="answer" name="answer" required></textarea>
+        </div>
+
+        <!-- Voice input button -->
+        <button type="button" class="icon-button" id="voiceButton" onclick="toggleVoiceMode()" style="display: none;">
+            <i class="fas fa-microphone"></i> Start Voice Input
+        </button>
+        
+        <!-- Video input button -->
+        <button type="button" class="icon-button" id="videoButton" onclick="toggleVideoMode()" style="display: none;">
+            <i class="fas fa-video"></i> Start Video
+        </button>
+
+        <button type="submit">
+            <i class="fas fa-paper-plane"></i> Submit Answer
+        </button>
+    </form>
+
+    <!-- Video element for video feed -->
+    <video id="videoFeed" autoplay></video>
+</body>
+</html>

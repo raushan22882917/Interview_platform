@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Chat container */
+        #chat-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Chat Box */
+        #chat-box {
+            width: 100%;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Answer container */
+        #answer-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        #user-answer {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        #answer-container button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        #answer-container button:hover {
+            background-color: #218838;
+        }
+
+        #mic-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        #mic-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Chat bubbles */
+        .User, .Bot {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .User {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+            margin-left: auto;
+            color: #333;
+        }
+
+        .Bot {
+            background-color: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>AI Interview Bot</h1>
+        <div id="chat-box"></div>
+        <div id="answer-container">
+            <button id="mic-button">🎤</button>
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        const micButton = document.getElementById("mic-button");
+        const userAnswerInput = document.getElementById("user-answer");
+        let recognition;
+
+        // Check if the browser supports speech recognition
+        if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = "en-US";
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            // When the mic button is clicked, start listening
+            micButton.addEventListener("click", () => {
+                recognition.start();
+                micButton.textContent = "🎙️"; // Change icon while listening
+            });
+
+            // Capture the speech and set it as input value
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                userAnswerInput.value = transcript;
+                micButton.textContent = "🎤"; // Reset icon
+            };
+
+            // Handle speech recognition end
+            recognition.onend = () => {
+                micButton.textContent = "🎤"; // Reset icon
+            };
+
+            // Handle speech recognition errors
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                micButton.textContent = "🎤"; // Reset icon
+            };
+        } else {
+            alert("Speech recognition is not supported in this browser.");
+        }
+
+        function submitAnswer() {
+            const userAnswer = userAnswerInput.value.trim();
+            if (!userAnswer) {
+                alert("Please provide an answer!");
+                return;
+            }
+
+            appendMessage("User", userAnswer);
+            appendMessage("Bot", "Your answer has been submitted successfully.");
+            userAnswerInput.value = ""; // Clear the input field
+
+            // TODO: Handle backend submission here
+        }
+
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+    </script>
+</body>
+</html>

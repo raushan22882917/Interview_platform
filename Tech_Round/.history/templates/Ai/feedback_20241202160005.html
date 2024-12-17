@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Here’s the summary of your progress:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> You provided examples.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> You gave an explanation of your solution.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases were provided, but make sure to include edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Your code was submitted, now check its performance.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate your solution, check time complexity, and test cases.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h1>Final Feedback</h1>
+            <ul>
+                {% set total_score = 0 %}
+                {% for step, data in responses.items() %}
+                    <li>
+                        <h3>{{ step }}</h3>
+                        <p><strong>Your Input:</strong> {{ data['input'] }}</p>
+                        <p><strong>Feedback:</strong> {{ data['feedback'] }}</p>
+
+                        <!-- Scoring -->
+                        {% set step_score = 0 %}
+                        
+                        {% if step == "Example" %}
+                            {% if "good" in data['feedback'].lower() %}
+                                {% set step_score = 5 %}
+                            {% elif "average" in data['feedback'].lower() %}
+                                {% set step_score = 4 %}
+                            {% elif "needs improvement" in data['feedback'].lower() %}
+                                {% set step_score = 3 %}
+                            {% elif "poor" in data['feedback'].lower() %}
+                                {% set step_score = 2 %}
+                            {% else %}
+                                {% set step_score = 1 %}
+                            {% endif %}
+                        {% elif step == "Solution" %}
+                            {% if "good" in data['feedback'].lower() %}
+                                {% set step_score = 5 %}
+                            {% elif "average" in data['feedback'].lower() %}
+                                {% set step_score = 4 %}
+                            {% elif "needs improvement" in data['feedback'].lower() %}
+                                {% set step_score = 3 %}
+                            {% elif "poor" in data['feedback'].lower() %}
+                                {% set step_score = 2 %}
+                            {% else %}
+                                {% set step_score = 1 %}
+                            {% endif %}
+                        {% elif step == "Test Cases" %}
+                            {% if "well thought out" in data['feedback'].lower() %}
+                                {% set step_score = 5 %}
+                            {% elif "average" in data['feedback'].lower() %}
+                                {% set step_score = 4 %}
+                            {% elif "needs more" in data['feedback'].lower() %}
+                                {% set step_score = 3 %}
+                            {% elif "poor" in data['feedback'].lower() %}
+                                {% set step_score = 2 %}
+                            {% else %}
+                                {% set step_score = 1 %}
+                            {% endif %}
+                        {% elif step == "Code" %}
+                            {% if "correct" in data['feedback'].lower() %}
+                                {% set step_score = 5 %}
+                            {% elif "average" in data['feedback'].lower() %}
+                                {% set step_score = 4 %}
+                            {% elif "needs improvement" in data['feedback'].lower() %}
+                                {% set step_score = 3 %}
+                            {% elif "poor" in data['feedback'].lower() %}
+                                {% set step_score = 2 %}
+                            {% else %}
+                                {% set step_score = 1 %}
+                            {% endif %}
+                        {% elif step == "Validation" %}
+                            {% if "thorough" in data['feedback'].lower() %}
+                                {% set step_score = 5 %}
+                            {% elif "average" in data['feedback'].lower() %}
+                                {% set step_score = 4 %}
+                            {% elif "needs improvement" in data['feedback'].lower() %}
+                                {% set step_score = 3 %}
+                            {% elif "poor" in data['feedback'].lower() %}
+                                {% set step_score = 2 %}
+                            {% else %}
+                                {% set step_score = 1 %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        <p><strong>Marks for this step:</strong> {{ step_score }} / 5</p>
+                        {% set total_score = total_score + step_score %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>Thank you for using the E.S.T.C.V chatbot!</p>
+        </div>
+        <a ></a>
+    </div>
+</body>
+</html>

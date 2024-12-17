@@ -1,0 +1,113 @@
+<!-- templates/HR_Round/question.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .timer {
+            font-size: 20px;
+            color: #ff0000;
+        }
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .marks {
+            font-size: 18px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .feedback {
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="timer" class="timer"></p>
+        <p>Question <span id="question-number">1</span> of <span id="total-questions">10</span></p>
+        <p class="question">{{ question }}</p>
+
+        <form method="POST">
+            {% if session['response_mode'] == 'text' %}
+                <textarea name="answer" placeholder="Type your answer here..."></textarea>
+            {% elif session['response_mode'] == 'mic' %}
+                <button type="button" onclick="startMicRecording()">Start Recording</button>
+                <input type="hidden" name="answer" id="mic_answer">
+            {% endif %}
+            <button type="submit">Submit Answer</button>
+        </form>
+
+        <div class="marks">
+            <p>Marks: <span id="marks">{{ score }}</span></p>
+        </div>
+
+        {% if feedback %}
+        <div class="feedback">
+            <p>Feedback: {{ feedback }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        let totalTime = 60; // Set timer to 1 minute (60 seconds)
+        let timerElement = document.getElementById("timer");
+        let questionNumber = 1;  // Update this dynamically if needed
+        let totalQuestions = 10;  // Update dynamically based on the total number of questions
+
+        document.getElementById("question-number").innerText = questionNumber;
+        document.getElementById("total-questions").innerText = totalQuestions;
+
+        function updateTimer() {
+            let minutes = Math.floor(totalTime / 60);
+            let seconds = totalTime % 60;
+            timerElement.innerText = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (totalTime > 0) {
+                totalTime--;
+            } else {
+                alert("Time's up!");
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>

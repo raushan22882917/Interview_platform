@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechPrep - Scraped Data</title>
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    
+    <!-- Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <!-- Custom CSS for Scraped Data Page -->
+    <style>
+        .interview-box {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px;
+            background-color: transparent;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .interview-box a {
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+          }
+
+
+          form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        select {
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select:hover {
+            border-color: #888;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        
+        form.mb-4 {
+            margin-bottom: 1.5rem;
+        }
+        
+        option {
+            padding: 5px 10px;
+        }
+
+        .tech-blog-link {
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            border: 2px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-blog-link:hover {
+            background-color: #3498db;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+        }
+        
+        .tech-blog-link:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        
+    </style>
+</head>
+<body class="index-page">
+
+    <!-- Header with Navbar -->
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('published_data')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    <ul class="menu-list">
+                      {% if session.get('user_name') %}
+                        <li class="online-indicator">
+                          <a href="{{ url_for('user') }}" class="notification-icon">
+                            <div class="alerts alert-infos" role="alert">
+                              <i class="fas fa-bell position-relative">
+                                {% if unread_count > 0 %}
+                                  <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                                {% endif %}
+                              </i>
+                            </div>
+                          </a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+              <ul>
+                {% if session.get('user_name') %}
+                    <li style="list-style: none; font-size: 18px; position: relative;">
+                      <a href="#" style="text-decoration: none; color: white; font-weight: bold;" id="userDropdown">
+                        {% if session.get('profile_image') %}
+                            <!-- If user has uploaded a profile image, display it -->
+                            <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
+                        {% else %}
+                            <!-- If no profile image, show a default human icon -->
+                            <i class="fas fa-user-circle" style="font-size: 30px; margin-right: 10px;"></i>
+                        {% endif %}
+                        {{ session['user_name'] }}
+                        <!-- Dropdown icon (Font Awesome) -->
+                        <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+                    </a>
+                    
+                        
+                        <!-- Dropdown menu -->
+                        <ul id="dropdownMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: #333; list-style: none; padding: 10px; border-radius: 5px;">
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('profile') }}" style="color: white; text-decoration: none;">
+                                    <!-- Dashboard icon (Font Awesome) -->
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li style="padding: 5px 0;">
+                              <a href="{{ url_for('privacy') }}" style="color: white; text-decoration: none;">
+                                  <!-- Shield icon for privacy (Font Awesome) -->
+                                  <i class="fas fa-shield-alt"></i> Privacy Policy
+                              </a>
+                          </li>
+                          
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
+                                    <!-- Logout icon (Font Awesome) -->
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+            
+                    <!-- Script to toggle dropdown -->
+                    <script>
+                        document.getElementById('userDropdown').addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+                        });
+            
+                        // Optional: Hide dropdown when clicking outside
+                        window.addEventListener('click', function(event) {
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            if (!event.target.closest('#userDropdown')) {
+                                dropdownMenu.style.display = 'none';
+                            }
+                        });
+                    </script>
+            
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                {% endif %}
+            </ul>
+    
+            <ul>
+              <li>
+                  <button id="theme-toggle" onclick="toggleTheme()" style="background-color: transparent; border: none;">
+                      <i class="fas fa-sun" id="theme-icon"></i>
+                  </button>
+              </li>
+          </ul>
+    
+          <script>
+            // Function to toggle between light and dark modes
+            function toggleTheme() {
+                // Toggle dark mode class on body
+                document.body.classList.toggle('dark-mode');
+    
+                // Change the icon based on the current theme
+                const themeIcon = document.getElementById('theme-icon');
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+        </script>
+            
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+
+    <!-- Main Content -->
+    <div class="containers" style="margin:100px;">
+        <div>
+            <a class="tech-blog-link" href="{{ url_for('tech_blog')}}">Read Tech Blog</a>
+        </div>
+
+        <form method="GET" action="{{ url_for('blog') }}" class="mb-4">
+            <label for="category">Filter by Category:</label>
+            <select name="category" id="category" onchange="this.form.submit()">
+                <option value="All" {% if selected_category == 'All' %}selected{% endif %}>All</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <!-- Display Cards -->
+        <div class="row">
+            {% for row in data %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0" style="background-color: #f8f9fa;">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{{ url_for('content', link=row['Link']) }}" class="text-decoration-none text-dark">
+                                {{ row['Title'] }}
+                            </a>
+                        </h5>
+                        <p class="card-text">
+                            <i class="fas fa-calendar-alt"></i> Date: {{ row['Date'] }}
+                        </p>
+                        <p class="card-text">
+                            <span class="badge rounded-pill bg-primary">{{ row['Category'] }}</span>
+                        </p>
+                    </div>
+                    <div class="card-footer text-muted text-center" style="background-color: #e9ecef;">
+                        <small>Posted on {{ row['Date'] }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <style>
+            .card:hover {
+                transform: scale(1.05);
+                transition: all 0.3s ease-in-out;
+            }
+            .card-title a:hover {
+                color: #007bff;
+            }
+        </style>
+        
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('blog', category=selected_category, page=page-1) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% for p in range(1, pages + 1) %}
+                <li class="page-item {% if page == p %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('blog', category=selected_category, page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if page == pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('blog', category=selected_category, page=page+1) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div> 
+
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+</html>

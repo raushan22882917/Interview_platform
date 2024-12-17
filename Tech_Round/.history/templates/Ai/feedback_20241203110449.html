@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    
+   
+    
+    <!-- Main CSS File -->
+    <title>Final Feedback</title>
+    <style>
+       
+
+        .containers {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            margin-top: 50px;
+
+        }
+
+       
+
+        .contents {
+            width: 70%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            color: black;
+        }
+
+        .contents h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .feedback-table th, .feedback-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .feedback-table th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        .feedback-table td {
+            background-color: #f9f9f9;
+
+            text-align: center;
+
+        }
+
+        .feedback-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .feedback-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .feedback-summary {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .feedback-summary li {
+            margin-bottom: 15px;
+        }
+
+        .feedback-summary h3 {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .feedback-excellent {
+            color: green;
+            font-weight: bold;
+        }
+        .feedback-very-good {
+            color: blue;
+            font-weight: bold;
+        }
+        .feedback-good {
+            color: orange;
+            font-weight: bold;
+        }
+        .feedback-needs-improvement {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="containers">
+        <!-- Sidebar with Instructions -->
+       
+
+        <!-- Main Content Section -->
+        <div class="contents">
+            <h1 style="text-align:centre;font-weight:bold;">Final Feedback Summary</h1>
+            
+            <!-- Feedback Table -->
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-tasks"></i> Step</th>
+                        <th><i class="fas fa-keyboard"></i> User Input</th>
+                        <th><i class="fas fa-star"></i> Marks</th>
+                        <th><i class="fas fa-comment"></i> Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for step, data in responses.items() %}
+                    <tr>
+                        <td>{{ step }}</td>
+                        <td>{{ data['input'] }}</td>
+                        <td>{{ data['score'] }} / 5</td>
+                        <td class="{{ get_feedback_class(data['score']) }}">{{ get_feedback(data['score']) }}</td> <!-- Call the feedback function -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Total Score -->
+            <p><strong>Total Score:</strong> {{ total_score }} / {{ 5 * responses|length }}</p>
+
+            <!-- Full Feedback Section -->
+            <h2>Full Feedback</h2>
+            <ul class="feedback-summary">
+                {% for step, data in responses.items() %}
+                <li>
+                    <h3>{{ step }}</h3>
+                    <p class="feedback-text">{{ data['feedback'] if data['feedback'] else "No issues with your input." }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Back Button -->
+            <a href="{{ url_for('estcv') }}" class="back-btn">GO BACK!</a>
+        </div>
+    </div>
+
+    <script>
+        // Function to convert **word** to bold and add line breaks
+        document.addEventListener("DOMContentLoaded", function() {
+            const feedbackTextElements = document.querySelectorAll('.feedback-text');
+            
+            feedbackTextElements.forEach(element => {
+                // Replace **word** with <strong>word</strong> and add line breaks
+                let text = element.innerHTML;
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/\n/g, '<br>');
+                text = text.replace(/\*/g,'<li>')
+                text = text.replace(/\```/g,'<pre>')
+                element.innerHTML = text;
+            });
+        });
+    </script>
+</body>
+</html>

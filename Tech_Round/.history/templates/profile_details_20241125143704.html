@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Profile Section -->
+        <div class="text-center mb-4">
+            <h1 class="mb-3">Welcome to Your Profile</h1>
+            {% if profile_image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ profile_image) }}" alt="Profile Image" class="profile-image">
+            {% else %}
+            <img src="https://via.placeholder.com/150" alt="Profile Image" class="profile-image">
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                <label for="profile_image" class="form-label">Upload Profile Image</label>
+                <input type="file" name="profile_image" id="profile_image" class="form-control mb-2">
+                <button type="submit" class="btn btn-primary">Update Profile Image</button>
+            </form>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="education-tab" data-bs-toggle="tab" data-bs-target="#education" type="button" role="tab" aria-controls="education" aria-selected="true">Education</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tech-round-tab" data-bs-toggle="tab" data-bs-target="#tech-round" type="button" role="tab" aria-controls="tech-round" aria-selected="false">Tech Round</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="code-round-tab" data-bs-toggle="tab" data-bs-target="#code-round" type="button" role="tab" aria-controls="code-round" aria-selected="false">Code Round</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content mt-4" id="profileTabContent">
+            <!-- Education Tab -->
+            <div class="tab-pane fade show active" id="education" role="tabpanel" aria-labelledby="education-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Educational Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control" value="{{ education_details.first_name if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control" value="{{ education_details.last_name if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="college_name" class="form-label">College Name</label>
+                                <input type="text" name="college_name" id="college_name" class="form-control" value="{{ education_details.college_name if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dob" class="form-label">Date of Birth</label>
+                                <input type="date" name="dob" id="dob" class="form-control" value="{{ education_details.dob if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="year_of_study" class="form-label">Year of Study</label>
+                                <input type="text" name="year_of_study" id="year_of_study" class="form-control" value="{{ education_details.year_of_study if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="graduation_year" class="form-label">Graduation Year</label>
+                                <input type="text" name="graduation_year" id="graduation_year" class="form-control" value="{{ education_details.graduation_year if education_details else '' }}">
+                            </div>
+                            <button type="submit" class="btn btn-success">Save Details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Round Tab -->
+            <div class="tab-pane fade" id="tech-round" role="tabpanel" aria-labelledby="tech-round-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Tech Round Performance</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Average Score: {{ tech_round.average_score }}</p>
+                        <p>Top Score: {{ tech_round.top_score }}</p>
+                        <p>Feedback: {{ tech_round.feedback }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Round Tab -->
+            <div class="tab-pane fade" id="code-round" role="tabpanel" aria-labelledby="code-round-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Code Round Performance</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Total Attempts: {{ code_round.total_attempts }}</p>
+                        <p>Top Score: {{ code_round.top_score }}</p>
+                        <p>Feedback: {{ code_round.feedback }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

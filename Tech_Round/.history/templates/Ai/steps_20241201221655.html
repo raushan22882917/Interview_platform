@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+</head>
+<body>
+    <h1>Step: {{ step }}</h1>
+    <p><strong>Question:</strong> {{ question }}</p>
+
+    <form id="step_form" method="POST" onsubmit="processStep(event)">
+        <label for="user_input">Enter your input for this step:</label><br>
+        <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit" id="submit_btn">Submit</button>
+    </form>
+
+    <div id="step_response"></div>
+
+    <script>
+        function processStep(event) {
+            event.preventDefault();
+            const userInput = document.getElementById('user_input').value;
+
+            fetch('/process_step', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `user_input=${encodeURIComponent(userInput)}`
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+
+
+
+        .subscription-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 22%;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .subscription-card h4 {
+            margin-top: 0;
+        }
+
+        .btn-subscribe {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .btn-subscribe:hover {
+            background-color: #45a049;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        
+
+        .paypal-box {
+            width: 45%;
+            text-align: center;
+        }
+
+        .qr-code-box {
+            width: 45%;
+            text-align: center;
+        }
+
+        .input-uid {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+
+        .containers {
+            margin: 0 auto;
+            padding: 50px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .subscription-card {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px;
+            width: 20%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        }
+
+        .subscription-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subscription-card h4 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #4CAF50;
+        }
+
+        .subscription-card p {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .subscription-card ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 20px 0 0;
+        }
+
+        .subscription-card ul li {
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .subscription-card ul li i {
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .btn-subscribe {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .btn-subscribe:hover {
+            background: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+       
+
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        .instructions h4 {
+            font-size: 1.2em;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .instructions p {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .instructions b {
+            color: #333;
+        }
+/* Adjusted styling */
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.paypal-box h3, .qr-code-box h3 {
+    font-size: 1.5em;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.input-uid {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.payment-instructions {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 30px;
+    gap: 30px;
+}
+
+.instruction-box {
+    background-color: #fff;
+    border: 1px solid #d1d8e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    text-align: center;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.instruction-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.instruction-box .icon {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.paypal-box .icon {
+    color: #009cde; /* Blue */
+}
+
+.qr-code-box .icon {
+    color: #f39c12; /* Orange */
+}
+
+.instruction-box h3 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.instruction-box p {
+    font-size: 1.1em;
+    color: #666;
+}
+
+.info-box {
+    background-color: #ffeaa7;
+    border: 1px solid #f1c40f;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.info-box p {
+    font-size: 1.1em;
+    color: #e67e22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.info-box i {
+    font-size: 1.3em;
+    color: #e67e22;
+}
+
+.info-box a {
+    color: #e67e22;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.info-box a:hover {
+    text-decoration: underline;
+}
+
+p {
+    font-size: 1.2em;
+    color: #333;
+}
+
+strong {
+    font-weight: bold;
+}
+
+span {
+    color: #4CAF50; /* Color for the price */
+}
+
+
+h4 {
+    font-size: 1.5em;
+    color: #333;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+h4 i {
+    color: #4CAF50;  /* Icon color */
+    font-size: 1.3em;
+    margin-right: 8px;
+}
+
+
+
+        
+    </style>
+</head>
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+            <!-- Logo Image -->
+            <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Sakshatkar Logo" class="logo-img">
+            <!-- Logo Name -->
+            <h1 class="sitename">Sakshatkar</h1>
+        </a>
+        
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+                    <style>
+    
+    #userDropdown {
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    #userDropdown img
+    {
+      margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+      border-radius: 50%;
+    }
+    
+    /* Dropdown Menu Styles */
+    #dropdownMenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      background-color: #222;
+      color: white;
+      list-style: none;
+      padding: 12px 0;
+      border-radius: 8px;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+      z-index: 10;
+      margin-top: 10px;
+      margin-right: 100px;
+    }
+    
+    /* Dropdown Item Styles */
+    #dropdownMenu li {
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      transition: background 0.3s ease;
+    }
+    
+    #dropdownMenu li:hover {
+      background-color: #333;
+    }
+    
+    #dropdownMenu li:last-child {
+      border-bottom: none;
+    }
+    
+    
+    
+    /* Button for Theme Toggle */
+    #theme-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    
+    #theme-text{
+      color: white;
+      text-decoration: none;
+      display: flex;
+      font-size: 14px;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    #theme-icon{
+      font-size:14px;
+    }
+    /* Hover and Active Styles */
+    #dropdownMenu a:hover {
+      color: #aaa;
+    }
+    
+    .dropdown-items{
+      font-size: 12px;
+    }
+    
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .dropdown-item{
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    
+    
+    #hero h1 {
+      color: #a7ffeb; /* Light teal color */
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+    }
+    
+    /* Subtitle */
+    #hero h2 {
+      color: #ffeb3b; /* Yellow color to pop against dark background */
+      font-size: 2rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Body text */
+    #hero p {
+      color: #ffffff; /* White color */
+      font-size: 1.2rem;
+      line-height: 1.6;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Button styling */
+    #hero .btn {
+      background-color: #ff5722; /* Bright orange for contrast */
+      color: #ffffff;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    
+    #hero .btn:hover {
+      background-color: #e64a19; /* Darker orange on hover */
+    }
+                  </style>
+                  
+                  {% if session.get('user_name') %}
+                      <li>
+                          <a href="{{ url_for('forum') }}">
+                            <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                          </a>
+                      </li>
+                  {% endif %}
+    
+                  
+                  <ul>
+                      {% if session.get('user_name') %}
+                          <li style="list-style: none; font-size: 16px; position: relative;">
+                            <a href="#" id="userDropdown">
+                              {% if session.get('profile_image') %}
+                                  <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                              {% else %}
+                                  <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                              {% endif %}
+                              <span>{{ session['user_name'] }}</span>
+                              <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                          </a>
+                          
+                  
+                              <!-- Dropdown Menu -->
+                              <ul id="dropdownMenu">
+                                  <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                      <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                      {% if not session.get('profile_image') %}
+                                        <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                      {% endif %}
+                                      
+                                      <div class="dropdown-items">{{ session['email'] }}</div>
+    
+                                  </li>
+                                  <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                                  <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                                  <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                                  <li>
+                                    <a>
+                                      <button id="theme-toggle" onclick="toggleTheme()">
+                                          <i class="fas fa-sun" id="theme-icon"></i>
+                                          <span id="theme-text">Light</span>
+                                      </button>
+                                    </a>
+                                  </li>
+                              </ul>
+                          </li>
+    
+    
+                  
+                          <!-- Toggle Dropdown Script -->
+                          <script>
+                              document.getElementById('userDropdown').addEventListener('click', function(event) {
+                                  event.preventDefault();
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                              });
+                  
+                              // Hide dropdown when clicking outside
+                              window.addEventListener('click', function(event) {
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  if (!event.target.closest('#userDropdown')) {
+                                      dropdownMenu.style.display = 'none';
+                                  }
+                              });
+                  
+                              // Toggle Theme Function
+                              function toggleTheme() {
+                                  const themeIcon = document.getElementById('theme-icon');
+                                  const themeText = document.getElementById('theme-text');
+                                  if (themeIcon.classList.contains('fa-sun')) {
+                                      themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                      themeText.textContent = 'Dark';
+                                  } else {
+                                      themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                      themeText.textContent = 'Light';
+                                  }
+                              }
+                          </script>
+                      {% else %}
+                          <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                      {% endif %}
+                  </ul>
+    
+    
+                  <ul class="menu-list">
+                    {% if session.get('user_name') %}
+                      <li class="online-indicator">
+                        <a href="{{ url_for('user') }}" class="notification-icon">
+                          <div class="alerts alert-infos" role="alert">
+                            <i class="fas fa-bell position-relative">
+                              {% if unread_count > 0 %}
+                                <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                              {% endif %}
+                            </i>
+                          </div>
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                  
+    
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+
+    <div class="containers">
+        <!-- Subscription Cards -->
+        <div class="subscription-card">
+            <h4><i class="fa fa-calendar" style="margin-right: 8px;"></i>1 Months</h4>
+
+            <p><strong>Price:</strong> <span>$0.2</span></p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4><i class="fa fa-calendar" style="margin-right: 8px;"></i>3 Months</h4>
+
+            <p><strong>Price:</strong> <span>$0.2</span></p>
+
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4><i class="fa fa-calendar" style="margin-right: 8px;"></i>6 Months</h4>
+
+            <p><strong>Price:</strong> <span>$0.2</span></p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4><i class="fa fa-calendar" style="margin-right: 8px;"></i>3 Months</h4>
+            <p><strong>Price:</strong> <span>$0.2</span></p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+    </div>
+    <div class="payment-instructions">
+        <!-- PayPal Instructions -->
+        <div class="instruction-box paypal-box">
+            <i class="fa fa-paypal icon"></i>
+            <h3>PayPal Instructions</h3>
+            <p>Complete your payment via PayPal. Ensure you use the correct email ID for verification.</p>
+        </div>
+    
+        <!-- QR Code Instructions -->
+        <div class="instruction-box qr-code-box">
+            <i class="fa fa-qrcode icon"></i>
+            <h3>QR Code Instructions</h3>
+            <p>Scan the QR code to make a payment. Ensure the correct amount is transferred.</p>
+        </div>
+    
+        <!-- Information Box -->
+        <div class="info-box">
+            <p><i class="fa fa-info-circle"></i> After paying, wait for a maximum of 24 hours for your subscription to become active.</p>
+            <p><i class="fa fa-phone"></i> If your subscription is not active after 24 hours, please contact us at:</p>
+            <p><i class="fa fa-envelope"></i> <a href="mailto:support@example.com">support@example.com</a></p>
+            <p><i class="fa fa-phone-alt"></i> Call us at: <a href="tel:+1234567890">+1 234 567 890</a></p>
+        </div>
+        
+    </div>
+    
+<!-- Modal for Subscription -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <!-- PayPal Box -->
+        <div class="paypal-box">
+            <h3>
+                <i class="fab fa-paypal" style="color: #003087; margin-right: 10px;"></i>
+                Subscribe to our Service
+            </h3>
+            <div id="paypal-button"></div>
+            <div class="instructions" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
+                <h4 style="margin-bottom: 10px;">
+                    <i class="fas fa-info-circle" style="color: #4CAF50; margin-right: 10px;"></i>
+                    Instructions:
+                </h4>
+                <ol style="line-height: 1.8; margin-left: 20px; font-size: 16px; list-style-type: none; padding-left: 0;">
+                    <li>
+                        <i class="fas fa-qrcode" style="color: #4CAF50"></i>
+                        Scan the QR code using your PhonePe app or any other UPI payment app.
+                    </li>
+                    <li>
+                        <i class="fas fa-rupee-sign" style="color: #4CAF50;"></i>
+                        Complete the payment by entering the required amount.
+                    </li>
+                    <li>
+                        <i class="fas fa-receipt" style="color: #4CAF50;"></i>
+                        After the payment, note down the <b>Transaction ID (UID)</b>.
+                    </li>
+                    <li>
+                        <i class="fas fa-keyboard" style="color: #4CAF50;"></i>
+                        Enter your UID (Transaction ID) in the text field provided below.
+                    </li>
+                </ol>
+                
+                <p style="margin-top: 10px; font-style: italic; color: #555;">
+                    Example UID: <b style="color: #333;">TXN1234567890</b>
+                </p>
+            </div>
+        </div>
+        
+        <!-- QR Code and UID Input Section -->
+        <div class="qr-code-box">
+            <h3>
+                <i class="fas fa-qrcode" style="color: #4CAF50; margin-right: 10px;"></i>
+                PhonePe QR Code
+            </h3>
+            <img src="static/assets/img/phone.jpg" alt="PhonePe QR Code" style="width: 100%; max-width: 200px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+
+            <h3 style="margin-top: 30px;">
+                <i class="fas fa-user" style="color: #FF5722; margin-right: 10px;"></i>
+                Enter your UID
+            </h3>
+            <div id="qr-code"></div>
+
+            <div class="uid-input-box">
+                <input type="text" id="uid-input" class="input-uid" placeholder="Enter your UID" required>
+                <button class="btn-submit" onclick="submitUid()">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+    function openModal() {
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+</script>
+<script>
+    // Open Modal when Subscribe button is clicked
+    function openModal() {
+        document.getElementById("paymentModal").style.display = "flex";
+    }
+
+    // Close Modal when user clicks outside
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("paymentModal")) {
+            document.getElementById("paymentModal").style.display = "none";
+        }
+    }
+
+    // Submit UID and email to the backend for saving
+    function submitUid() {
+        var uid = document.getElementById('uid-input').value;
+
+        if (uid) {
+            // Send UID to the Flask backend using AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/submit_uid", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert("UID submitted successfully!");
+                }
+            };
+
+            // Get the email from session using a global JS variable (assuming you set this variable server-side)
+            var email = window.email;  // The email should be set in the session and passed to JavaScript.
+
+            xhr.send("uid=" + encodeURIComponent(uid) + "&email=" + encodeURIComponent(email));
+        } else {
+            alert('Please enter your UID.');
+        }
+    }
+
+    // PayPal Button integration
+    var CREATE_PAYMENT_URL = 'http://127.0.0.1:5000/payment';
+    var EXECUTE_PAYMENT_URL = 'http://127.0.0.1:5000/execute';
+
+    paypal.Button.render({
+        env: 'sandbox',  // Or 'production'
+        commit: true,  // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.request.post(CREATE_PAYMENT_URL).then(function(data) {
+                return data.paymentID;
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.request.post(EXECUTE_PAYMENT_URL, {
+                paymentID: data.paymentID,
+                payerID: data.payerID
+            }).then(function(res) {
+                if(res.success) {
+                    alert('Payment Successful!');
+                } else {
+                    alert('Payment Failed!');
+                }
+            });
+        }
+
+    }, '#paypal-button');
+</script>
+
+</body>
+</html>

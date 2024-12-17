@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+</head>
+<body>
+    <h1>Step: {{ step }}</h1>
+    <p><strong>Question:</strong> {{ question }}</p>
+
+    {% if step in responses %}
+        <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+        <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <label for="user_input">Enter your input for this step:</label><br>
+        <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <p><strong>Current Step: </strong>{{ step }}</p>
+
+    {% if step != 'Validation' %}
+        <p><strong>Next Step:</strong> {{ next_step }}</p>
+    {% endif %}
+</body>
+</html>

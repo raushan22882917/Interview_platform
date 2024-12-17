@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .subscription-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+        .modal-content {
+            display: flex;
+            justify-content: space-between;
+        }
+        #paypal-box {
+            width: 45%;
+            text-align: center;
+        }
+        #qr-code-box {
+            width: 45%;
+            text-align: center;
+        }
+        #qr-code {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <!-- Subscription Card -->
+    <div class="card subscription-card">
+        <h4>Subscribe for 1 Month</h4>
+        <p>Enjoy full access to all questions for a month</p>
+        <p>Price: $0.1</p>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#paymentModal">Subscribe</button>
+    </div>
+
+    <!-- Subscription Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div id="paypal-box">
+                    <div id="paypal-button"></div>
+                </div>
+                <div id="qr-code-box">
+                    <h5>Enter your UID</h5>
+                    <input type="text" id="uid" class="form-control" placeholder="Enter UID" />
+                    <button id="submit-uid" class="btn btn-success mt-2">Submit</button>
+                    <div id="qr-code"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PayPal Button and Script -->
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+<script>
+    // Handle PayPal button
+    var CREATE_PAYMENT_URL  = 'http://127.0.0.1:5000/payment';
+    var EXECUTE_PAYMENT_URL = 'http://127.0.0.1:5000/execute';
+
+    paypal.Button.render({
+        env: 'sandbox', // Or 'production'
+        commit: true,
+        payment: function() {
+            return paypal.request.post(CREATE_PAYMENT_URL).then(function(data) {
+                return data.paymentID;
+            });
+        },
+        onAuthorize: function(data) {
+            return paypal.request.post(EXECUTE_PAYMENT_URL, {
+                paymentID: data.paymentID,
+                payerID:   data.payerID
+            }).then(function(res) {
+                if(res.success) {
+                    alert('Payment Successful!');
+                } else {
+                    alert('Payment Failed!');
+                }
+            });
+        }
+    }, '#paypal-button');
+
+    // Handle UID submission
+    $('#submit-uid').click(function() {
+        var uid = $('#uid').val();
+        var email = "user@example.com";  // Replace with dynamic email (e.g., from session)
+
+        if (uid) {
+            // Generate QR Code for UID
+            var qrCode = new QRCode(document.getElementById("qr-code"), {
+                text: uid,
+                width: 128,
+                height: 128
+            });
+
+            // Submit UID and email to backend
+            $.post('/submit_uid', { email: email, uid: uid }, function(response) {
+                alert(response.message);
+            });
+        } else {
+            alert('Please enter a UID.');
+        }
+    });
+</script>
+
+</body>
+</html>

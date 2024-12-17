@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog</title>
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; color: #343a40; margin: 0; padding: 0; }
+        .containers { width: 80%;padding: 20px;margin-top: 50px; margin-left: 250px;}
+        .blog-post { 
+            background: #fff; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            width: 300px; 
+            height: 350px; 
+            display: inline-block; 
+            vertical-align: top; 
+            box-sizing: border-box; 
+            overflow: hidden; 
+        }
+        .blog-post h2 { 
+            color: #007bff; 
+            margin-top: 0; 
+            font-size: 16px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        .blog-post img { 
+            max-width: 100%; 
+            max-height: 200px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+        }
+        .blog-post p { 
+            color: #6c757d; 
+            font-size: 14px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        .blog-post a { 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .blog-post a:hover { 
+            text-decoration: underline; 
+        }
+        .pagination { 
+            display: none; /* Hide pagination controls since all data is shown on one page */ 
+        }
+
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+        <!-- Logo Image -->
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Sakshatkar Logo" class="logo-img">
+        <!-- Logo Name -->
+        <h1 class="sitename">Sakshatkar</h1>
+    </a>
+    
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+
+          {% if session.get('user_name') %}
+            <li><a href="{{url_for('blog')}}">Blog</a></li>
+          {% endif %}
+
+          <li><a href="{{url_for('about')}}">About</a></li>
+          <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+          <li><a href="{{url_for('contact')}}">Contact</a></li>
+          <!-- Add this CSS in your <style> section or CSS file -->
+                <style>
+
+                  .alert h1 {
+                    font-size: 1.5rem; /* Font size for the heading */
+                    color: #31708f; /* Dark blue text color */
+                    margin-right: 15px; /* Space between heading and icon */
+                }
+                
+                
+                .badge {
+                    background-color: #d9534f;
+                    color: white; /* White text color */
+                    padding: 4px 4px; /* Padding for the badge */
+                    border-radius: .5rem; /* Rounded corners for the badge */
+                    font-weight: bold; /* Bold text */
+                    margin-bottom: -180px;
+                }
+                
+                .position-relative {
+                    position: relative; /* Position relative for positioning child elements */
+                }
+                
+                .position-absolute {
+                    position: absolute; /* Position absolute for badge placement */
+                }
+                </style>
+
+                {% if session.get('user_name') %}
+                    <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                {% endif %}
+
+
+                <!-- Your updated HTML with online indicator -->
+                
+                
+                <style>
+                  /* Apply general styling to the list */
+.menu-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-list .online-indicator {
+  font-size: 24px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Style the link */
+.menu-list .online-indicator a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Adjust the icon size */
+.menu-list .online-indicator a i {
+  font-size: 18px;
+}
+
+/* Add hover effect */
+.menu-list .online-indicator a:hover {
+  color: transparent; /* Change this color as needed */
+  cursor: pointer;
+}
+
+                </style>
+                
+
+
+
+
+                <style>
+
+#userDropdown {
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#userDropdown img
+{
+  margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+  border-radius: 50%;
+}
+
+/* Dropdown Menu Styles */
+#dropdownMenu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  background-color: #222;
+  color: white;
+  list-style: none;
+  padding: 12px 0;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+  z-index: 10;
+  margin-top: 10px;
+  margin-right: 100px;
+}
+
+/* Dropdown Item Styles */
+#dropdownMenu li {
+  padding: 12px 20px;
+  border-bottom: 1px solid #333;
+  transition: background 0.3s ease;
+}
+
+#dropdownMenu li:hover {
+  background-color: #333;
+}
+
+#dropdownMenu li:last-child {
+  border-bottom: none;
+}
+
+
+
+/* Button for Theme Toggle */
+#theme-toggle {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+
+#theme-text{
+  color: white;
+  text-decoration: none;
+  display: flex;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+#theme-icon{
+  font-size:14px;
+}
+/* Hover and Active Styles */
+#dropdownMenu a:hover {
+  color: #aaa;
+}
+
+.dropdown-items{
+  font-size: 12px;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dropdown-item{
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+
+#hero h1 {
+  color: #a7ffeb; /* Light teal color */
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+}
+
+/* Subtitle */
+#hero h2 {
+  color: #ffeb3b; /* Yellow color to pop against dark background */
+  font-size: 2rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Body text */
+#hero p {
+  color: #ffffff; /* White color */
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Button styling */
+#hero .btn {
+  background-color: #ff5722; /* Bright orange for contrast */
+  color: #ffffff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+#hero .btn:hover {
+  background-color: #e64a19; /* Darker orange on hover */
+}
+              </style>
+              
+              {% if session.get('user_name') %}
+                  <li>
+                      <a href="{{ url_for('forum') }}">
+                        <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                      </a>
+                  </li>
+              {% endif %}
+
+              
+              <ul>
+                  {% if session.get('user_name') %}
+                      <li style="list-style: none; font-size: 16px; position: relative;">
+                        <a href="#" id="userDropdown">
+                          {% if session.get('profile_image') %}
+                              <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                          {% else %}
+                              <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                          {% endif %}
+                          <span>{{ session['user_name'] }}</span>
+                          <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                      </a>
+                      
+              
+                          <!-- Dropdown Menu -->
+                          <ul id="dropdownMenu">
+                              <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                  <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                  {% if not session.get('profile_image') %}
+                                    <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                  {% endif %}
+                                  
+                                  <div class="dropdown-items">{{ session['email'] }}</div>
+
+                              </li>
+                              <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                              <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                              <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                              <li>
+                                <a>
+                                  <button id="theme-toggle" onclick="toggleTheme()">
+                                      <i class="fas fa-sun" id="theme-icon"></i>
+                                      <span id="theme-text">Light</span>
+                                  </button>
+                                </a>
+                              </li>
+                          </ul>
+                      </li>
+
+
+              
+                      <!-- Toggle Dropdown Script -->
+                      <script>
+                          document.getElementById('userDropdown').addEventListener('click', function(event) {
+                              event.preventDefault();
+                              const dropdownMenu = document.getElementById('dropdownMenu');
+                              dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                          });
+              
+                          // Hide dropdown when clicking outside
+                          window.addEventListener('click', function(event) {
+                              const dropdownMenu = document.getElementById('dropdownMenu');
+                              if (!event.target.closest('#userDropdown')) {
+                                  dropdownMenu.style.display = 'none';
+                              }
+                          });
+              
+                          // Toggle Theme Function
+                          function toggleTheme() {
+                              const themeIcon = document.getElementById('theme-icon');
+                              const themeText = document.getElementById('theme-text');
+                              if (themeIcon.classList.contains('fa-sun')) {
+                                  themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                  themeText.textContent = 'Dark';
+                              } else {
+                                  themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                  themeText.textContent = 'Light';
+                              }
+                          }
+                      </script>
+                  {% else %}
+                      <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                  {% endif %}
+              </ul>
+
+
+              <ul class="menu-list">
+                {% if session.get('user_name') %}
+                  <li class="online-indicator">
+                    <a href="{{ url_for('user') }}" class="notification-icon">
+                      <div class="alerts alert-infos" role="alert">
+                        <i class="fas fa-bell position-relative">
+                          {% if unread_count > 0 %}
+                            <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                          {% endif %}
+                        </i>
+                      </div>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+              
+
+        <!-- Include Font Awesome in your project -->
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        
+        
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+      <div class="containers">
+        {% for item in data %}
+            <div class="blog-post">
+                <img src="{{ item['Image URL'] }}" alt="{{ item.Title }}">
+                <h2>{{ item.Title }}</h2>
+                <p><strong>Date:</strong> {{ item.Date }}</p>
+                <p><strong>Tag:</strong> {{ item.Tag }}</p>
+                <p>{{ item.Excerpt }}</p>
+                <a href="/blog/article?url={{ item['Read More Link'] }}" target="_blank">Read More</a>
+            </div>
+        {% endfor %}
+    </div>
+    
+
+    <footer id="footer" class="footer dark-background">
+      <div class="container">
+        <h3 class="sitename">Sakshatkar'</h3>
+        <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+        <div class="social-links d-flex justify-content-center">
+          <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+          <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+        <div class="container">
+          <div class="copyright">
+            <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+</body>
+</html>

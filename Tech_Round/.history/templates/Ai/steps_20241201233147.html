@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+
+    <!-- Include Ace Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-QrVZib2cfMdeXKi9UfuGdV7WxUkeUzxQkIpJHoO88hn/HqJkUSYjm7j4mXfi0ZyAhFjqRwsn/s7ZB++oTgMbJg==" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p><strong>Step:</strong> {{ step }}</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter examples and outputs.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide a solution explanation.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Enter test cases including edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate your solution and check time complexity.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h3>{{ step }} - Question: {{ question }}</h3>
+
+            {% if step in responses %}
+                <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+                <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+            {% endif %}
+
+            <form method="POST">
+                {% if step == 'Code' %}
+                    <!-- Ace Editor for Code Input -->
+                    <label for="user_input">Enter your code for this step:</label><br>
+                    <div id="code_editor" style="height: 300px; width: 100%;"></div>
+                    <input type="hidden" name="user_input" id="user_input">
+                {% else %}
+                    <!-- Regular textarea for other steps -->
+                    <label for="user_input">Enter your input for this step:</label><br>
+                    <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea><br><br>
+                {% endif %}
+                
+                <button type="submit">Submit</button>
+            </form>
+
+            <p><strong>Current Step: </strong>{{ step }}</p>
+
+            {% if step != 'Validation' %}
+                <p><strong>Next Step:</strong> {{ next_step }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        {% if step == 'Code' %}
+            // Ace Editor Initialization
+            var editor = ace.edit("code_editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/javascript");
+
+            // Save editor content to hidden input when the form is submitted
+            document.querySelector("form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                var code = editor.getValue();
+                document.getElementById("user_input").value = code; // Set the code in the hidden input field
+
+                // Optionally, you can submit the form via AJAX if needed
+                this.submit(); // Proceed with regular form submission
+            });
+        {% endif %}
+    </script>
+</body>
+</html>

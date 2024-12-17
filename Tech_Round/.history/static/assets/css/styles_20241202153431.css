@@ -1,0 +1,120 @@
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling (Left Section) */
+.sidebar {
+    flex: 0 0 30%; /* Fixed width for sidebar */
+    max-width: 30%;
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #ecdbba;
+    border-bottom: 2px solid #ecdbba;
+    padding-bottom: 10px;
+}
+
+.sidebar p {
+    margin: 10px 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar ul li .icon {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #f39c12;
+}
+
+/* Main Content Styling (Right Section) */
+.content {
+    flex: 1; /* Flexible width for content */
+    padding: 20px;
+    background: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.content h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #34495e;
+}
+
+.content label {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: block;
+    color: #2c3e50;
+}
+
+.content textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    font-size: 16px;
+}
+
+.content button {
+    background: #27ae60;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.content button:hover {
+    background: #2ecc71;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-wrap: wrap;
+    }
+
+    .sidebar {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .content {
+        flex: 1 1 100%;
+    }
+}

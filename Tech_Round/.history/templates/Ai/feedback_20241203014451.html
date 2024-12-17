@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Feedback</title>
+
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Sidebar with Instructions -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Review your progress and feedback:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Examples provided.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Solution explained.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases checked.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Code reviewed.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validation completed.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="content">
+            <h1>Final Feedback Summary</h1>
+            
+            <!-- Feedback Table -->
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Your Input</th>
+                        <th>Feedback</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for step, data in responses.items() %}
+                    <tr>
+                        <td>{{ step }}</td>
+                        <td>{{ data['input'] }}</td>
+                        <td>{% if data['feedback'] | safe %}{{ data['feedback'] | safe }}{% else %}No issues{% endif %}</td>
+                        <td>{{ data['score'] }} / 5</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Total Score -->
+            <p><strong>Total Score:</strong> {{ total_score }} / {{ 5 * responses|length }}</p>
+
+            <!-- Full Feedback Section -->
+            <h2>Full Feedback</h2>
+            <ul class="feedback-summary">
+                {% for step, data in responses.items() %}
+                <li>
+                    <h3>{{ step }}</h3>
+                    <p class="feedback-text">{{ data['feedback'] if data['feedback'] else "No issues with your input." }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Back Button -->
+            <a href="{{ url_for('estcv') }}" class="back-btn">GO BACK!</a>
+        </div>
+    </div>
+
+    <script>
+        // Function to convert **word** to bold and add line breaks
+        document.addEventListener("DOMContentLoaded", function() {
+            const feedbackTextElements = document.querySelectorAll('.feedback-text');
+            
+            feedbackTextElements.forEach(element => {
+                // Replace **word** with <strong>word</strong> and add line breaks
+                let text = element.innerHTML;
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/\n/g, '<br>');
+                element.innerHTML = text;
+            });
+        });
+    </script>
+</body>
+</html>

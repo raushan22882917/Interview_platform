@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        
+        #chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+        
+        #chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            width: 75%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #ff7f50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #ff6347;
+        }
+        
+        #company-name-display {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        #wave-animation {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+        
+        .wave-bar {
+            width: 10px;
+            height: 40px;
+            background: white;
+            border-radius: 5px;
+            animation: wave 1s infinite ease-in-out;
+        }
+        
+        .wave-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .wave-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .wave-bar:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+        
+        .wave-bar:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+        
+        @keyframes wave {
+            0%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(2);
+            }
+        }
+        
+        #timer {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        #video-feed {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            height: 150px;
+            z-index: 1000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        #video-feed video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+
+        #wave-animation{
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 200px;
+            height: 150px;
+            z-index: 1000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Chat Container */
+#chat-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat Box Styling */
+#chat-box {
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Input Container */
+.input-container {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+/* Input Fields */
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #ff7f50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #ff6347;
+}
+
+/* Chat Messages */
+.Bot, .User {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.Bot {
+    justify-content: flex-end;
+    background: #2575fc;
+    color: white;
+    width
+}
+
+.User {
+    justify-content: flex-start;
+    background: #6a11cb;
+    color: white;
+}
+
+/* Icon Styling */
+.Bot::before {
+    content: '\f086'; /* FontAwesome chat icon */
+    font-family: 'FontAwesome';
+    margin-right: 10px;
+}
+
+.User::before {
+    content: '\f007'; /* FontAwesome user icon */
+    font-family: 'FontAwesome';
+    margin-right: 10px;
+}
+
+        
+        
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        
+        <div id="company-name-container" class="input-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()">
+                <i class="fa fa-play"></i> Start Interview
+            </button>
+        </div>
+    
+        <div id="company-name-display" style="display:none;"></div>
+    
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()">
+                <i class="fa fa-paper-plane"></i> Submit
+            </button>
+        </div>
+    </div>
+    
+
+    <div id="timer" style="display: none;">Speak in: 3s</div>
+    <div id="wave-animation">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+    </div>
+
+
+    <div id="video-feed">
+        <video id="video" autoplay></video>
+    </div>
+
+
+
+    <script>
+        let companyName = "";
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at {company_name}?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?",
+            "Describe a challenging situation you faced and how you resolved it.",
+            "What motivates you to perform well at work?",
+            "How do you handle criticism or feedback from your manager?",
+            "Can you share an example of how you worked effectively in a team?",
+            "What is your approach to time management and meeting deadlines?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let formattedQuestions = [];
+
+        // Check if company name is stored in localStorage
+        if (localStorage.getItem("companyName")) {
+            companyName = localStorage.getItem("companyName");
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterview() {
+            companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+
+            // Save company name to localStorage
+            localStorage.setItem("companyName", companyName);
+
+            // Display the company name in the top right corner
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterviewFromStorage(companyName) {
+            // Hide the company name input box and show the company name display
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+
+            // Replace placeholder with company name in questions
+            formattedQuestions = questions.map(question => question.replace("{company_name}", companyName));
+
+            // Display the first question
+            askQuestion();
+            document.getElementById("answer-container").style.display = "block";
+        }
+
+        // Display question and speak it
+        function askQuestion() {
+            if (currentQuestionIndex < formattedQuestions.length) {
+                const question = formattedQuestions[currentQuestionIndex];
+                appendMessage("Bot", question);
+                speakQuestion(question);
+
+                // Automatically start speech recognition after the question is read
+                setTimeout(() => {
+                    startSpeechRecognition();  // Automatically start listening after question
+                }, 2000); // Adjust the timeout if needed
+            }
+        }
+
+        // Append message to the chat box
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        // Speak the question using the Web Speech API
+        function speakQuestion(question) {
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+            speech.onend = function() {
+                console.log("Question read complete.");
+            };
+        }
+
+        // Start the speech recognition
+        function startSpeechRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;  // Stop after recognizing the user's speech
+            recognition.interimResults = true;
+
+            recognition.onresult = function(event) {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("user-answer").value = transcript; // Display the result in the input box
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event);
+            };
+
+            recognition.onend = function() {
+                recognition.stop(); // Stop recognition once it's finished
+            };
+
+            recognition.start();
+        }
+
+
+        
+
+
+        // Submit the answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value.trim();
+            if (userAnswer === "") {
+                alert("Please provide an answer.");
+                return;
+            }
+
+            appendMessage("User", userAnswer);
+
+            // Send the answer to the server
+            fetch('/submit_answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    company_name: companyName,
+                    question_index: currentQuestionIndex,
+                    user_answer: userAnswer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.feedback && data.score) {
+                    appendMessage("Bot", `Feedback: ${data.feedback}`);
+                    appendMessage("Bot", `Score: ${data.score}/5`);
+                } else {
+                    appendMessage("Bot", "Next Question.....");
+                }
+
+                // Increment question index
+                currentQuestionIndex++;
+
+                // Ask the next question
+                if (currentQuestionIndex < formattedQuestions.length) {
+                    setTimeout(askQuestion, 2000);
+                } else {
+                    appendMessage("Bot", "You have completed the interview!");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script>
+        function speakQuestion(question) {
+            const wave = document.getElementById("wave-animation");
+    
+            // Show wave animation
+            wave.style.display = "flex";
+    
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+    
+            speech.onstart = function () {
+                wave.style.display = "flex";
+            };
+    
+            speech.onend = function () {
+                wave.style.display = "none";
+                console.log("Question read complete.");
+            };
+        }
+    </script>
+    <script>
+         // Initialize video feed
+         const videoElement = document.getElementById("video");
+         const constraints = {
+             video: true
+         };
+ 
+         navigator.mediaDevices.getUserMedia(constraints)
+             .then(function(stream) {
+                 videoElement.srcObject = stream;
+             })
+             .catch(function(error) {
+                 console.error("Error accessing webcam:", error);
+             });
+    </script>
+</body>
+</html>

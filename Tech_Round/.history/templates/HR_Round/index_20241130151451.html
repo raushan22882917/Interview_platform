@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Interview Chatbot</h1>
+    <form id="company-form">
+        <label for="company_name">Enter Company Name:</label>
+        <input type="text" id="company_name" name="company_name" required>
+        <button type="submit">Start Interview</button>
+    </form>
+
+    <div id="interview" style="display:none;">
+        <h2 id="question-text"></h2>
+        <textarea id="user-answer" placeholder="Your answer..." required></textarea>
+        <button id="submit-answer">Submit Answer</button>
+        
+        <div id="feedback"></div>
+        <div id="score"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let companyName = '';
+
+        $('#company-form').submit(function(event) {
+            event.preventDefault();
+            companyName = $('#company_name').val();
+
+            $('#company-form').hide();
+            $('#interview').show();
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            $.ajax({
+                url: '/submit_answer',
+                method: 'POST',
+                data: {
+                    company_name: companyName,
+                    question_index: currentQuestion,
+                    user_answer: '' // For now, no answer, just load the question
+                },
+                success: function(response) {
+                    $('#question-text').text(response.question);
+                }
+            });
+        }
+
+        $('#submit-answer').click(function() {
+            const userAnswer = $('#user-answer').val();
+
+            $.ajax({
+                url: '/submit_answer',
+                method: 'POST',
+                data: {
+                    company_name: companyName,
+                    question_index: currentQuestion,
+                    user_answer: userAnswer
+                },
+                success: function(response) {
+                    $('#feedback').text("Feedback: " + response.feedback);
+                    $('#score').text("Score: " + response.score);
+
+                    currentQuestion++;
+
+                    if (currentQuestion < 10) {
+                        loadQuestion();
+                    } else {
+                        $('#interview').html('<h2>Interview Complete!</h2><p>Your total score is: ' + response.total_score + '</p>');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

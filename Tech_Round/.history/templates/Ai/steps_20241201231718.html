@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p><strong>Step:</strong> {{ step }}</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter examples and outputs.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide a solution explanation.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Enter test cases including edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate your solution and check time complexity.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h3>{{ step }} - Question: {{ question }}</h3>
+
+            {% if step in responses %}
+                <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+                <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+            {% endif %}
+
+            <form method="POST">
+                <label for="user_input">Enter your input for this step:</label><br>
+                <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea><br><br>
+                <button type="submit">Submit</button>
+            </form>
+
+            <p><strong>Current Step: </strong>{{ step }}</p>
+
+            {% if step != 'Validation' %}
+                <p><strong>Next Step:</strong> {{ next_step }}</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at our company?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?",
+            "Describe a challenging situation you faced and how you resolved it.",
+            "What motivates you to perform well at work?",
+            "How do you handle criticism or feedback from your manager?",
+            "Can you share an example of how you worked effectively in a team?",
+            "What is your approach to time management and meeting deadlines?"
+        ];
+
+        let currentQuestionIndex = 0;
+
+        // Function to display questions and speak them
+        function askQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+                appendMessage("Bot", question);
+                speakQuestion(question);
+                currentQuestionIndex++;
+            }
+        }
+
+        // Append message to chat
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        // Speak the question using the Web Speech API
+        function speakQuestion(question) {
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Submit answer and send it to the backend
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value;
+            if (userAnswer.trim() === "") {
+                alert("Please provide an answer!");
+                return;
+            }
+
+            fetch('/submit_answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    company_name: "TechCorp",  // You can dynamically get this
+                    question_index: currentQuestionIndex - 1,
+                    user_answer: userAnswer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage("User", userAnswer);
+                appendMessage("Bot", `Feedback: ${data.feedback}`);
+                appendMessage("Bot", `Score: ${data.score}/5`);
+                askQuestion();  // Move to the next question
+                document.getElementById("user-answer").value = ""; // Clear input
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        // Start the interview by asking the first question
+        window.onload = askQuestion;
+    </script>
+</body>
+</html>

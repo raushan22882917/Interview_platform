@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+
+    <style>
+        /* Heading styles */
+        h1 {
+            color: #ff5733; /* Bright orange */
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Slight shadow for depth */
+        }
+    
+        /* Container styles */
+        .containers {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            margin: 100px auto; /* Center the container */
+            padding: 10px;
+            border-radius: 10px;
+        }
+    
+        /* Instructions box styles */
+        #instructions {
+            position: relative;
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+            width: 60%;
+            margin-right: 20px;
+            flex-direction: column;
+            transition: transform 0.2s; /* Smooth transform */
+        }
+    
+        #instructions:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+        }
+    
+        /* Company info box styles */
+        .company-info {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px solid #007bff; /* Blue border */
+            border-radius: 5px;
+            background-color: #e7f3ff; /* Light blue background */
+            width: 35%;
+            transition: border-color 0.3s; /* Transition effect for border */
+        }
+    
+        .company-info:hover {
+            border-color: #0056b3; /* Darker blue on hover */
+        }
+    
+        /* Ordered list styles */
+        ol {
+            margin: 0;
+            padding-left: 20px;
+            line-height: 1.6;
+            color: #444; /* Dark grey for text */
+        }
+    
+        /* Button styles */
+        button {
+            background-color: #ff9800; /* Vibrant orange */
+            color: white;
+            border: none;
+            padding: 10px 15px; /* Increased padding for better button size */
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s; /* Added transform transition */
+            margin: 5px; /* Added margin for better spacing */
+            display: flex; /* Flex to align icon and text */
+            align-items: center; /* Center items vertically */
+        }
+    
+        button:hover {
+            background-color: #e68a00; /* Darker orange on hover */
+            transform: scale(1.05); /* Slight scale effect */
+        }
+    
+        /* Timer button styles */
+        #timerButton {
+            font-size: 20px;
+            background-color: #4caf50; /* Green background */
+            position: absolute; /* Position timer button absolutely within #instructions */
+            top: 20px; /* Distance from the top */
+            right: 20px; /* Distance from the right */
+            padding: 10px 15px; /* Consistent padding */
+            transition: background-color 0.3s; /* Smooth color transition */
+        }
+    
+        #timerButton:hover {
+            background-color: #388e3c; /* Darker green on hover */
+        }
+    
+        /* Editor button styles */
+        #editorButton {
+            background-color: #6c757d; /* Grey background */
+        }
+    
+        #editorButton:hover {
+            background-color: #5a6268; /* Darker grey on hover */
+        }
+    
+        /* Button container styles */
+        .button-container {
+            display: flex; /* Use flexbox for alignment */
+            justify-content: flex-start; /* Align buttons to the start */
+            margin-top: 60px; /* Space above buttons */
+        }
+    
+        /* Form styles */
+        form {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa; /* Light background for form */
+            border: 1px solid #dee2e6; /* Light grey border */
+            transition: background-color 0.3s; /* Transition effect */
+        }
+    
+        form:hover {
+            background-color: #e9ecef; /* Darker grey on hover */
+        }
+    
+        /* Register button styles */
+        .register-button {
+            position: relative; /* Position relative to make it part of the button container */
+            width: auto; /* Auto width for register button */
+            margin: 0; /* Remove margin for absolute positioning */
+            height: 40px;
+            margin-top: 5px;
+        }
+        
+        /* Button icon styles */
+        .button-icon {
+            margin-right: 5px; /* Space between icon and text */
+        }
+    
+        /* Active button styles */
+        #activeButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            height: 40px;
+        }
+    
+        #activeButton:disabled {
+            background-color: gray; /* Grey background when disabled */
+            cursor: not-allowed;
+        }
+    
+        /* Modal styles */
+        #popupModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.7); /* Darker background with opacity */
+        }
+    
+        #popupContent {
+            background-color: #fff; /* White background for popup */
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px; /* Could be more or less, depending on screen size */
+            text-align: center;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Popup shadow */
+        }
+    
+        /* Close button styles */
+        .close {
+            color: #ff5733; /* Close button color */
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    
+        .close:hover,
+        .close:focus {
+            color: #d50000; /* Dark red on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    
+    <script>
+        function updateButton() {
+            const now = new Date();
+            const button = document.getElementById('timerButton');
+            const editorButton = document.getElementById('editorButton');
+
+            const targetHour = 20; // 6 PM
+            const targetMinute = 0; // 0 minutes
+            const targetSecond = 0; // 0 seconds
+
+            // Calculate the target time
+            const targetTime = new Date();
+            targetTime.setHours(targetHour, targetMinute, targetSecond, 0);
+
+            // If it's already past 6 PM, set the target time for the next day
+            if (now >= targetTime) {
+                targetTime.setDate(targetTime.getDate() + 1);
+            }
+
+            // Calculate the time difference in seconds
+            const timeDifference = Math.floor((targetTime - now) / 1000);
+
+            if (timeDifference > 0) {
+                const hours = Math.floor(timeDifference / 3600);
+                const minutes = Math.floor((timeDifference % 3600) / 60);
+                const seconds = timeDifference % 60;
+                button.innerHTML = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            } else {
+                button.innerHTML = 'Timer Ended';
+                editorButton.disabled = false; // Enable the editor button when the timer ends
+            }
+        }
+
+        // Update the button every second
+        setInterval(updateButton, 1000);
+        window.onload = updateButton; // Update on page load
+    </script>
+</head>
+<body>
+
+
+    <div class="containers">
+        <div id="instructions">
+            <div class="inst">
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Please fill out your details accurately.</li>
+                    <li>Ensure that you are registered for the interview.</li>
+                    <li>Keep your company name and details ready.</li>
+                    <li>Follow the instructions provided during the interview.</li>
+                    <li>Make sure you have a stable internet connection.</li>
+                    <li>Join the meeting link at least 5 minutes early.</li>
+                    <li>Have your ID ready for verification.</li>
+                    <li>Be aware of the interview time and date.</li>
+                    <li>Dress appropriately for the interview.</li>
+                    <li>Stay calm and confident during the process.</li>
+                </ol>
+            </div>
+            <div class="button-container">
+                <button class="register-button" id="registerButton">
+                    {% if is_registered %}
+                        <i class="fas fa-check button-icon"></i>Already Registered
+                    {% elif current_time.hour >= 20 %}
+                        <form action="/register_interview" method="POST" style="display: inline;">
+                            <input type="submit" value="Register for Tomorrow" style="border: none; background: none; color: inherit; cursor: pointer; padding: 0;">
+                        </form>
+                        <i class="fas fa-user-plus button-icon"></i>
+                    {% else %}
+                        <form action="/register_interview" method="POST" style="display: inline;">
+                            <input type="submit" value="Register for Interview" style="border: none; background: none; color: inherit; cursor: pointer; padding: 0;">
+                        </form>
+                        <i class="fas fa-user-plus button-icon"></i>
+                    {% endif %}
+                </button>
+                
+                <button id="timerButton" disabled>Loading...</button>
+                <button id="activeButton" disabled>Start Interview</button>
+
+    <!-- The Modal -->
+    <div id="popupModal">
+        <div id="popupContent">
+            <span class="close">&times;</span>
+            <p>Start coding at 9 PM!</p>
+        </div>
+    </div>
+
+    <script>
+        function checkTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const isActive = (hours >= 12 && hours < 23); // Active from 1 AM to 3 AM
+
+
+            const button = document.getElementById('activeButton');
+            button.disabled = !isActive; // Enable or disable the button based on the time
+
+            // Add click event to the button
+            button.onclick = function () {
+                if (isActive) {
+                    window.location.href = '/editor'; // Navigate to /editor if active
+                } else {
+                    showModal(); // Show modal if clicked outside active hours
+                }
+            };
+        }
+
+        function showModal() {
+            const modal = document.getElementById('popupModal');
+            modal.style.display = "block"; // Show the modal
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('popupModal');
+            modal.style.display = "none"; // Hide the modal
+        }
+
+        // Get the <span> element that closes the modal
+        const closeButton = document.getElementsByClassName("close")[0];
+        closeButton.onclick = closeModal; // When the user clicks on <span> (x), close the modal
+
+        // Close the modal when the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('popupModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Check the time when the page loads
+        window.onload = checkTime;
+    </script>
+            </div>
+        </div>
+
+        <div class="company-info">
+            <h2>Company Details</h2>
+            <p><strong>Company Name:</strong> Tech Solutions</p>
+            <p><strong>Interview Time:</strong> 8:00 PM</p>
+            <p><strong>Interview End:</strong> 10:00 PM</p>
+            <p><strong>Company Description:</strong></p>
+            <p><strong>Tech Solutions</strong> is a leading provider of innovative <strong>technology solutions</strong> that empower businesses to achieve their goals. With a strong focus on <strong>software development</strong>, <strong>cloud computing</strong>, and <strong>IT consultancy</strong>, Tech Solutions serves clients across various industries. Our team of experienced professionals is dedicated to delivering tailored solutions that enhance <strong>productivity</strong> and drive <strong>growth</strong>. We pride ourselves on our commitment to <strong>quality</strong> and <strong>customer satisfaction</strong>. Join us as we continue to shape the future of <strong>technology</strong>.</p>
+        </div>
+        
+    </div>
+
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">Sakshatkar'</h3>
+          <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>

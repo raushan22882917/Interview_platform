@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar with Profile and Content</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .sidebar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+        .sidebar .nav-link {
+            color: white;
+            margin: 10px 0;
+            width: 100%;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Profile Image -->
+        {% if profile_image %}
+        <img src="{{ url_for('static', filename='uploads/' ~ profile_image) }}" alt="Profile Image">
+        {% else %}
+        <img src="https://via.placeholder.com/150" alt="Profile Image">
+        {% endif %}
+        
+        <!-- Sidebar Navigation -->
+        <nav class="nav flex-column">
+            <a href="#" class="nav-link" onclick="showContent('education')">
+                <i class="fas fa-graduation-cap me-2"></i>Education
+            </a>
+            <a href="#" class="nav-link" onclick="showContent('tech-round')">
+                <i class="fas fa-cogs me-2"></i>Tech Round
+            </a>
+            <a href="#" class="nav-link" onclick="showContent('code-round')">
+                <i class="fas fa-code me-2"></i>Code Round
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div id="education" class="d-none">
+            <h2>Education</h2>
+            <p>Details about your education will be displayed here.</p>
+        </div>
+        <div id="tech-round" class="d-none">
+            <h2>Tech Round</h2>
+            <p>Details about your tech round performance will be displayed here.</p>
+        </div>
+        <div id="code-round" class="d-none">
+            <h2>Code Round</h2>
+            <p>Details about your code round performance will be displayed here.</p>
+        </div>
+    </div>
+
+    <script>
+        function showContent(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content > div').forEach(div => {
+                div.classList.add('d-none');
+            });
+            // Show the selected section
+            document.getElementById(sectionId).classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>

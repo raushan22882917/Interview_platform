@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Chat container */
+        #chat-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Chat Box */
+        #chat-box {
+            width: 100%;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Input container for company name */
+        .input-container {
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .input-container input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Input container for user answers */
+        #answer-container {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        #answer-container input {
+            width: 65%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        #answer-container button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        #answer-container button:first-of-type {
+            background-color: #ffc107;
+            margin-right: 5px;
+        }
+
+        #answer-container button:first-of-type:hover {
+            background-color: #e0a800;
+        }
+
+        #answer-container button:last-of-type:hover {
+            background-color: #218838;
+        }
+
+        /* Chat bubbles */
+        .User, .Bot {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .User {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+            margin-left: auto;
+            color: #333;
+        }
+
+        .Bot {
+            background-color: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        /* Timer */
+        #timer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #ff9800;
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 500px) {
+            #chat-container {
+                width: 95%;
+            }
+
+            .input-container input, #answer-container input {
+                width: 100%;
+            }
+
+            .input-container button, #answer-container button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="company-name-container" class="input-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()">Start Interview</button>
+        </div>
+        <div id="company-name-display" style="display:none;"></div>
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="startSpeechRecognition()" title="Speak your answer">🎤</button>
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        let companyName = "";
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at {company_name}?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?"
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function startInterview() {
+            companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+
+            askQuestion();
+            document.getElementById("answer-container").style.display = "block";
+        }
+
+        function askQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex].replace("{company_name}", companyName);
+                appendMessage("Bot", question);
+            } else {
+                appendMessage("Bot", "You have completed the interview!");
+            }
+        }
+
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function startSpeechRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("user-answer").value = transcript;
+            };
+
+            recognition.onerror = (event) => {
+                alert("Speech recognition error. Please try again.");
+            };
+
+            recognition.start();
+        }
+
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value.trim();
+            if (!userAnswer) {
+                alert("Please provide an answer.");
+                return;
+            }
+            appendMessage("User", userAnswer);
+            currentQuestionIndex++;
+            setTimeout(askQuestion, 2000);
+        }
+    </script>
+</body>
+</html>

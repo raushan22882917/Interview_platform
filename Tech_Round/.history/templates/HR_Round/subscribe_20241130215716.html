@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe Now</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&components=buttons"></script>
+    <script src="https://cdn.razorpay.com/static/js/razorpay-checkout.js"></script>
+    <style>
+        .card {
+            margin: 20px 0;
+        }
+        .paypal-btn-container, .razorpay-btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Subscribe to Unlock Full Access</h1>
+        <p class="text-center">Choose a subscription plan and unlock all interview questions for the selected duration.</p>
+        
+        <!-- User Email Input -->
+        <div class="form-group">
+            <label for="userEmail">Enter Your Email:</label>
+            <input type="email" id="userEmail" class="form-control" placeholder="Enter your email" required>
+        </div>
+        
+        <!-- Subscription Plans -->
+        <div class="row justify-content-center">
+            <!-- 1 Month Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">1 Month</h5>
+                        <p class="card-text">$0.1</p>
+                        <button class="btn btn-primary" onclick="payNow('1 Month', '0.1', '#paypal-button-1-month')">Pay via PayPal</button>
+                        <div id="paypal-button-1-month" class="paypal-btn-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPI QR Code Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">UPI Payment</h5>
+                        <p class="card-text">Scan this QR code to pay using UPI (Google Pay, PhonePe, etc.)</p>
+                        <img src="your-generated-upi-qr-code-url" alt="UPI QR Code" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bank Transfer Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Bank Transfer</h5>
+                        <p class="card-text">Transfer the amount to the following account:</p>
+                        <p>Account Number: 1234567890</p>
+                        <p>IFSC Code: ABCD1234</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Razorpay Payment -->
+        <div class="razorpay-btn-container" id="razorpay-button-container"></div>
+
+        <!-- Success message -->
+        <div class="alert alert-success" id="success-message">
+            <strong>Success!</strong> Your subscription was successful.
+        </div>
+
+        <!-- Error message -->
+        <div class="alert alert-danger" id="error-message">
+            <strong>Error!</strong> There was an issue with your payment. Please try again.
+        </div>
+    </div>
+
+    <script>
+        // PayPal integration (same as before)
+        function payNow(duration, amount, containerId) {
+            var userEmail = document.getElementById('userEmail').value;
+            if (!userEmail) {
+                alert('Please enter your email address before proceeding.');
+                return;
+            }
+
+            renderPayPalButton(duration, amount, containerId, userEmail);
+        }
+
+        function renderPayPalButton(duration, amount, containerId, userEmail) {
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amount
+                            },
+                            description: duration + " subscription"
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        document.getElementById('success-message').style.display = 'block';
+                        document.getElementById('error-message').style.display = 'none';
+                        window.location.href = '/process_subscription?duration=' + encodeURIComponent(duration) + '&email=' + encodeURIComponent(userEmail);
+                    });
+                },
+                onError: function(err) {
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('success-message').style.display = 'none';
+                }
+            }).render(containerId);
+        }
+
+        // Razorpay integration
+        function createRazorpayPayment(amount) {
+            var userEmail = document.getElementById('userEmail').value;
+            if (!userEmail) {
+                alert('Please enter your email address before proceeding.');
+                return;
+            }
+
+            var options = {
+                "key": "YOUR_RAZORPAY_KEY", // Your Razorpay key
+                "amount": amount * 100, // Amount in smallest currency unit
+                "currency": "USD",
+                "name": "Your Company Name",
+                "description": "Subscription Payment",
+                "handler": function(response) {
+                    // Handle successful payment
+                    alert("Payment successful!");
+                    window.location.href = '/process_subscription?duration=1 Month&email=' + encodeURIComponent(userEmail);
+                },
+                "prefill": {
+                    "email": userEmail
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+        // Function to trigger Razorpay payment when the button is clicked
+        document.getElementById('razorpay-button-container').innerHTML = `
+            <button class="btn btn-primary" onclick="createRazorpayPayment(0.1)">Pay via Razorpay</button>
+        `;
+    </script>
+</body>
+</html>

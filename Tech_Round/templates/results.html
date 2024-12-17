@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #3c3c3c;
+        }
+        #results {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .result {
+            margin: 10px 0;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .summary {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Evaluation Results</h1>
+    <div id="results">
+        {% if results %}
+            {% for result in results %}
+                <div class="result {% if result.is_correct %}correct{% else %}incorrect{% endif %}">
+                    <strong>Output:</strong> {{ result.output }}
+                </div>
+            {% endfor %}
+            <div class="summary">
+                {% if all_passed %}
+                    All test cases passed! ✅
+                {% else %}
+                    Not all test cases passed. ❌
+                    <br>Passed {{ passed_count }} out of {{ results|length }} test cases.
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No results to display.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

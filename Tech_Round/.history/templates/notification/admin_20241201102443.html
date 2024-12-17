@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            height: 100%;
+            width: 250px;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar a {
+            color: #ddd;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+            color: white;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card {
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .card-body {
+            background-color: #f1f3f5;
+        }
+        .btn-custom {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+        .notification-box, .payment-box {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .login-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .login-btn i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2 class="text-center text-white">Admin Panel</h2>
+        <a href="javascript:void(0);" id="notificationsLink"><i class="fas fa-bell"></i> Notifications</a>
+        <a href="javascript:void(0);" id="paymentLink"><i class="fas fa-credit-card"></i> Payments</a>
+    </div>
+
+    <div class="main-content">
+        <div id="notifications" class="notification-box active">
+            <div class="header">
+                <h3>Send Notification</h3>
+            </div>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="notification">Notification Content</label>
+                    <textarea class="form-control" id="notification" name="notification" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom">Send Notification</button>
+            </form>
+        </div>
+
+        <div id="payment" class="payment-box">
+            <div class="header">
+                <h3>Payment Information</h3>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Payment #1
+                </div>
+                <div class="card-body">
+                    <p><strong>Amount:</strong> $200</p>
+                    <p><strong>Status:</strong> Completed</p>
+                    <p><strong>Payment Date:</strong> 2024-12-01</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Payment #2
+                </div>
+                <div class="card-body">
+                    <p><strong>Amount:</strong> $150</p>
+                    <p><strong>Status:</strong> Pending</p>
+                    <p><strong>Payment Date:</strong> 2024-12-02</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<a href="{{url}}"></a>
+    <button class="login-btn">
+        <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+
+    <script>
+        // Toggle between Notifications and Payments
+        document.getElementById('notificationsLink').addEventListener('click', function() {
+            document.getElementById('notifications').classList.add('active');
+            document.getElementById('payment').classList.remove('active');
+        });
+
+        document.getElementById('paymentLink').addEventListener('click', function() {
+            document.getElementById('payment').classList.add('active');
+            document.getElementById('notifications').classList.remove('active');
+        });
+    </script>
+</body>
+</html>

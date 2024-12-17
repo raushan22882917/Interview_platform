@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+</head>
+<body>
+    <div class="containers">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p><strong>Step:</strong> {{ step }}</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter examples and outputs.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide a solution explanation.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Enter test cases including edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate your solution and check time complexity.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="contents">
+            <div style="display: flex; align-items: center; gap: 10px; width: 600px;">
+                <i class="fas fa-question-circle" style="font-size: 1.5rem; color: #333;"></i>
+                <h3 style="margin: 0; font-size: 1.5rem; flex: 1;">{{ question }}</h3>
+            </div>
+            <hr style="margin-top: 10px; border: 1px solid #333; width: 600px;">
+
+            {% if step in responses %}
+                <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+                <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+            {% endif %}
+
+            <form method="POST">
+                {% if step == 'Code' %}
+                    <label for="language_select">Select Language:</label>
+                    <select id="language_select" name="language">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                    </select><br><br>
+
+                    <label for="user_input">Enter your code for this step:</label><br>
+                    <div id="code_editor" style="height: 400px; width: 100%; border: 1px solid #ccc;"></div>
+                    <input type="hidden" name="user_input" id="user_input">
+                {% else %}
+                    <label for="user_input">Enter your input for this step:</label><br>
+                    <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea><br><br>
+                {% endif %}
+                
+                <button type="submit" class="submit-btn-start">Submit</button>
+            </form>
+
+            <p><strong>Current Step: </strong>{{ step }}</p>
+        </div>
+    </div>
+
+    <script>
+        if ("{{ step }}" === "Code") {
+            require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/vs' } });
+            require(['vs/editor/editor.main'], function () {
+                var editor = monaco.editor.create(document.getElementById('code_editor'), {
+                    value: '',
+                    language: 'javascript', // Default language
+                    theme: 'vs-dark', // Dark theme
+                    lineNumbers: 'on', // Show line numbers
+                    automaticLayout: true, // Adjust layout automatically
+                    fontSize: 14, // Font size
+                    minimap: { enabled: false }, // Hide minimap
+                    scrollBeyondLastLine: false // Prevent extra scrolling
+                });
+
+                // Change language dynamically
+                document.getElementById('language_select').addEventListener('change', function () {
+                    var selectedLanguage = this.value;
+                    monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage);
+                });
+
+                // Save code to hidden input before submission
+                document.querySelector("form").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    var code = editor.getValue();
+                    document.getElementById("user_input").value = code;
+                    this.submit();
+                });
+            });
+        }
+    </script>
+</body>
+</html>

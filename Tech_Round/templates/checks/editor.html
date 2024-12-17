@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Book a Slot</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='editor.css') }}" rel="stylesheet">
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top" style="background-color:#444444">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+      <a href="{{url_for('index')}}" class="logo d-flex align-items-center">
+        <h1 class="sitename">Sakshatkar'</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul  style="height: 40px; width: 40px;">
+            <li><a href="#hero"><i class="fas fa-user"></i></a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main" style="margin-top:5rem">
+    <section id="hero">
+    <div class="container mt-4" style="margin-top:100px;">
+        <div class="row">
+            <!-- Left Column: Question Details and Video Recording Controls -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Question Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Title:</strong> {{ question.title }}</p>
+                        <p><strong>Description:</strong> {{ question.description }}</p>
+                        <h6>Example Test Cases:</h6>
+                        <table class="test-case-table">
+                            <thead>
+                                <tr>
+                                    <th>Input</th>
+                                    <th>Expected Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for test_case in question.test_cases %}
+                                <tr>
+                                    <td>{{ test_case.input }}</td>
+                                    <td>{{ test_case.expected_output }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="container">
+                            <video id="webcamPreview" autoplay muted></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Editor -->
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="language-select" class="form-label">Choose Language</label>
+                    <select id="language-select" class="form-select">
+                        <option value="python" {% if question.language == 'python' %}selected{% endif %}>Python</option>
+                        <option value="java" {% if question.language == 'java' %}selected{% endif %}>Java</option>
+                        <option value="c++" {% if question.language == 'c++' %}selected{% endif %}>C++</option>
+                        <option value="c" {% if question.language == 'c' %}selected{% endif %}>C</option>
+                    </select>
+                </div>
+                
+                <div id="editor"></div>
+                <button id="run" class="btn btn-primary mt-3">Run Code</button>
+                
+                <div id="results" class="mt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Test Case</th>
+                                <th>Correct</th>
+                                <th>Wrong</th>
+                                <th>Expected</th>
+                                <th>Output</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <!-- Results will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="congratulations" class="congratulations" style="display:none;">Congratulations! All test cases passed!</div>
+                <div id="error" class="error-message" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="questionModalLabel">{{ question.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Description</h6>
+                    <p>{{ question.description }}</p>
+                    <h6>Example Test Cases</h6>
+                    <ul>
+                        {% for test_case in question.test_cases %}
+                        <li>
+                            Input: {{ test_case.input }}<br>
+                            Expected Output: {{ test_case.expected_output }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="chatbot-container">
+        <div id="chatbot-header">
+            <i class="fas fa-robot"></i> Chatbot
+            <button id="chatbot-close" class="close-btn">&times;</button>
+        </div>
+        <div id="chatbot-messages">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div id="chatbot-input">
+            <input type="text" id="chatbot-text" placeholder="Type a message...">
+            <button id="chatbot-send">Send</button>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Icon -->
+    <div id="chatbot-icon" class="fab-icon">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <script>
+
+    </script>
+    
+</section>
+</main>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-skype"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+        <div class="credits">
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <!-- Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            let editor = monaco.editor.create(document.getElementById('editor'), {
+                value: `print("Hello World")`,
+                language: '{{ question.language }}',
+                theme: 'vs-dark'
+            });
+
+            document.getElementById('language-select').addEventListener('change', function() {
+                let selectedLanguage = this.value;
+                editor.getModel().updateOptions({ language: selectedLanguage });
+                editor.setValue(getTemplate(selectedLanguage));
+            });
+
+            document.getElementById('run').addEventListener('click', function() {
+                let code = editor.getValue();
+                let questionId = {{ question.id }};
+                let language = document.getElementById('language-select').value;
+
+                fetch('/run_code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        question_id: questionId,
+                        language: language
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById('results-body');
+                    let errorContainer = document.getElementById('error');
+                    resultsContainer.innerHTML = '';
+                    errorContainer.style.display = 'none';
+                    let allPassed = true;
+
+                    data.results.forEach(result => {
+                        let row = document.createElement('tr');
+
+                        let testCaseCell = document.createElement('td');
+                        testCaseCell.textContent = `Test Case ${result.test_case}`;
+                        row.appendChild(testCaseCell);
+
+                        let correctCell = document.createElement('td');
+                        let expectedOutput = String(result.expected_output || '').trim().toLowerCase();
+                        let actualOutput = String(result.result || '').trim().toLowerCase();
+                        let isPassed = expectedOutput === actualOutput;
+                        correctCell.textContent = isPassed ? '✔️' : '❌';
+                        correctCell.className = isPassed ? 'text-success' : 'text-danger';
+                        row.appendChild(correctCell);
+
+                        let wrongCell = document.createElement('td');
+                        wrongCell.textContent = !isPassed ? '❌' : '✔️';
+                        wrongCell.className = !isPassed ? 'text-danger' : 'text-success';
+                        row.appendChild(wrongCell);
+
+                        let expectedCell = document.createElement('td');
+                        expectedCell.textContent = result.expected_output || 'N/A';
+                        row.appendChild(expectedCell);
+
+                        let outputCell = document.createElement('td');
+                        outputCell.textContent = result.result || 'N/A';
+                        row.appendChild(outputCell);
+
+                        resultsContainer.appendChild(row);
+
+                        if (!isPassed) {
+                            allPassed = false;
+                        }
+                    });
+
+                    document.getElementById('congratulations').style.display = allPassed ? 'block' : 'none';
+
+                    if (data.result && data.result !== "Question not found") {
+                        errorContainer.textContent = data.result;
+                        errorContainer.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    let errorContainer = document.getElementById('error');
+                    errorContainer.textContent = `Error: ${error.message}`;
+                    errorContainer.style.display = 'block';
+                });
+            });
+
+            
+        });
+    });
+</script>
+
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='editor.js') }}"></script>
+</body>
+</html>

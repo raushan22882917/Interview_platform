@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Sakshatkar'</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+<style>
+  .interview-box {
+    position: absolute;
+    top: 60px;
+    left: 60%;
+    transform: translateX(-50%);
+    padding: 15px;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.interview-box a {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.carousel-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.carousel-container h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #ff6f61;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-container h2 span {
+  color: #2ec4b6;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-container p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+  color: #ebeff4;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.carousel-container p::first-letter {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ff6f61;
+}
+
+.btn-get-started {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+  color: #fff;
+  background-color: #ff6f61;
+  padding: 10px 25px;
+  border-radius: 30px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.btn-get-started:hover {
+  background-color: #2ec4b6;
+  color: #fff;
+}
+
+.animate__animated.animate__fadeInDown {
+  animation-duration: 1s;
+}
+
+.animate__animated.animate__fadeInUp {
+  animation-duration: 1.2s;
+}
+
+.round{
+  width: 100px;
+  height: 40px;
+  border:2px solid black;
+}
+
+li {
+  list-style: none;
+  font-size: 18px;
+}
+.pro{
+  background-color:red;
+  border-radius:20px;
+}
+li a {
+  text-decoration: none;
+  color: #007bff;
+}
+li a:hover {
+  color: #0056b3;
+}
+
+
+
+.faq-category {
+  margin-bottom: 30px;
+}
+
+.faq-item {
+  margin: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+  position: relative; /* Added for icon positioning */
+}
+
+.question {
+  cursor: pointer;
+  color: #007BFF;
+  font-size: 1.2em;
+  transition: color 0.2s;
+  padding-left: 30px; /* Add space for the icon */
+}
+
+.question:hover {
+  color: #0056b3;
+}
+
+.answer {
+  display: none;
+  margin-top: 10px;
+  font-size: 1em;
+  color: #555;
+}
+
+.icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.2em;
+  color: #007BFF;
+}
+
+.toggle-icon {
+  position: absolute;
+  left: -25px;
+  top: 0;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: #007BFF;
+}
+
+#recent-posts {
+  padding: 20px;
+  color: #2c3e50; /* Dark Blue-Grey Text */
+  background-color: #f5f7fa; /* Light Grey Background */
+  height: 450px;
+}
+
+h5 {
+  color: #e74c3c; /* Bright Red for headers */
+}
+
+.contact-map-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-left: 100px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.contact-info {
+  flex: 1;
+  margin-right: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  color: black; /* White text */
+}
+
+.map-container {
+  flex: 2;
+  max-width: 100%;
+  padding: 15px;
+  border-radius: 20px;
+  margin-left: 200px;
+  height: 350px;
+  color: #fff;
+}
+
+h3 {
+  color: #f39c12; /* Bright Orange Header Text */
+}
+
+.newsletter-container {
+  margin-top: 30px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  color: #fff;
+}
+
+.newsletter-container input[type="email"] {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+  color: #fff; /* White text */
+}
+
+.newsletter-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #e67e22; /* Orange Button */
+  color: white;
+  cursor: pointer;
+}
+
+.map-container {
+  margin: 20px 0;
+  text-align: center;
+  margin-bottom: 400px;
+}
+
+.map-iframe {
+  border: 4px solid #9b59b6; /* Purple Border */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin-bottom: 100px;
+  transition: transform 0.3s;
+}
+
+.map-iframe:hover {
+  transform: scale(1.05); /* Increase scale on hover for a more pronounced effect */
+}
+
+
+
+
+body {
+  background-color: white;
+  color: black;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+
+nav ul li a {
+  color: black;
+}
+
+/* Apply dark mode to links when dark-mode is active */
+body.dark-mode nav ul li a {
+  color: white;
+}
+
+/* Additional styles */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 20px;
+}
+
+
+
+</style>
+
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+        <!-- Logo Image -->
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Sakshatkar Logo" class="logo-img">
+        <!-- Logo Name -->
+        <h1 class="sitename">Sakshatkar</h1>
+    </a>
+    
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+
+          {% if session.get('user_name') %}
+            <li><a href="{{url_for('blog')}}">Blog</a></li>
+          {% endif %}
+
+          <li><a href="{{url_for('about')}}">About</a></li>
+          <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+          <li><a href="{{url_for('contact')}}">Contact</a></li>
+          <!-- Add this CSS in your <style> section or CSS file -->
+                <style>
+
+                  .alert h1 {
+                    font-size: 1.5rem; /* Font size for the heading */
+                    color: #31708f; /* Dark blue text color */
+                    margin-right: 15px; /* Space between heading and icon */
+                }
+                
+                
+                .badge {
+                    background-color: #d9534f;
+                    color: white; /* White text color */
+                    padding: 4px 4px; /* Padding for the badge */
+                    border-radius: .5rem; /* Rounded corners for the badge */
+                    font-weight: bold; /* Bold text */
+                    margin-bottom: -180px;
+                }
+                
+                .position-relative {
+                    position: relative; /* Position relative for positioning child elements */
+                }
+                
+                .position-absolute {
+                    position: absolute; /* Position absolute for badge placement */
+                }
+                </style>
+
+                {% if session.get('user_name') %}
+                    <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                {% endif %}
+
+
+                <!-- Your updated HTML with online indicator -->
+                
+                
+                <style>
+                  /* Apply general styling to the list */
+.menu-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-list .online-indicator {
+  font-size: 24px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Style the link */
+.menu-list .online-indicator a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Adjust the icon size */
+.menu-list .online-indicator a i {
+  font-size: 18px;
+}
+
+/* Add hover effect */
+.menu-list .online-indicator a:hover {
+  color: transparent; /* Change this color as needed */
+  cursor: pointer;
+}
+
+                </style>
+                
+
+
+
+
+                <style>
+
+#userDropdown {
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#userDropdown img
+{
+  margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+  border-radius: 50%;
+}
+
+/* Dropdown Menu Styles */
+#dropdownMenu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  background-color: #222;
+  color: white;
+  list-style: none;
+  padding: 12px 0;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+  z-index: 10;
+  margin-top: 10px;
+  margin-right: 100px;
+}
+
+/* Dropdown Item Styles */
+#dropdownMenu li {
+  padding: 12px 20px;
+  border-bottom: 1px solid #333;
+  transition: background 0.3s ease;
+}
+
+#dropdownMenu li:hover {
+  background-color: #333;
+}
+
+#dropdownMenu li:last-child {
+  border-bottom: none;
+}
+
+
+
+/* Button for Theme Toggle */
+#theme-toggle {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+
+#theme-text{
+  color: white;
+  text-decoration: none;
+  display: flex;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+#theme-icon{
+  font-size:14px;
+}
+/* Hover and Active Styles */
+#dropdownMenu a:hover {
+  color: #aaa;
+}
+
+.dropdown-items{
+  font-size: 12px;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dropdown-item{
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+
+#hero h1 {
+  color: #a7ffeb; /* Light teal color */
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+}
+
+/* Subtitle */
+#hero h2 {
+  color: #ffeb3b; /* Yellow color to pop against dark background */
+  font-size: 2rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Body text */
+#hero p {
+  color: #ffffff; /* White color */
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Button styling */
+#hero .btn {
+  background-color: #ff5722; /* Bright orange for contrast */
+  color: #ffffff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+#hero .btn:hover {
+  background-color: #e64a19; /* Darker orange on hover */
+}
+              </style>
+              
+              {% if session.get('user_name') %}
+                  <li>
+                      <a href="{{ url_for('forum') }}">
+                        <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                      </a>
+                  </li>
+              {% endif %}
+
+              
+              <ul>
+                  {% if session.get('user_name') %}
+                      <li style="list-style: none; font-size: 16px; position: relative;">
+                        <a href="#" id="userDropdown">
+                          {% if session.get('profile_image') %}
+                              <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                          {% else %}
+                              <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                          {% endif %}
+                          <span>{{ session['user_name'] }}</span>
+                          <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                      </a>
+                      
+              
+                          <!-- Dropdown Menu -->
+                          <ul id="dropdownMenu">
+                              <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                  <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                  {% if not session.get('profile_image') %}
+                                    <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                  {% endif %}
+                                  
+                                  <div class="dropdown-items">{{ session['email'] }}</div>
+
+                              </li>
+                              <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                              <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                              <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                              <li>
+                                <a>
+                                  <button id="theme-toggle" onclick="toggleTheme()">
+                                      <i class="fas fa-sun" id="theme-icon"></i>
+                                      <span id="theme-text">Light</span>
+                                  </button>
+                                </a>
+                              </li>
+                          </ul>
+                      </li>
+
+
+              
+                      <!-- Toggle Dropdown Script -->
+                      <script>
+                          document.getElementById('userDropdown').addEventListener('click', function(event) {
+                              event.preventDefault();
+                              const dropdownMenu = document.getElementById('dropdownMenu');
+                              dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                          });
+              
+                          // Hide dropdown when clicking outside
+                          window.addEventListener('click', function(event) {
+                              const dropdownMenu = document.getElementById('dropdownMenu');
+                              if (!event.target.closest('#userDropdown')) {
+                                  dropdownMenu.style.display = 'none';
+                              }
+                          });
+              
+                          // Toggle Theme Function
+                          function toggleTheme() {
+                              const themeIcon = document.getElementById('theme-icon');
+                              const themeText = document.getElementById('theme-text');
+                              if (themeIcon.classList.contains('fa-sun')) {
+                                  themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                  themeText.textContent = 'Dark';
+                              } else {
+                                  themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                  themeText.textContent = 'Light';
+                              }
+                          }
+                      </script>
+                  {% else %}
+                      <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                  {% endif %}
+              </ul>
+
+
+              <ul class="menu-list">
+                {% if session.get('user_name') %}
+                  <li class="online-indicator">
+                    <a href="{{ url_for('user') }}" class="notification-icon">
+                      <div class="alerts alert-infos" role="alert">
+                        <i class="fas fa-bell position-relative">
+                          {% if unread_count > 0 %}
+                            <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                          {% endif %}
+                        </i>
+                      </div>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+              
+
+        <!-- Include Font Awesome in your project -->
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        
+        
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background" >
+      <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel" >
+        <div class="carousel-item active" >
+          <div class="carousel-container">
+            <h2 class="animate__animated animate__fadeInDown">Sakshatkar' <br><span>Where AI Prepares You for Success</span></h2>
+            <p class="animate__animated animate__fadeInUp">
+                At Sakshatkar', experience the future of interview preparation with AI-driven mock interviews, real-world challenges, and personalized insights to ensure you ace your technical interviews.
+            </p>
+            
+              <a href="{{url_for('about')}}" class="btn-get-started animate__animated animate__fadeInUp scrollto">Learn More</a>
+          </div>
+      </div>
+      
+        
+
+       
+
+      </div>
+
+      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <defs>
+          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+          <use xlink:href="#wave-path" x="50" y="3"></use>
+        </g>
+        <g class="wave2">
+          <use xlink:href="#wave-path" x="50" y="0"></use>
+        </g>
+        <g class="wave3">
+          <use xlink:href="#wave-path" x="50" y="9"></use>
+        </g>
+      </svg>
+
+    </section><!-- /Hero Section -->
+
+    <section id="services" class="services section py-5 bg-light">
+
+      <!-- Section Title -->
+      <div class="container section-title text-center mb-5" data-aos="fade-up">
+        <h2 class="display-4 font-weight-bold text-primary">Our Services</h2>
+        <p class="lead text-muted">Discover how we can help elevate your career.</p>
+      </div>
+
+      <div class="container_data">
+        <div class="card">
+            <img src="{{ url_for('static', filename='assets/img/interview/hr_round.jpeg') }}" alt="HR Round">
+
+            <div class="card-content">
+                <h2>HR Round</h2>
+                <p>Get ready for a conversation about your personality, culture fit, and values.</p>
+                <a href="{{url_for('Hr_home')}}">
+                <button class="start-btn">Start</button></a>
+            </div>
+        </div>
+
+        <!-- Technical Round Card -->
+        <div class="card">
+          <img src="{{ url_for('static', filename='assets/img/interview/tech_round.png') }}" alt="HR Round">
+          
+          <!-- User count displayed in the top-right corner -->
+      
+          <div class="card-content">
+              <h2>Technical Round</h2>
+              <p>Demonstrate your problem-solving and technical skills in this round.</p>
+              <a href="{{ url_for('Tech_round') }}">
+              <button class="start-btn">Start</button>
+              </a>
+          </div>
+      </div>
+
+        <!-- Coding Round Card -->
+        <div class="card">
+            <img src="{{ url_for('static', filename='assets/img/interview/coding.jpeg') }}" alt="HR Round">
+            <div class="card-content">
+                <h2>Coding Round</h2>
+                <p>Show your coding abilities with real-world problems and challenges.</p>
+                <a href="{{url_for('interview')}}"><button class="start-btn">Start</button></a>
+                
+            </div>
+        </div>
+
+
+        
+    </div>
+    <style>
+
+
+      .user-count {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        font-size: 20px;
+        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background for visibility */
+        padding: 5px;
+        border-radius: 5px;
+    }
+      .container_data {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 40px 0;
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin: 20px;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card-content h2 {
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    .card-content p {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        font-size: 40px;
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    /* Icons for different rounds */
+    .hr-icon {
+        color: #FF6347;
+    }
+
+    .tech-icon {
+        color: #1E90FF;
+    }
+
+    .code-icon {
+        color: #FFD700;
+    }
+
+    .start-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .start-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+    
+    </section><!-- /Services Section -->
+    
+    <!-- Add the following CSS for improved design -->
+    <style>
+      .section-title h2 {
+        color: #007bff;
+        font-size: 2.5rem;
+      }
+      .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+      .card-title {
+        color: #333;
+        font-size: 1.25rem;
+      }
+      .card-text {
+        font-size: 1rem;
+        color: #777;
+      }
+      .btn-outline-primary {
+        border: 2px solid #007bff;
+        color: #007bff;
+      }
+      .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: white;
+      }
+    </style>
+    
+  <section class="post">
+      <div class="containers">
+        <div class="left-box">
+            <div class="impact-text">
+                <h2>"Our Impact So Far"</h2>
+                <p>Letting the numbers talk!</p>
+            </div>
+        </div>
+        <div class="honeycomb">
+            <!-- Main Hexagon Row 1 -->
+            <div class="hex-row">
+                <div class="hex">
+                    <div class="hex-content">
+                        <p>500+</p>
+                        <p>HR Questions</p>
+                    </div>
+                    <!-- Small hexagons around the large one -->
+                    <div class="hex small small-hex-top-left"></div>
+                    <div class="hex small small-hex-top-right"></div>
+                </div>
+                <div class="hex">
+                    <div class="hex-content">
+                        <p>500+</p>
+                        <p>Tech Question</p>
+                    </div>
+                </div>
+                
+                <div class="hex">
+                    <div class="hex-content">
+                        <p style="font-size:20px;">{{ total_users }}+</p>
+                        <p>Users</p>
+                    </div>
+                    <div class="hex small small-hex-top-right"></div>
+                    <div class="hex small small-hex-bottom-left"></div>
+                </div>
+            </div>
+            <!-- Main Hexagon Row 2 -->
+            <div class="hex-row">
+                <div class="hex">
+                    <div class="hex-content">
+                        <p>Daily 5</p>
+                        <p>Coding Questions</p>
+                    </div>
+                    <div class="hex small small-hex-bottom-left"></div>
+                    <div class="hex small small-hex-bottom-right"></div>
+                </div>
+                <div class="hex">
+                    <div class="hex-content">
+                        <p>24x7</p>
+                        <p>Assessment</p>
+                    </div>
+                    <div class="hex small small-hex-top-left"></div>
+                    <div class="hex small small-hex-top-right"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+    <style>
+
+      .post{
+        background-image: url('/static/assets/img/back/total.jpeg');
+        background-size: cover; /* Adjust to cover the entire section */
+        background-position: center;
+        height: 500px;
+      }
+      .containers {
+        display: flex;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        
+        padding: 50px;
+        color: black;
+    }
+
+    .left-box {
+        flex: 1;
+        text-align: left;
+        padding-right: 20px;
+    }
+
+    .left-box h2 {
+        font-size: 3em;
+        margin: 0;
+        font-weight: bold;
+        color: black;
+    }
+
+    .left-box p {
+        font-size: 1.5em;
+        margin-top: 10px;
+    }
+
+    .honeycomb {
+        flex: 1.5;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    .hex-row {
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    .hex {
+        width: 160px;
+        height: 180px;
+        background-color: #0098db;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 5px;
+        position: relative;
+    }
+
+    .hex-content {
+        color: white;
+    }
+
+    .hex.small {
+        width: 80px;
+        height: 90px;
+        position: absolute;
+        background-color: #005caa;
+    }
+
+    .hex-row:nth-child(2) .hex.small {
+        background-color: #00d2e8;
+    }
+
+    /* Small hexagon positioning */
+    .small-hex-top-left {
+        top: -50px;
+        left: -60px;
+    }
+
+    .small-hex-top-right {
+        top: -50px;
+        right: -60px;
+    }
+
+    .small-hex-bottom-left {
+        bottom: -50px;
+        left: -60px;
+    }
+
+    .small-hex-bottom-right {
+        bottom: -50px;
+        right: -60px;
+    }
+
+    .hex:nth-child(2) {
+        background-color: #00d2e8;
+    }
+
+    .hex:nth-child(3) {
+        background-color: #00a89e;
+    }
+
+    .hex:nth-child(4) {
+        background-color: #003b8d;
+    }
+
+    .hex:nth-child(5) {
+        background-color: #005caa;
+    }
+
+    /* Stagger the rows */
+    .hex-row:nth-child(odd) {
+        margin-left: 80px;
+    }
+
+    /* Responsive layout */
+    @media screen and (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .honeycomb {
+            flex-direction: column;
+        }
+
+        .hex-row {
+            margin-left: 0;
+        }
+
+        .left-box {
+            padding-right: 0;
+        }
+
+        .hex.small {
+            display: none; /* Hide smaller hexagons on smaller screens for simplicity */
+        }
+    }
+</style>
+
+    
+
+
+    <section id="faq" class="faq-section py-5">
+      <div class="container d-flex flex-column align-items-start">
+        <div class="faq-container d-flex">
+          <div class="faq-text me-5">
+          <h1>FAQ</h1>
+
+            <p>Explore our frequently asked questions to help you better understand our processes and services.</p>
+            <button class="btn btn-primary" id="view-all-faq">View All FAQ</button>
+          </div>
+          
+          <div class="faq-category">
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">What types of questions are asked in the HR round?</h3>
+              <p class="answer">The HR round typically includes questions about your background, strengths and weaknesses, and your motivation for applying to the company.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">How should I prepare for the HR interview?</h3>
+              <p class="answer">Research the company culture, practice common HR questions, and prepare to discuss your resume in detail.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">What is the purpose of the HR round?</h3>
+              <p class="answer">The HR round assesses your fit within the company's culture and evaluates your soft skills and communication abilities.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">How long does the HR interview last?</h3>
+              <p class="answer">HR interviews usually last between 30 to 60 minutes, depending on the company and the number of questions asked.</p>
+            </div>
+          </div>
+    
+          <div class="faq-category">
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">What topics should I focus on for the tech round?</h3>
+              <p class="answer">Focus on your core programming languages, algorithms, data structures, and system design concepts relevant to the job description.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">Are coding challenges part of the tech interview?</h3>
+              <p class="answer">Yes, many tech interviews include coding challenges to assess your problem-solving and coding skills.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">How can I improve my chances of success in the tech round?</h3>
+              <p class="answer">Practice coding problems on platforms like LeetCode or HackerRank, and participate in mock interviews to enhance your skills.</p>
+            </div>
+            <div class="faq-item">
+              <i class="toggle-icon fas fa-plus"></i>
+              <h3 class="question">What is the format of the technical interview?</h3>
+              <p class="answer">The format may include live coding sessions, whiteboard challenges, or take-home assignments, depending on the company.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <script>
+        document.querySelectorAll('.faq-item').forEach(item => {
+          const question = item.querySelector('.question');
+          const toggleIcon = item.querySelector('.toggle-icon');
+          const answer = item.querySelector('.answer');
+    
+          question.addEventListener('click', () => {
+            const isExpanded = answer.style.display === 'block';
+            answer.style.display = isExpanded ? 'none' : 'block';
+            toggleIcon.classList.toggle('fa-plus', isExpanded);
+            toggleIcon.classList.toggle('fa-times', !isExpanded);
+          });
+        });
+      </script>
+    </section>
+    
+    <style>
+      .faq-section {
+        background-size: cover; /* Adjust to cover the entire section */
+        background-position: center; /* Center the image */
+        color: black; /* Change text color for readability */
+        padding: 40px; /* Add padding for better layout */
+        border-radius: 10px; /* Optional: add rounded corners */
+        background-image: url('/static/assets/img/back/rev_total.jpeg');
+
+    }
+    
+    .faq-container {
+        display: flex;
+
+    }
+    
+    .faq-text {
+        flex: 1;
+        padding-right: 20px;
+    }
+    
+    .faq-category {
+        flex: 2; /* Makes the question section wider */
+    }
+    
+    .faq-item {
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+    
+    .answer {
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .toggle-icon {
+        margin-right: 10px;
+    }
+    
+    .btn {
+        margin-top: 20px;
+    }
+    </style>
+    
+
+<!-- Recent Posts Section -->
+
+
+
+
+
+
+  </main>
+
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+<!-- Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+<script>
+// Show the box when the dropdown is clicked
+document.getElementById('videoInterviewDropdown').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent default link behavior
+  var interviewBox = document.getElementById('interviewBox');
+  var dropdownRect = this.getBoundingClientRect();
+
+  // Position the box just below the dropdown
+  interviewBox.style.top = (dropdownRect.bottom + window.scrollY) + "px";
+  interviewBox.style.left = (dropdownRect.left + window.scrollX) + "px";
+  interviewBox.style.display = 'block';
+});
+
+// Hide the box when the mouse leaves the box area
+document.getElementById('interviewBox').addEventListener('mouseleave', function() {
+  this.style.display = 'none';
+});
+
+
+</script>
+
+
+</body>
+
+</html>

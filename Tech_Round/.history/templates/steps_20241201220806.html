@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.S.T.C.V Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        .response {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <h1>E.S.T.C.V Chatbot</h1>
+    <h3>Question: {{ question }}</h3>
+    <h4>Current Step: {{ step }}</h4>
+
+    <textarea id="user_input" placeholder="Enter your input for this step..."></textarea>
+    <button id="submit_btn" onclick="processStep()">Submit</button>
+    <div id="step_response" class="response"></div>
+
+    <div id="final_feedback" class="response" style="display: none;"></div>
+
+    <script>
+        function processStep() {
+            const userInput = document.getElementById('user_input').value;
+            const submitBtn = document.getElementById('submit_btn');
+            const stepResponse = document.getElementById('step_response');
+
+            fetch('/process_step', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `user_input=${userInput}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                stepResponse.innerHTML = `<strong>Response:</strong> ${data.step_output}`;
+                if (data.final_step) {
+                    submitBtn.style.display = 'none';
+                    document.getElementById('final_feedback').style.display = 'block';
+                    fetch('/final_submit', { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('final_feedback').innerHTML = `<strong>Feedback:</strong> ${data.feedback}`;
+                        });
+                } else {
+                    // Move to the next step
+                    window.location.href = `/steps.html?step=${data.next_step}`;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

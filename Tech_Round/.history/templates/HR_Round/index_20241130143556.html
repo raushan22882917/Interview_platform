@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Questions</title>
+</head>
+<body>
+    <h1>Interview Questions</h1>
+    <form method="POST">
+        <!-- Input for the company name -->
+        <label for="company_name">Enter the company name:</label><br>
+        <input type="text" name="company_name" id="company_name" required><br><br>
+
+        <!-- Placeholder for the questions -->
+        <div id="questions"></div>
+
+        <button type="submit">Submit Answers</button>
+    </form>
+
+    <script>
+        // JavaScript to dynamically change the questions based on the company name
+        document.querySelector("form").onsubmit = function(event) {
+            event.preventDefault();
+
+            let companyName = document.getElementById('company_name').value.trim();
+            let questionsDiv = document.getElementById('questions');
+            questionsDiv.innerHTML = "";  // Clear any existing questions
+
+            if (companyName) {
+                // Generate the questions dynamically
+                let questions = [
+                    `Can you tell me about yourself and how your experience aligns with the values and culture of ${companyName}?`,
+                    `Why do you want to work at ${companyName}, and what specifically excites you about the company's mission and vision?`,
+                    `What are your greatest strengths, and how do you think they will benefit you in your role at ${companyName}?`,
+                    `Where do you see yourself in five years, and how does ${companyName} fit into your long-term career goals?`,
+                    `Why should we hire you over other candidates, and how do your skills uniquely align with ${companyName}'s needs and goals?`,
+                    `Describe a challenging situation you faced and how you resolved it. How would you handle a similar challenge in the context of ${companyName}'s work environment?`,
+                    `What motivates you to perform well at work, and how can that motivation contribute to ${companyName}'s success?`,
+                    `How do you handle criticism or feedback from your manager, and how would you respond to feedback at ${companyName}?`,
+                    `Can you share an example of how you worked effectively in a team? How would you contribute to team dynamics at ${companyName}?`,
+                    `What is your approach to time management and meeting deadlines, and how do you think that would be an asset at ${companyName}?`
+                ];
+
+                // Display the questions with input fields for answers
+                questions.forEach((question, index) => {
+                    let questionHTML = `
+                        <div>
+                            <label for="answer_${index + 1}">Question ${index + 1}: ${question}</label><br>
+                            <textarea name="answer_${index + 1}" id="answer_${index + 1}" rows="4" cols="50" required></textarea><br><br>
+                        </div>
+                    `;
+                    questionsDiv.innerHTML += questionHTML;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

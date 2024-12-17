@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <style>
+        .subscription-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .paypal-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .qr-code-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .uid-input-box {
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+
+        .input-uid {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="subscription-container">
+    <!-- PayPal Button -->
+    <div class="paypal-box">
+        <h3>Subscribe to our service</h3>
+        <div id="paypal-button"></div>
+    </div>
+
+    <!-- QR Code and UID Input Section -->
+    <div class="qr-code-box">
+        <h3>Enter your UID</h3>
+        <!-- Generate a QR code dynamically based on the user's UID -->
+        <div id="qr-code"></div>
+
+        <div class="uid-input-box">
+            <input type="text" id="uid-input" class="input-uid" placeholder="Enter your UID" required>
+            <button class="btn-submit" onclick="submitUid()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script>
+    // Function to create QR code
+    function generateQRCode(uid) {
+        // Clear previous QR code
+        document.getElementById('qr-code').innerHTML = "";
+        // Generate the QR code based on the user's UID
+        QRCode.toCanvas(document.getElementById('qr-code'), uid, function (error) {
+            if (error) console.error(error);
+        });
+    }
+
+    // Submit UID and process the subscription
+    function submitUid() {
+        var uid = document.getElementById('uid-input').value;
+        if (uid) {
+            // Send UID to the backend (this can be adjusted based on how you want to handle UID submission)
+            console.log('UID submitted:', uid);
+
+            // Optionally, you can send the UID to the server here via an AJAX request
+        } else {
+            alert('Please enter your UID.');
+        }
+    }
+
+    // PayPal button rendering
+ 
+</script>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<script>
+    var CREATE_PAYMENT_URL  = 'http://127.0.0.1:5000/payment';
+    var EXECUTE_PAYMENT_URL = 'http://127.0.0.1:5000/execute';
+
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'sandbox'
+
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function() {
+            return paypal.request.post(CREATE_PAYMENT_URL).then(function(data) {
+                return data.paymentID;
+            });
+        },
+
+        onAuthorize: function(data) {
+            return paypal.request.post(EXECUTE_PAYMENT_URL, {
+                paymentID: data.paymentID,
+                payerID:   data.payerID
+            }).then(function(res) {
+
+                console.log(res.success)
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+            });
+        }
+
+    }, '#paypal-button');
+</script>
+
+</body>
+</html>

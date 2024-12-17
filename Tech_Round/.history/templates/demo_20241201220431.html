@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.S.T.C.V Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .step-container {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        .response {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <h1>E.S.T.C.V Chatbot</h1>
+
+    <div id="steps">
+        <div class="step-container" id="Example">
+            <h3>Step 1: Example</h3>
+            <textarea id="example_input" placeholder="Enter an example..."></textarea>
+            <button onclick="processStep('Example')">Submit Example</button>
+            <div id="example_response" class="response"></div>
+        </div>
+
+        <div class="step-container" id="Solution">
+            <h3>Step 2: Solution</h3>
+            <textarea id="solution_input" placeholder="Describe the solution..."></textarea>
+            <button onclick="processStep('Solution')" disabled id="solution_btn">Submit Solution</button>
+            <div id="solution_response" class="response"></div>
+        </div>
+
+        <div class="step-container" id="Test Cases">
+            <h3>Step 3: Test Cases</h3>
+            <textarea id="test_cases_input" placeholder="Write test cases..."></textarea>
+            <button onclick="processStep('Test Cases')" disabled id="test_cases_btn">Submit Test Cases</button>
+            <div id="test_cases_response" class="response"></div>
+        </div>
+
+        <div class="step-container" id="Code">
+            <h3>Step 4: Code</h3>
+            <textarea id="code_input" placeholder="Write the code..."></textarea>
+            <button onclick="processStep('Code')" disabled id="code_btn">Submit Code</button>
+            <div id="code_response" class="response"></div>
+        </div>
+
+        <div class="step-container" id="Validate">
+            <h3>Step 5: Validate</h3>
+            <textarea id="validate_input" placeholder="Validation steps..."></textarea>
+            <button onclick="processStep('Validate')" disabled id="validate_btn">Submit Validation</button>
+            <div id="validate_response" class="response"></div>
+        </div>
+    </div>
+
+    <button id="final_submit_btn" onclick="finalSubmit()" disabled>Final Submit</button>
+    <div id="final_feedback" class="response"></div>
+
+    <script>
+        function processStep(step) {
+            const inputField = document.getElementById(`${step.toLowerCase()}_input`);
+            const responseField = document.getElementById(`${step.toLowerCase()}_response`);
+            const nextButton = document.getElementById(`${step.toLowerCase()}_btn`);
+
+            fetch('/process_step', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `step=${step}&user_input=${inputField.value}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseField.innerHTML = `<strong>Response:</strong> ${data.step_output}`;
+                nextButton.disabled = false;
+                if (step === "Validate") {
+                    document.getElementById("final_submit_btn").disabled = false;
+                }
+            });
+        }
+
+        function finalSubmit() {
+            fetch('/final_submit', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("final_feedback").innerHTML = `<strong>Feedback:</strong> ${data.feedback}`;
+            });
+        }
+    </script>
+</body>
+</html>

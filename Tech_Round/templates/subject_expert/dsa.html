@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <title>Question Platform</title>
+    <style>
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #34495e;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.left-column{
+    
+}
+
+.right-column {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ecf0f1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+#camera-feed {
+    width: 200px;
+    height: 200px;
+    border: 5px solid #3498db;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#ai-image {
+    width: 200px;
+    height: 200px;
+    margin-top: 20px;
+    border: 5px solid #3498db;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+label {
+    font-size: 1.2rem;
+    color: #16a085;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #16a085;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #ffffff;
+}
+.header {
+    background: #333;
+
+    color: #fff;
+    padding: 10px 0;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border: 2px solid #16a085;
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: #ffffff;
+}
+.containers{
+    display: flex;
+    background-color: #f5f5f5;
+    margin: 100px;
+    margin-left: 200px;
+    width: 1200px;
+
+}
+
+button {
+    padding: 12px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1abc9c;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #16a085;
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.feedback {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.correct {
+    color: #27ae60;
+}
+
+.incorrect {
+    color: #e74c3c;
+}
+
+#score {
+    font-size: 1.5rem;
+    color: #2980b9;
+    margin-top: 10px;
+}
+
+#correct-answer-display, #user-answer-display {
+    font-size: 1rem;
+    color: #34495e;
+    margin-top: 10px;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+#timer {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: none;
+}
+form {
+    width:auto;
+    margin: 20px auto;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+select {
+    margin-bottom: 15px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button {
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+    </style>
+    <script>
+        async function getQuestion() {
+            const level = document.getElementById('level').value;
+            const response = await fetch(`/get_question?level=${encodeURIComponent(level)}`);
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('question').innerText = data.question;
+            document.getElementById('correct-answer').value = data.answers;
+            document.getElementById('index').value = data.index;
+            document.getElementById('length').value = data.length;
+
+            // Read the question out loud
+            const utterance = new SpeechSynthesisUtterance(data.question);
+            speechSynthesis.speak(utterance);
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById('user-answer').value;
+            const correctAnswer = document.getElementById('correct-answer').value;
+            const response = await fetch('/check_answer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({answer, correct_answer: correctAnswer})
+            });
+            const data = await response.json();
+
+            document.getElementById('feedback').innerHTML = `<span class="${data.correct ? 'correct' : 'incorrect'}">${data.feedback}</span>`;
+            document.getElementById('score').innerText = `Score: ${data.score}/10`;
+            document.getElementById('correct-answer-display').innerText = `Correct Answer: ${data.correct_answer}`;
+            document.getElementById('user-answer-display').innerText = `Your Answer: ${answer}`;
+        }
+
+        async function navigate(direction) {
+            const index = parseInt(document.getElementById('index').value);
+            const level = document.getElementById('level').value;
+            const length = parseInt(document.getElementById('length').value);
+            let newIndex = direction === 'next' ? index + 1 : index - 1;
+            newIndex = Math.max(0, Math.min(newIndex, length - 1));
+
+            const response = await fetch(`/navigate?level=${encodeURIComponent(level)}&index=${newIndex}`);
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            document.getElementById('question').innerText = data.question;
+            document.getElementById('correct-answer').value = data.answers;
+            document.getElementById('index').value = newIndex;
+
+            document.getElementById('prev-button').disabled = newIndex === 0;
+            document.getElementById('next-button').disabled = newIndex === length - 1;
+        }
+
+        // Camera access
+        function startCamera() {
+            const video = document.getElementById('camera-feed');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(error => {
+                    console.error('Camera access denied:', error);
+                });
+        }
+
+        window.onload = startCamera;
+    </script>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+            <!-- Logo Image -->
+            <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Sakshatkar Logo" class="logo-img">
+            <!-- Logo Name -->
+            <h1 class="sitename">Sakshatkar</h1>
+        </a>
+        
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+                    <style>
+    
+    #userDropdown {
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    #userDropdown img
+    {
+      margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+      border-radius: 50%;
+    }
+    
+    /* Dropdown Menu Styles */
+    #dropdownMenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      background-color: #222;
+      color: white;
+      list-style: none;
+      padding: 12px 0;
+      border-radius: 8px;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+      z-index: 10;
+      margin-top: 10px;
+      margin-right: 100px;
+    }
+    
+    /* Dropdown Item Styles */
+    #dropdownMenu li {
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      transition: background 0.3s ease;
+    }
+    
+    #dropdownMenu li:hover {
+      background-color: #333;
+    }
+    
+    #dropdownMenu li:last-child {
+      border-bottom: none;
+    }
+    
+    
+    
+    /* Button for Theme Toggle */
+    #theme-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    
+    #theme-text{
+      color: white;
+      text-decoration: none;
+      display: flex;
+      font-size: 14px;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    #theme-icon{
+      font-size:14px;
+    }
+    /* Hover and Active Styles */
+    #dropdownMenu a:hover {
+      color: #aaa;
+    }
+    
+    .dropdown-items{
+      font-size: 12px;
+    }
+    
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .dropdown-item{
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    
+    
+    #hero h1 {
+      color: #a7ffeb; /* Light teal color */
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+    }
+    
+    /* Subtitle */
+    #hero h2 {
+      color: #ffeb3b; /* Yellow color to pop against dark background */
+      font-size: 2rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Body text */
+    #hero p {
+      color: #ffffff; /* White color */
+      font-size: 1.2rem;
+      line-height: 1.6;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Button styling */
+    #hero .btn {
+      background-color: #ff5722; /* Bright orange for contrast */
+      color: #ffffff;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    
+    #hero .btn:hover {
+      background-color: #e64a19; /* Darker orange on hover */
+    }
+                  </style>
+                  
+                  {% if session.get('user_name') %}
+                      <li>
+                          <a href="{{ url_for('forum') }}">
+                            <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                          </a>
+                      </li>
+                  {% endif %}
+    
+                  
+                  <ul>
+                      {% if session.get('user_name') %}
+                          <li style="list-style: none; font-size: 16px; position: relative;">
+                            <a href="#" id="userDropdown">
+                              {% if session.get('profile_image') %}
+                                  <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                              {% else %}
+                                  <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                              {% endif %}
+                              <span>{{ session['user_name'] }}</span>
+                              <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                          </a>
+                          
+                  
+                              <!-- Dropdown Menu -->
+                              <ul id="dropdownMenu">
+                                  <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                      <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                      {% if not session.get('profile_image') %}
+                                        <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                      {% endif %}
+                                      
+                                      <div class="dropdown-items">{{ session['email'] }}</div>
+    
+                                  </li>
+                                  <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                                  <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                                  <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                                  <li>
+                                    <a>
+                                      <button id="theme-toggle" onclick="toggleTheme()">
+                                          <i class="fas fa-sun" id="theme-icon"></i>
+                                          <span id="theme-text">Light</span>
+                                      </button>
+                                    </a>
+                                  </li>
+                              </ul>
+                          </li>
+    
+    
+                  
+                          <!-- Toggle Dropdown Script -->
+                          <script>
+                              document.getElementById('userDropdown').addEventListener('click', function(event) {
+                                  event.preventDefault();
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                              });
+                  
+                              // Hide dropdown when clicking outside
+                              window.addEventListener('click', function(event) {
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  if (!event.target.closest('#userDropdown')) {
+                                      dropdownMenu.style.display = 'none';
+                                  }
+                              });
+                  
+                              // Toggle Theme Function
+                              function toggleTheme() {
+                                  const themeIcon = document.getElementById('theme-icon');
+                                  const themeText = document.getElementById('theme-text');
+                                  if (themeIcon.classList.contains('fa-sun')) {
+                                      themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                      themeText.textContent = 'Dark';
+                                  } else {
+                                      themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                      themeText.textContent = 'Light';
+                                  }
+                              }
+                          </script>
+                      {% else %}
+                          <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                      {% endif %}
+                  </ul>
+    
+    
+                  <ul class="menu-list">
+                    {% if session.get('user_name') %}
+                      <li class="online-indicator">
+                        <a href="{{ url_for('user') }}" class="notification-icon">
+                          <div class="alerts alert-infos" role="alert">
+                            <i class="fas fa-bell position-relative">
+                              {% if unread_count > 0 %}
+                                <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                              {% endif %}
+                            </i>
+                          </div>
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                  
+    
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+    <div class="containers">
+        <div id="timer">Time Elapsed: 0:00</div>
+        <div class="left-column">
+            <div>
+                <img id="ai-image" src="{{ url_for('static', filename='assets/img/interview/ai.jpg') }}" alt="AI Image">
+            </div>
+            <div style="margin-top:20px">
+                <video id="camera-feed" autoplay></video>
+            </div>
+            <div style="margin-top: 10px;">
+                <button onclick="startRecording()">Start Recording</button>
+                <button onclick="stopRecording()">Stop Recording</button>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div id="initial-container">
+                <form onsubmit="getQuestion(); return false;">
+                    <label for="level">Select Level:</label>
+                    <select id="level" name="level" required>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                    <button type="submit">Get Question</button>
+                </form>
+                
+            </div>
+
+            <div id="question-container" class="hidden">
+                <h2>Question</h2>
+                <p id="question"></p>
+                <form onsubmit="submitAnswer(); return false;">
+                    <textarea id="user-answer" rows="4" cols="50" required></textarea><br>
+                    <input type="hidden" id="correct-answer">
+                    <button type="submit">Submit Answer</button>
+                </form>
+
+                <div id="feedback" class="feedback"></div>
+                <div id="score"></div>
+                <p id="correct-answer-display"></p>
+                <p id="user-answer-display"></p>
+
+                <button id="prev-button" onclick="navigate('prev')" disabled>Previous</button>
+                <button id="next-button" onclick="navigate('next')">Next</button>
+
+                <input type="hidden" id="index">
+                <input type="hidden" id="length">
+            </div>
+        </div>
+    </div>
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+          <h3 class="sitename">TechPrep</h3>
+          <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+          <div class="social-links d-flex justify-content-center">
+            <a href="https://twitter.com/TechPrep" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://facebook.com/TechPrep" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://instagram.com/TechPrep" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://linkedin.com/company/techprep" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+          <div class="container">
+            <div class="copyright">
+              <span>Copyright</span> <strong class="px-1 sitename">TechPrep</strong> <span>All Rights Reserved</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+
+      <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let timerInterval;
+        let secondsElapsed = 0;
+
+        async function startRecording() {
+            try {
+                // Request full-screen mode
+                await document.documentElement.requestFullscreen();
+
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: true
+                });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                mediaRecorder.onstop = saveVideo;
+                mediaRecorder.start();
+
+                document.getElementById('timer').style.display = 'block';
+                timerInterval = setInterval(updateTimer, 1000);
+            } catch (err) {
+                console.error("Error: " + err);
+            }
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            clearInterval(timerInterval);
+            document.getElementById('timer').style.display = 'none';
+            
+            // Exit full-screen mode
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+
+        function updateTimer() {
+            secondsElapsed++;
+            const minutes = Math.floor(secondsElapsed / 60);
+            const seconds = secondsElapsed % 60;
+            document.getElementById('timer').innerText = `Time Elapsed: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function saveVideo() {
+            const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'recording.mp4';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            recordedChunks = [];
+        }
+    </script>
+
+    <script>
+        async function navigate(direction) {
+            const index = parseInt(document.getElementById('index').value);
+            const level = document.getElementById('level').value;
+            const length = parseInt(document.getElementById('length').value);
+            let newIndex = direction === 'next' ? index + 1 : index - 1;
+            newIndex = Math.max(0, Math.min(newIndex, length - 1)); // Ensure newIndex is within bounds
+        
+            const response = await fetch(`/navigate?level=${encodeURIComponent(level)}&index=${newIndex}`);
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            document.getElementById('question').innerText = data.question;
+            document.getElementById('correct-answer').value = data.answers;
+            document.getElementById('index').value = newIndex;
+        
+            // Update button states
+            document.getElementById('prev-button').disabled = newIndex === 0;
+            document.getElementById('next-button').disabled = newIndex === length - 1;
+        }
+        
+    </script>
+
+</body>
+</html>

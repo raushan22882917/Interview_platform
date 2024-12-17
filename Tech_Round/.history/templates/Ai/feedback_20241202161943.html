@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Review your progress and feedback:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Examples provided.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Solution explained.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases checked.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Code reviewed.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validation completed.</li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <h1>Final Feedback Summary</h1>
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Your Input</th>
+                        <th>Feedback</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for step, data in responses.items() %}
+                    <tr>
+                        <td>{{ step }}</td>
+                        <td>{{ data['input'] }}</td>
+                        <td>{% if data['feedback'] %}{{ data['feedback'] }}{% else %}No issues{% endif %}</td>
+                        <td>{{ data['score'] }} / 5</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p><strong>Total Score:</strong> {{ total_score }} / {{ 5 * responses|length }}</p>
+            <h2>Full Feedback</h2>
+            <ul>
+                {% for step, data in responses.items() %}
+                <li>
+                    <h3>{{ step }}</h3>
+                    <p>{{ data['feedback'] if data['feedback'] else "No issues with your input." }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{{ url}}"></a>
+    </div>
+</body>
+</html>

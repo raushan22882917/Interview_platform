@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Runner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #editor {
+            height: 500px;
+        }
+        .text-success {
+            color: green;
+        }
+        .text-danger {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Runner</h1>
+    <select id="language-select">
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <!-- Add more languages if needed -->
+    </select>
+    <button id="run">Run Code</button>
+    <div id="editor"></div>
+    <div id="error" style="color: red; display: none;"></div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Test Case</th>
+                <th>Correct</th>
+                <th>Wrong</th>
+                <th>Expected Output</th>
+                <th>Actual Output</th>
+            </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+    </table>
+    <div id="congratulations" style="display: none;">
+        <h2>Congratulations! All test cases passed!</h2>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                let editor = monaco.editor.create(document.getElementById('editor'), {
+                    value: `print("Hello World")`,
+                    language: 'python',
+                    theme: 'vs-dark'
+                });
+
+                document.getElementById('language-select').addEventListener('change', function() {
+                    let selectedLanguage = this.value;
+                    editor.getModel().updateOptions({ language: selectedLanguage });
+                    editor.setValue(getTemplate(selectedLanguage));
+                });
+
+                document.getElementById('run').addEventListener('click', function() {
+                    let code = editor.getValue();
+                    let questionId = 1; // Example question ID
+                    let language = document.getElementById('language-select').value;
+
+                    fetch('/run_code', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            code: code,
+                            question_id: questionId,
+                            language: language
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        let resultsContainer = document.getElementById('results-body');
+                        let errorContainer = document.getElementById('error');
+                        resultsContainer.innerHTML = '';
+                        errorContainer.style.display = 'none';
+                        let allPassed = true;
+                        let passedCount = 0;
+                        let totalTestCases = data.results.length;
+
+                        data.results.forEach(result => {
+                            let row = document.createElement('tr');
+
+                            let testCaseCell = document.createElement('td');
+                            testCaseCell.textContent = `Test Case ${result.test_case}`;
+                            row.appendChild(testCaseCell);
+
+                            let correctCell = document.createElement('td');
+                            let expectedOutput = String(result.expected_output || '').trim().toLowerCase();
+                            let actualOutput = String(result.result || '').trim().toLowerCase();
+                            let isPassed = expectedOutput === actualOutput;
+                            correctCell.textContent = isPassed ? '✔️' : '❌';
+                            correctCell.className = isPassed ? 'text-success' : 'text-danger';
+                            row.appendChild(correctCell);
+
+                            let wrongCell = document.createElement('td');
+                            wrongCell.textContent = !isPassed ? '❌' : '✔️';
+                            wrongCell.className = !isPassed ? 'text-danger' : 'text-success';
+                            row.appendChild(wrongCell);
+
+                            let expectedCell = document.createElement('td');
+                            expectedCell.textContent = result.expected_output || 'N/A';
+                            row.appendChild(expectedCell);
+
+                            let outputCell = document.createElement('td');
+                            outputCell.textContent = result.result || 'N/A';
+                            row.appendChild(outputCell);
+
+                            resultsContainer.appendChild(row);
+
+                            if (isPassed) {
+                                passedCount++;
+                            } else {
+                                allPassed = false;
+                            }
+                        });
+
+                        document.getElementById('congratulations').style.display = allPassed ? 'block' : 'none';
+
+                        if (data.result && data.result !== "Question not found") {
+                            errorContainer.textContent = data.result;
+                            errorContainer.style.display = 'block';
+                        }
+
+                        // Send the results to the server for CSV storage
+                        fetch('/save_results', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                question_id: questionId,
+                                total_test_cases: totalTestCases,
+                                passed_count: passedCount
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Results saved:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error saving results:', error);
+                        });
+                    })
+                    .catch(error => {
+                        let errorContainer = document.getElementById('error');
+                        errorContainer.textContent = `Error: ${error.message}`;
+                        errorContainer.style.display = 'block';
+                    });
+                });
+
+                function getTemplate(language) {
+                    // Provide language-specific code templates if necessary
+                    switch(language) {
+                        case 'python':
+                            return 'print("Hello World")';
+                        case 'javascript':
+                            return 'console.log("Hello World")';
+                        default:
+                            return '';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

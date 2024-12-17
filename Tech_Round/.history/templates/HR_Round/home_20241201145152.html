@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+    <p>
+        {% if button_message == "Start" %}
+            You have an active subscription. You have {{ remaining_days }} days left.
+            <button onclick="window.location.href='/hr_index'">Start</button>
+        {% elif button_message == "Renew Subscription" %}
+            Your subscription has expired. Please renew it.
+            <button onclick="window.location.href='/subscribe'">Renew Subscription</button>
+        {% elif button_message == "Free Trial: 2 Uses Left" %}
+            You have used your free trial. You have 2 uses left.
+            <button onclick="window.location.href='/hr_index'">Free Trial</button>
+        {% else %}
+            You have not taken a subscription. Please subscribe to continue.
+            <button onclick="window.location.href='/subscribe'">Subscribe Now</button>
+        {% endif %}
+    </p>
+</body>
+</html>

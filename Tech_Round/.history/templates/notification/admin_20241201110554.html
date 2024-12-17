@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        background-color: #eef1f7;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        position: fixed;
+        height: 100%;
+        width: 250px;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar h2 {
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        color: #fff;
+        margin-bottom: 40px;
+    }
+
+    .sidebar a {
+        color: #ecf0f1;
+        padding: 15px;
+        display: block;
+        text-decoration: none;
+        font-size: 18px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        background-color: #f8f9fd;
+        min-height: 100vh;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #3498db, #2c82c9);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .card {
+        border: none;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #ffffff, #f8f9fd);
+    }
+
+    .btn-custom {
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 12px 20px;
+        text-transform: uppercase;
+        transition: all 0.3s;
+    }
+
+    .btn-custom:hover {
+        background: linear-gradient(135deg, #218838, #1c7430);
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        background: linear-gradient(135deg, #fff, #f8f9fd);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+    }
+
+    tbody tr:nth-child(odd) {
+        background-color: #ecf0f1;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f8f9fd;
+    }
+
+    tr:hover {
+        background-color: #dfe6e9;
+        cursor: pointer;
+    }
+
+    .login-btn {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        background: linear-gradient(135deg, #3498db, #2c82c9);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .login-btn:hover {
+        background: linear-gradient(135deg, #2c82c9, #1a6fb2);
+        transform: scale(1.05);
+    }
+
+</style>
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2 class="text-white">
+            {% if session.get('email') %}
+                {{ session['email'] }}
+            {% else %}
+                Admin Panel
+            {% endif %}
+        </h2>
+        <a href="javascript:void(0);" id="notificationsLink"><i class="fas fa-bell"></i> Notifications</a>
+        <a href="javascript:void(0);" id="paymentLink"><i class="fas fa-credit-card"></i> Payments</a>
+    </div>
+
+    <div class="main-content">
+        <div id="notifications" class="notification-box active">
+            <div class="header">
+                <h3>Send Notification</h3>
+            </div>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="notification">Notification Content</label>
+                    <textarea class="form-control" id="notification" name="notification" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom">Send Notification</button>
+            </form>
+        </div>
+
+        <div id="payment" class="payment-box">
+            <h3>Payment Information</h3>
+            <button type="button" onclick="showPaymentForm()" class="btn btn-custom">
+                <i class="fas fa-plus"></i> Add Payment
+            </button>
+
+            <div class="overlay" id="overlay"></div>
+            <div class="popup-form" id="paymentForm">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="months">Months</label>
+                        <input type="number" class="form-control" id="months" name="months" required>
+                    </div>
+                    <button type="submit" name="action" value="save" class="btn btn-custom">Save</button>
+                    <button type="submit" name="action" value="save_next" class="btn btn-custom">Save and Next</button>
+                </form>
+            </div>
+
+            <!-- Payment Table -->
+            <h3>Saved Payments</h3>
+            <table border="1" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Months</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment[0] }}</td>
+                            <td>{{ payment[1] }}</td>
+                            <td>{{ payment[2] }}</td>
+                            <td>{{ payment[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="{{ url_for('login_admin') }}">
+        <button id="loginLogoutBtn" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </a>
+
+    <script>
+        // Toggle between Notifications and Payments
+        document.getElementById('notificationsLink').addEventListener('click', function() {
+            document.getElementById('notifications').classList.add('active');
+            document.getElementById('payment').classList.remove('active');
+        });
+
+        document.getElementById('paymentLink').addEventListener('click', function() {
+            document.getElementById('payment').classList.add('active');
+            document.getElementById('notifications').classList.remove('active');
+        });
+
+        // Show Payment Form Popup
+        function showPaymentForm() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("paymentForm").style.display = "block";
+        }
+
+        // Close Payment Form Popup
+        document.getElementById("overlay").addEventListener('click', function() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("paymentForm").style.display = "none";
+        });
+
+        // Update Login/Logout Button
+        function updateLoginLogoutButton() {
+            var loginLogoutBtn = document.getElementById('loginLogoutBtn');
+            var isLoggedIn = false; // Replace with actual session check
+
+            if (isLoggedIn) {
+                loginLogoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                loginLogoutBtn.setAttribute('href', '{{ url_for("logout_admin") }}');
+            } else {
+                loginLogoutBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                loginLogoutBtn.setAttribute('href', '{{ url_for("login_admin") }}');
+            }
+        }
+
+        // Initialize login/logout button
+        updateLoginLogoutButton();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Feedback and Results</h1>
+
+        <p><strong>Total Score: </strong>{{ total_score }} / 25</p>
+
+        <h2>Step-wise Feedback</h2>
+        <ul>
+            {% for step, data in responses.items() %}
+                <li>
+                    <strong>{{ step }}:</strong>
+                    <p>{{ data['feedback'] }}</p>
+                    <p><strong>Score:</strong> {{ data['score'] }} / 5</p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="/">Back to Home</a>
+    </div>
+</body>
+</html>

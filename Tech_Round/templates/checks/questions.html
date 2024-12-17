@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Interview Questions</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        .header {
+            background: #333;
+        
+            color: #fff;
+            padding: 10px 0;
+        }
+        .containers{
+            margin-top: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        table {
+            width: 500px;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .info_image{
+            width:270px;
+            margin-bottom: 20px;
+            margin-right: 50px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .instructions {
+            margin-bottom: 20px;
+            margin-left: 330px;
+        }
+        
+        .solve-button {
+            display: block;
+            width: 200px;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 330px;
+            margin-bottom: 20px;
+
+        }
+        
+        .solve-button:hover {
+            background-color: #45a049;
+        }
+
+        .info_table{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+                <h1 class="sitename">Sakshatkar'</h1>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                    <li><a href="{{ url_for('topics') }}">Prep TechSkill</a></li>
+                    <li><a href="{{ url_for('topics') }}">Hr Round</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="videoInterviewDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Video Interview
+                        </a>
+                    </li>
+                    <div id="interviewBox" class="interview-box" style="display: none;">
+                        <a class="btn btn-primary btn-sm" href="#">Daily Interview</a>
+                        <a class="btn btn-secondary btn-sm" href="{{ url_for('instructions') }}">Weekly Interview</a>
+                    </div>
+                    <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                    <li><a href="#about" class="active">About</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        </div>
+    </header>
+
+    <div class="containers">
+        <h1>Coding Interview Questions</h1>
+        <div class="info_table">
+        <div class="info_image">
+            <img src="{{ url_for('static', filename='assets/img/interview/login.jpg') }}" class="card-img" alt="Signup Image" style=" object-fit: cover;">
+        </div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Question 1: Implement a linked list</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>Question 2: Write a function to reverse a string</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Question 3: Solve the N-Queens problem</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td>Question 4: Implement a binary search algorithm</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td>Question 5: Design a stack using two queues</td>
+                        <td>9</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div class="instructions">
+            <h2>Interview Process Instructions</h2>
+            <p>
+                Welcome to the coding interview. Please follow the instructions below to complete the interview:
+            </p>
+            <ol>
+                <li>Read each question carefully and ensure you understand the requirements.</li>
+                <li>Write your code in the provided coding environment. You may use any programming language that you are comfortable with.</li>
+                <li>Each question has a specified number of marks. Try to solve as many questions as possible to maximize your score.</li>
+                <li>Ensure that your code is well-commented and follows best practices.</li>
+                <li>Submit your solutions before the deadline. Late submissions may not be accepted.</li>
+            </ol>
+        </div>
+        <a><a href="{{ url_for('startcoding') }}" class="btn"><button class="solve-button">Start Solving</button></a>
+
+        <footer id="footer" class="footer dark-background">
+            <div class="container">
+              <h3 class="sitename">TechPrrep</h3>
+              <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+              <div class="social-links d-flex justify-content-center">
+                <a href=""><i class="bi bi-twitter-x"></i></a>
+                <a href=""><i class="bi bi-facebook"></i></a>
+                <a href=""><i class="bi bi-instagram"></i></a>
+                <a href=""><i class="bi bi-skype"></i></a>
+                <a href=""><i class="bi bi-linkedin"></i></a>
+              </div>
+              <div class="container">
+                <div class="copyright">
+                  <span>Copyright</span> <strong class="px-1 sitename">TechPrrep</strong> <span>All Rights Reserved</span>
+                </div>
+                <div class="credits">
+                  Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                </div>
+              </div>
+            </div>
+          </footer>
+    </div>
+</body>
+</html>

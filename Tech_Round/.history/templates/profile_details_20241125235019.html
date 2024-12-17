@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            background-color: #f8f9fa;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .sidebar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            color: #495057;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        .separator {
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .content-section {
+            display: none;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Profile Image Section -->
+        <div class="text-center mb-4">
+            <!-- Profile Image -->
+            {% if profile_image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ profile_image) }}" alt="Profile Image" class="rounded-circle profile-image">
+            {% else %}
+            <img src="https://via.placeholder.com/150" alt="Profile Image" class="rounded-circle profile-image">
+            {% endif %}
+        
+            <!-- Upload Form -->
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                <label for="profile_image" class="form-label fw-bold">Upload Profile Image</label>
+                <input type="file" name="profile_image" id="profile_image" class="form-control mb-2">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Update</button>
+            </form>
+        
+            <!-- Social Media Links -->
+            <div class="mt-4">
+                {% if education_details and education_details[7] %}
+                <p>
+                    <strong><i class="fab fa-linkedin fa-lg text-primary"></i></strong>
+                    <a href="{{ education_details[7] }}" target="_blank" class="text-decoration-none text-primary ms-2">
+                        LinkedIn Profile
+                    </a>
+                </p>
+                {% else %}
+                <p class="text-muted"><i class="fab fa-linkedin fa-lg text-secondary"></i> LinkedIn not provided</p>
+                {% endif %}
+        
+                {% if education_details and education_details[8] %}
+                <p>
+                    <strong><i class="fab fa-instagram fa-lg text-danger"></i></strong>
+                    <a href="{{ education_details[8] }}" target="_blank" class="text-decoration-none text-danger ms-2">
+                        Instagram Profile
+                    </a>
+                </p>
+                {% else %}
+                <p class="text-muted"><i class="fab fa-instagram fa-lg text-secondary"></i> Instagram not provided</p>
+                {% endif %}
+            </div>
+        </div>
+        
+
+        <!-- Separator -->
+        <div class="separator"></div>
+
+        <!-- Sidebar Buttons -->
+        <a class="nav-link" data-target="educationSection">
+            <i class="fas fa-graduation-cap"></i> Education
+        </a>
+        <a class="nav-link" data-target="techRoundSection">
+            <i class="fas fa-laptop-code"></i> Tech Round
+        </a>
+        <a class="nav-link" data-target="codeRoundSection">
+            <i class="fas fa-code"></i> Code Round
+        </a>
+    </div>
+
+    <div class="content">
+        <!-- Education Section (Visible by Default) -->
+        <div id="educationSection" class="content-section active">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-graduation-cap"></i> Educational Details</h4>
+                    <button class="btn btn-outline-light btn-sm" onclick="toggleEditForm()">Edit Details <i class="fas fa-edit"></i></button>
+                </div>
+                <div class="card-body">
+                    <!-- Display Educational Details -->
+                    <div id="educationDisplay">
+                        {% if education_details %}
+                            <p><strong><i class="fas fa-user"></i>Name:</strong> {{ education_details[2] }}  {{ education_details[3] }}</p>
+                            <p><strong><i class="fas fa-university"></i> College Name:</strong> {{ education_details[4] }}</p>
+                            <p><strong><i class="fas fa-calendar-alt"></i> Date of Birth:</strong> {{ education_details[5] }}</p>
+                            <p><strong><i class="fas fa-book-reader"></i> Year of Study:</strong> {{ education_details[6] }}</p>
+                            <p><strong><i class="fas fa-graduation-cap"></i> Graduation Year:</strong> {{ education_details[7] }}</p>
+                            
+                        {% else %}
+                            <p class="text-muted"><i class="fas fa-exclamation-circle"></i> No educational details found. Click "Edit" to add them.</p>
+                        {% endif %}
+                    </div>
+        
+                    <!-- Edit Form -->
+                    <div id="educationForm" style="display: none;">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label"><i class="fas fa-user"></i> First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control" value="{{ education_details[0] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label"><i class="fas fa-user"></i> Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control" value="{{ education_details[1] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="college_name" class="form-label"><i class="fas fa-university"></i> College Name</label>
+                                <input type="text" name="college_name" id="college_name" class="form-control" value="{{ education_details[2] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dob" class="form-label"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                                <input type="date" name="dob" id="dob" class="form-control" value="{{ education_details[3] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="year_of_study" class="form-label"><i class="fas fa-book-reader"></i> Year of Study</label>
+                                <input type="text" name="year_of_study" id="year_of_study" class="form-control" value="{{ education_details[4] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="graduation_year" class="form-label"><i class="fas fa-graduation-cap"></i> Graduation Year</label>
+                                <input type="text" name="graduation_year" id="graduation_year" class="form-control" value="{{ education_details[5] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="linkedin_url" class="form-label"><i class="fab fa-linkedin"></i> LinkedIn URL</label>
+                                <input type="url" name="linkedin_url" id="linkedin_url" class="form-control" value="{{ education_details[6] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="instagram_url" class="form-label"><i class="fab fa-instagram"></i> Instagram URL</label>
+                                <input type="url" name="instagram_url" id="instagram_url" class="form-control" value="{{ education_details[7] if education_details else '' }}">
+                            </div>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Tech Round Section -->
+        <div id="techRoundSection" class="content-section">
+            <style>
+                /* General card styling */
+                .card-container {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                    flex-wrap: wrap; /* Allow the cards to wrap on smaller screens */
+                }
+        
+                .metric {
+                    padding: 1rem;
+                    border-radius: 8px;
+                    width: calc(33.333% - 1rem); /* Three cards in a row */
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 1rem;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+        
+                /* Card content */
+                .metric h4 {
+                    margin-bottom: 1rem;
+                    font-size: 1.2rem;
+                    color: #fff;
+                    font-weight: 600;
+                }
+        
+                .metric i {
+                    margin-right: 10px;
+                    color: #fff;
+                }
+        
+                /* Metric Value styling */
+                .metric-value {
+                    font-weight: bold;
+                    color: #fff;
+                }
+        
+                /* Card Colors */
+                .metric-blue {
+                    background-color: #007bff;
+                }
+        
+                .metric-green {
+                    background-color: #28a745;
+                }
+        
+                .metric-orange {
+                    background-color: #fd7e14;
+                }
+        
+                .metric-purple {
+                    background-color: #6f42c1;
+                }
+        
+                .metric-red {
+                    background-color: #dc3545;
+                }
+        
+                .metric-yellow {
+                    background-color: #ffc107;
+                }
+        
+                /* Hover Effect */
+                .metric:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+        
+                /* Ensuring responsiveness */
+                @media (max-width: 768px) {
+                    .metric {
+                        width: calc(50% - 1rem); /* Two cards in a row on smaller screens */
+                    }
+                }
+        
+                @media (max-width: 480px) {
+                    .metric {
+                        width: 100%; /* One card per row on very small screens */
+                    }
+                }
+            </style>
+        </head>
+        <body>
+        
+        <div class="card-container">
+            <!-- Performance Metrics Cards -->
+            <div class="metric metric-purple">
+                <h4><i class="fas fa-sync-alt"></i> Average Score of Last 3 Attempts</h4>
+                <p><strong>Average:</strong> <span class="metric-value">{{ average_score_last_3 }}</span></p>
+            </div>
+        
+            <div class="metric metric-green">
+                <h4><i class="fas fa-clipboard-check"></i> Positions Well Prepared</h4>
+                <p><strong>Prepared:</strong> <span class="metric-value">{{ positions_well_prepared }}</span></p>
+            </div>
+        
+            <div class="metric metric-orange">
+                <h4><i class="fas fa-chart-line"></i> Percentage Scored Above 70%</h4>
+                <p><strong>Percentage:</strong> <span class="metric-value">{{ percentage_scored_above_70 }}%</span></p>
+            </div>
+        </div>
+        
+        <style>
+            /* Table Styling */
+            table {
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+    
+            th, td {
+                text-align: center;
+                padding: 12px;
+            }
+    
+            th {
+                background-color: #007bff;
+                color: white;
+            }
+    
+            td {
+                background-color: #f9f9f9;
+            }
+    
+            /* Card Style for Table */
+            .container {
+                margin-top: 50px;
+            }
+    
+            .collapse {
+                background-color: #f9f9f9;
+            }
+    
+            /* Button Styling */
+            .btn-primary {
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+            }
+    
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+    
+            /* Badge Styling */
+            .badge-success {
+                background-color: #28a745;
+            }
+    
+            .badge-danger {
+                background-color: #dc3545;
+            }
+    
+            /* Custom Chart Container */
+            .chart-container {
+                margin-top: 15px;
+                display: flex;
+                width: 300px;
+                height: 300px;
+                justify-content: center;
+                align-items: center;
+                background-color: #f1f1f1;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+    
+            .chart-container canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+    
+            /* Row spacing */
+            .mb-3 {
+                margin-bottom: 1rem;
+            }
+        </style>
+    
+    
+    <div class="container mt-5">
+        <!-- Main Table -->
+        <table class="table table-bordered shadow-sm">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Total Attempts</th>
+                    <th>Top Score</th>
+                    <th>Average of Last 3 Attempts</th>
+                    <th>Overall Feedback</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in user_data %}
+                <tr>
+                    <td>{{ entry.position }}</td>
+                    <td>{{ all_results[entry.position][0] | length }}</td> <!-- Total Attempts -->
+                    <td>{{ all_results[entry.position][0] | map(attribute=2) | max }}</td> <!-- Top Score -->
+                    <td></td>
+                    {{ (all_results[entry.position][0] | slice(-3) | list | map(attribute=2) | list | sum) / (all_results[entry.position][0] | slice(-3) | list | length) }}
+ <!-- Average of Last 3 -->
+                    <td>
+                        {% if (all_results[entry.position][0] | map(attribute=2) | average) >= 45 %}
+                        <span class="badge badge-success">Positive</span>
+                        {% else %}
+                        <span class="badge badge-warning">Needs Improvement</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#subTable{{ loop.index }}">
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+                <tr class="collapse" id="subTable{{ loop.index }}">
+                    <td colspan="6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-list-ol"></i> Attempt Number</th>
+                                    <th><i class="fas fa-chart-line"></i> Score</th>
+                                    <th><i class="fas fa-percentage"></i> %Q/A</th>
+                                    <th><i class="fas fa-check-circle"></i> Status</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Interview Date</th>
+                                    <th><i class="fas fa-file-pdf"></i> Download PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in all_results[entry.position][0] %}
+                                <tr>
+                                    <td>{{ result[1] }}</td>
+                                    <td>{{ (result[2] / 50) * 100 }}%</td>
+                                    <td>{{ result[2] }}</td>
+                                    <td>
+                                        {% if result[2] >= 45 %}
+                                        <span class="badge badge-success">Passed</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ result[3] }}</td>
+                                    <td>
+                                        <a href="{{ url_for('download_pdf', position_name=result[0], part_number=result[1]) }}">Download PDF</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+        
+                        <!-- Sub-table Chart -->
+                        <div class="chart-container">
+                            <canvas id="chart{{ loop.index }}" width="100" height="100"></canvas>
+                        </div>
+        
+                        <!-- Chart.js Script to Plot Data -->
+                        <script>
+                            var ctx = document.getElementById('chart{{ loop.index }}').getContext('2d');
+                            var data = {
+                                labels: [{% for result in all_results[entry.position][0] %} "{{ result[3] }}", {% endfor %}],
+                                datasets: [
+                                    {
+                                        label: 'Score (%)',
+                                        data: [{% for result in all_results[entry.position][0] %} {{ (result[2] / 50) * 100 }}, {% endfor %}],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: '%Q/A',
+                                        data: [{% for result in all_results[entry.position][0] %} {{ result[2] }}, {% endfor %}],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            };
+        
+                            var options = {
+                                responsive: true,
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Interview Date'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Score / %Q/A'
+                                        }
+                                    }
+                                }
+                            };
+        
+                            new Chart(ctx, {
+                                type: 'line',  // Type of chart (line chart)
+                                data: data,
+                                options: options
+                            });
+                        </script>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+        </div>
+
+        <!-- Code Round Section -->
+        <div id="codeRoundSection" class="content-section">
+            <h2>Code Round Performance</h2>
+            <p>Details about your code round performance will appear here.</p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to toggle content visibility
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                // Hide all content sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the targeted content section
+                const targetId = link.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    </script>
+
+    <script>
+        function toggleEditForm() {
+            const displayDiv = document.getElementById('educationDisplay');
+            const formDiv = document.getElementById('educationForm');
+    
+            if (displayDiv.style.display === 'none') {
+                displayDiv.style.display = 'block';
+                formDiv.style.display = 'none';
+            } else {
+                displayDiv.style.display = 'none';
+                formDiv.style.display = 'block';
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const subTables = document.querySelectorAll('tr[id^="subTable"]');
+        
+            subTables.forEach((subTable, index) => {
+                const rows = subTable.querySelectorAll('tbody tr');
+                const labels = [];
+                const scores = [];
+                const percentages = [];
+        
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        const interviewDate = cells[4].innerText;
+                        const scorePercentage = parseFloat(cells[1].innerText);
+                        const adjustedPercentage = parseFloat(cells[2].innerText);
+        
+                        labels.push(interviewDate);
+                        scores.push(scorePercentage);
+                        percentages.push(adjustedPercentage);
+                    }
+                });
+        
+                const ctx = document.getElementById(`chart${index + 1}`).getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Score (100%)',
+                                data: scores,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            },
+                            {
+                                label: 'Adjusted %Q/A',
+                                data: percentages,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Interview Date'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        
+    </script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

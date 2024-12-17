@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Evaluator</title>
+    <script src="https://unpkg.com/monaco-editor/min/vs/loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+     <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        /* Basic styles */
+
+
+        h1 {
+            margin-bottom: 20px;
+            color: #3c3c3c; /* Darker text color for the heading */
+        }
+
+        #container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        #question-container{
+            width: 40%; /* Adjusted width for the question and editor sections */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff; /* White background for content areas */
+            transition: transform 0.2s; /* Smooth transition on hover */
+            margin-left: 2%;
+        }
+        #editor-container {
+            width: 55%; /* Adjusted width for the question and editor sections */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s; /* Smooth transition on hover */
+        }
+        #question-container:hover, #editor-container:hover {
+            transform: scale(1.02); /* Slightly enlarge the container on hover */
+        }
+
+        label {
+            margin: 10px 0;
+            display: block;
+            font-weight: bold; /* Make labels bold */
+            color: #333333; /* Dark text for labels */
+        }
+        .margin-view-overlays {
+            position: absolute;
+            width: calc(100% - 40px); /* Maintain margin */
+            height: calc(100% - 20px);
+            border-left: 5px solid #4caf50; /* Stylish green border */
+            border-right: 5px solid #4caf50;
+            box-sizing: border-box;
+            background-color: #1e1e1e; /* Dark background for a clean coding environment */
+            color: #f5f5f5; /* Light text for readability */
+            border-radius: 8px; /* Rounded corners */
+            padding: 10px;
+            overflow: hidden;
+          }
+          
+          .view-lines, .minimap-decorations-layer {
+            background-color: #1e1e1e; /* Matching background for consistency */
+            color: #dcdcdc; /* Softer text color */
+          }
+          
+          .monaco-editor .margin {
+            background-color: #2b2b2b; /* Slightly lighter for margin contrast */
+          }
+          
+          .monaco-editor .line-numbers {
+            color: #888; /* Gray for line numbers */
+          }
+          
+          .monaco-editor .current-line {
+            background-color: #2b2b2b; /* Highlight for active line */
+          }
+          
+          .monaco-editor .cursor {
+            border-left: 2px solid #4caf50; /* Green cursor for visibility */
+          }
+          
+          .monaco-editor .selection {
+            background-color: rgba(76, 175, 80, 0.2); /* Green highlight for selections */
+          }
+          
+          .monaco-editor .minimap {
+            background-color: #2b2b2b;
+            border-left: 1px solid #4caf50;
+          }
+          
+        select, input {
+            padding: 10px;
+            border: 2px solid #ff69b4; /* Pink border for inputs and selects */
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s; /* Smooth transition for border color */
+        }
+
+        select:focus, input:focus {
+            border-color: #32cd32; /* Lime green border on focus */
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4500; /* Orange background for buttons */
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        button:hover {
+            background-color: #ff6347; /* Lighter orange on hover */
+        }
+
+        #editor {
+            height: 450px;
+            width: 100%;
+            border-radius: 5px;
+            background-color: #333
+        }
+
+        #output {
+            margin-top: 20px;
+            background-color: #f0f8ff; /* Alice blue background for output */
+            padding: 10px;
+            height:100px;
+            border: 1px solid #add8e6; /* Light blue border for output */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            overflow-x: auto; /* Allow horizontal scrolling for long tables */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #dcdcdc;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        body.dark-mode #question-container,
+        body.dark-mode #editor-container {
+            background-color: #1e1e1e; /* Darker background for content areas */
+            border-color: #333333; /* Darker border for inputs */
+        }
+
+        body.dark-mode select,
+        body.dark-mode input {
+            border: 2px solid #bb86fc; /* Purple border for inputs and selects in dark mode */
+        }
+
+        body.dark-mode button {
+            background-color: #bb86fc; /* Purple background for buttons */
+        }
+
+        body.dark-mode button:hover {
+            background-color: #3700b3; /* Darker purple on hover */
+        }
+
+        .mode-toggle {
+            margin: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Question container */
+
+/* Label styles */
+label {
+    font-size: 18px;
+    color: #333; /* Dark gray color for text */
+}
+
+/* Dropdown styles */
+#questionDropdown {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3498db; /* Bright blue border */
+    border-radius: 5px;
+    background-color: #eaf7ff; /* Light blue background */
+    font-size: 16px;
+    color: #333; /* Dark gray color for text */
+    margin-bottom: 20px;
+}
+
+/* Question details */
+#question-details {
+    border-top: 2px solid #3498db; /* Bright blue border at the top */
+    padding-top: 20px;
+}
+
+/* Title styles */
+#question-title {
+    font-size: 24px;
+    color: #e74c3c; /* Bright red color for title */
+    margin: 10px 0;
+}
+
+/* Text styles */
+#question-text {
+    font-size: 16px;
+    color: #2c3e50; /* Dark blue-gray color */
+    margin-bottom: 15px;
+}
+
+/* Header styles for input/output */
+h3 {
+    font-size: 18px;
+    color: #8e44ad; /* Purple color */
+    margin-top: 20px;
+}
+
+/* Preformatted text styles */
+pre {
+    background-color: #f7f9fc; /* Very light gray background */
+    border: 1px solid #3498db; /* Bright blue border */
+    border-radius: 5px;
+    padding: 10px;
+    overflow-x: auto; /* Enable horizontal scrolling if necessary */
+    color: #34495e; /* Darker blue-gray for text */
+}
+    </style>
+</head>
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="{{ url_for('index') }}" class="logo d-flex align-items-center">
+            <!-- Logo Image -->
+            <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Sakshatkar Logo" class="logo-img">
+            <!-- Logo Name -->
+            <h1 class="sitename">Sakshatkar</h1>
+        </a>
+        
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+                    <style>
+    
+    #userDropdown {
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    #userDropdown img
+    {
+      margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+      border-radius: 50%;
+    }
+    
+    /* Dropdown Menu Styles */
+    #dropdownMenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      background-color: #222;
+      color: white;
+      list-style: none;
+      padding: 12px 0;
+      border-radius: 8px;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+      z-index: 10;
+      margin-top: 10px;
+      margin-right: 100px;
+    }
+    
+    /* Dropdown Item Styles */
+    #dropdownMenu li {
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      transition: background 0.3s ease;
+    }
+    
+    #dropdownMenu li:hover {
+      background-color: #333;
+    }
+    
+    #dropdownMenu li:last-child {
+      border-bottom: none;
+    }
+    
+    
+    
+    /* Button for Theme Toggle */
+    #theme-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    
+    #theme-text{
+      color: white;
+      text-decoration: none;
+      display: flex;
+      font-size: 14px;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    #theme-icon{
+      font-size:14px;
+    }
+    /* Hover and Active Styles */
+    #dropdownMenu a:hover {
+      color: #aaa;
+    }
+    
+    .dropdown-items{
+      font-size: 12px;
+    }
+    
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .dropdown-item{
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    
+    
+    #hero h1 {
+      color: #a7ffeb; /* Light teal color */
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+    }
+    
+    /* Subtitle */
+    #hero h2 {
+      color: #ffeb3b; /* Yellow color to pop against dark background */
+      font-size: 2rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Body text */
+    #hero p {
+      color: #ffffff; /* White color */
+      font-size: 1.2rem;
+      line-height: 1.6;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Button styling */
+    #hero .btn {
+      background-color: #ff5722; /* Bright orange for contrast */
+      color: #ffffff;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    
+    #hero .btn:hover {
+      background-color: #e64a19; /* Darker orange on hover */
+    }
+                  </style>
+                  
+                  {% if session.get('user_name') %}
+                      <li>
+                          <a href="{{ url_for('forum') }}">
+                            <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                          </a>
+                      </li>
+                  {% endif %}
+    
+                  
+                  <ul>
+                      {% if session.get('user_name') %}
+                          <li style="list-style: none; font-size: 16px; position: relative;">
+                            <a href="#" id="userDropdown">
+                              {% if session.get('profile_image') %}
+                                  <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                              {% else %}
+                                  <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                              {% endif %}
+                              <span>{{ session['user_name'] }}</span>
+                              <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                          </a>
+                          
+                  
+                              <!-- Dropdown Menu -->
+                              <ul id="dropdownMenu">
+                                  <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                      <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                      {% if not session.get('profile_image') %}
+                                        <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                      {% endif %}
+                                      
+                                      <div class="dropdown-items">{{ session['email'] }}</div>
+    
+                                  </li>
+                                  <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                                  <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                                  <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                                  <li>
+                                    <a>
+                                      <button id="theme-toggle" onclick="toggleTheme()">
+                                          <i class="fas fa-sun" id="theme-icon"></i>
+                                          <span id="theme-text">Light</span>
+                                      </button>
+                                    </a>
+                                  </li>
+                              </ul>
+                          </li>
+    
+    
+                  
+                          <!-- Toggle Dropdown Script -->
+                          <script>
+                              document.getElementById('userDropdown').addEventListener('click', function(event) {
+                                  event.preventDefault();
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                              });
+                  
+                              // Hide dropdown when clicking outside
+                              window.addEventListener('click', function(event) {
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  if (!event.target.closest('#userDropdown')) {
+                                      dropdownMenu.style.display = 'none';
+                                  }
+                              });
+                  
+                              // Toggle Theme Function
+                              function toggleTheme() {
+                                  const themeIcon = document.getElementById('theme-icon');
+                                  const themeText = document.getElementById('theme-text');
+                                  if (themeIcon.classList.contains('fa-sun')) {
+                                      themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                      themeText.textContent = 'Dark';
+                                  } else {
+                                      themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                      themeText.textContent = 'Light';
+                                  }
+                              }
+                          </script>
+                      {% else %}
+                          <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                      {% endif %}
+                  </ul>
+    
+    
+                  <ul class="menu-list">
+                    {% if session.get('user_name') %}
+                      <li class="online-indicator">
+                        <a href="{{ url_for('user') }}" class="notification-icon">
+                          <div class="alerts alert-infos" role="alert">
+                            <i class="fas fa-bell position-relative">
+                              {% if unread_count > 0 %}
+                                <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                              {% endif %}
+                            </i>
+                          </div>
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                  
+    
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+
+ <!-- Light mode icon -->
+
+<div id="container" style="margin-bottom:50px; margin-top:100px;">
+    <!-- <div class="mode-toggle" id="modeToggle"><i class="fas fa-sun"></i></div> -->
+    <div id="question-container">
+        <!-- Timer Div (Top Left Corner) -->
+        <div id="timer" style="position: absolute; top: 10px; left: 10px; font-size: 18px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px 10px; border-radius: 5px;">
+            Timer: 120m 0s
+        </div>
+    
+        <div class="attempt-container">
+            {% for question_id, attempts in attempt_status.items() %}
+                <div class="attempt-circle {% if attempts == 1 %}half-circle{% elif attempts == 2 %}full-circle{% endif %}">
+                    {% if attempts == 2 %}
+                        <span class="check-mark">&#10003;</span> <!-- Checkmark for two attempts -->
+                    {% else %}
+                        {{ attempts }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <label for="questionDropdown">Select Question:</label>
+    
+        <!-- Table for question selection -->
+        <table id="questionDropdown" style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Question Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Questions will be dynamically populated here -->
+            </tbody>
+        </table>
+    
+        <div id="question-details">
+            <h2 id="question-title">Question Title</h2>
+            <p id="question-text">This is where the question text will go.</p>
+            <h3>Input:</h3>
+            <pre id="input-example"></pre>
+            <h3>Expected Output:</h3>
+            <pre id="expected-output"></pre>
+        </div>
+    </div>
+    
+    <script>
+        window.onload = function() {
+            // Get the current time
+            const now = new Date();
+            const hours = now.getHours();
+    
+            // Check if the time is 20:00 (8 PM) or 22:00 (10 PM)
+            if (hours === 14 || hours === 16) {
+                // Timer display element
+                const timerElement = document.getElementById('timer');
+    
+                // Set 2-hour countdown timer
+                let countdownTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+    
+                function updateTimer() {
+                    const minutes = Math.floor(countdownTime / (1000 * 60));
+                    const seconds = Math.floor((countdownTime % (1000 * 60)) / 1000);
+                    timerElement.innerHTML = `Timer: ${minutes}m ${seconds}s`;
+    
+                    if (countdownTime <= 0) {
+                        clearInterval(timerInterval);
+                        timerElement.innerHTML = 'Time\'s up!';
+                    }
+    
+                    countdownTime -= 1000;
+                }
+    
+                const timerInterval = setInterval(updateTimer, 1000);
+            }
+        };
+    </script>
+    
+    
+
+    <div id="editor-container">
+        <div class="editor-controls">
+            <label for="language">Select Language:</label>
+            <select id="language">
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+            </select>
+            <input type="text" id="className" placeholder="Class Name (Java only)" style="display:none;" />
+            <button id="run">Run Code</button>
+        </div>
+        <div id="editor"></div>
+        <div id="output"></div>
+    </div>
+</div>
+
+
+
+
+<style>
+    .attempt-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .attempt-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: relative;
+        border: 3px solid lightgray;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        font-weight: bold;
+    }
+    .half-circle {
+        background: linear-gradient(to top, red 50%, lightgray 50%);
+    }
+    .full-circle {
+        background-color: rgb(109, 235, 109);
+    }
+    .check-mark {
+        position: absolute;
+        font-size: 30px;
+        color: green;
+    }
+</style>
+
+<footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Monaco Editor
+    require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor/min/vs' }}); 
+    require(['vs/editor/editor.main'], function () {
+        const editor = monaco.editor.create(document.getElementById('editor'), {
+            value: '',
+            language: 'python'
+        });
+
+        document.getElementById('language').addEventListener('change', function() {
+            const language = this.value;
+            monaco.editor.setModelLanguage(editor.getModel(), language);
+            document.getElementById('className').style.display = language === 'java' ? 'block' : 'none';
+        });
+
+        document.getElementById('run').addEventListener('click', async function() {
+            const code = editor.getValue();
+            const language = document.getElementById('language').value;
+            const className = document.getElementById('className').value || 'user_code'; // Default class name if not provided
+            const questionId = document.querySelector("#questionDropdown tr.selected")?.dataset.questionId || null; // Get the selected question ID
+
+            if (!questionId) {
+                alert("Please select a question.");
+                return;
+            }
+
+            const response = await fetch('/evaluate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, language, class_name: className, question_id: questionId })
+            });
+
+            const result = await response.json();
+            // Convert JSON result to a table
+            displayOutputAsTable(result);
+        });
+
+        // Sample questions (you can fetch this from your server)
+        const questions = [
+            {
+                title: "Addition Function",
+                question: "Write a function to add two numbers.",
+                input: "2 3\n",
+                expected_output: "5\n"
+            },
+            {
+                title: "Multiplication Function",
+                question: "Write a function to multiply two numbers.",
+                input: "2 3\n",
+                expected_output: "6\n"
+            },
+            {
+                title: "Even Number Check",
+                question: "Check if a number is even.",
+                input: "4\n",
+                expected_output: "True\n"
+            },
+            {
+                title: "String Reversal",
+                question: "Reverse a string.",
+                input: "abcd\n",
+                expected_output: "dcba\n"
+            },
+            {
+                title: "Factorial Calculation",
+                question: "Calculate factorial of a number.",
+                input: "5\n",
+                expected_output: "120\n"
+            }
+        ];
+
+        // Populate the question table
+        const questionTable = document.getElementById('questionDropdown');
+        questions.forEach((q, index) => {
+            const row = document.createElement('tr');
+            row.dataset.questionId = index; // Store the question ID
+            row.innerHTML = `<td>${q.title}</td>`;
+            
+            // Add event listener to row to select question
+            row.addEventListener("click", function() {
+                document.querySelectorAll("#questionDropdown tr").forEach(r => r.classList.remove('selected')); // Remove selected class from all rows
+                row.classList.add('selected'); // Add selected class to clicked row
+                updateQuestionDetails(index);
+            });
+
+            questionTable.appendChild(row);
+        });
+
+        // Function to update the displayed question based on selection
+        function updateQuestionDetails(questionIndex) {
+            const selectedQuestion = questions[questionIndex];
+            document.getElementById('question-title').innerText = selectedQuestion.title;
+            document.getElementById('question-text').innerText = selectedQuestion.question;
+            document.getElementById('input-example').innerText = selectedQuestion.input;
+            document.getElementById('expected-output').innerText = selectedQuestion.expected_output;
+            editor.setValue(''); // Clear the editor when changing questions
+        }
+
+        // Set default question
+        updateQuestionDetails(0); // Default to first question
+
+        // Dark/Light mode toggle
+        const modeToggle = document.getElementById('modeToggle');
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.body.classList.contains('dark-mode') ? 'fa-moon' : 'fa-sun';
+            modeToggle.innerHTML = `<i class="fas ${icon}"></i>`;
+        });
+
+        // Function to display output as a table
+        function displayOutputAsTable(result) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous output
+            const table = document.createElement('table');
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            for (const key in result) {
+                const th = document.createElement('th');
+                th.innerText = key;
+                headerRow.appendChild(th);
+            }
+            table.appendChild(headerRow);
+
+            // Create data row
+            const dataRow = document.createElement('tr');
+            for (const key in result) {
+                const td = document.createElement('td');
+                td.innerText = result[key];
+                dataRow.appendChild(td);
+            }
+            table.appendChild(dataRow);
+
+            outputDiv.appendChild(table);
+        }
+    });
+</script>
+
+</body>
+</html>

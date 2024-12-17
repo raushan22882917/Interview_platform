@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.S.T.C.V Chatbot</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .left, .right {
+            width: 45%;
+        }
+        .editor {
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <!-- Left Side: User Inputs -->
+    <div class="left">
+        <h3>Step: {{ step }}</h3>
+        <p><strong>Question:</strong> {{ question }}</p>
+
+        {% if step in responses %}
+            <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+            <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+        {% endif %}
+
+        <form method="POST">
+            <label for="user_input">Enter your input for this step:</label><br>
+            {% if step == 'Code' %}
+                <div id="editor" class="editor"></div>
+                <input type="hidden" name="user_input" id="code_input">
+            {% else %}
+                <textarea id="user_input" name="user_input" rows="4" cols="50" required></textarea>
+            {% endif %}
+            <br><br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <p><strong>Current Step:</strong> {{ step }}</p>
+    </div>
+
+    <!-- Right Side: Feedback -->
+    <div class="right">
+        <h3>Feedback</h3>
+        <ul>
+            {% for step, data in responses.items() %}
+                <li>
+                    <h5>{{ step }}</h5>
+                    <p><strong>User Input:</strong> {{ data['input'] }}</p>
+                    <p><strong>Feedback:</strong> {{ data['feedback'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    {% if step == 'Code' %}
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+
+        document.querySelector("form").onsubmit = function() {
+            var code = editor.getValue();
+            document.getElementById("code_input").value = code;
+        };
+    {% endif %}
+</script>
+
+</body>
+</html>

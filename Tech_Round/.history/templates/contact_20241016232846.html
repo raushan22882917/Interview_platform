@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+
+
+      .contact-container {
+        display: flex;
+        width: 60%;
+        max-width: 1000px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 100px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .contact-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-left: 2px solid black; /* The diagonal line */
+        transform: translateX(-50%) translateY(50%) rotate(45deg); /* Rotate and position the line */
+    }
+
+    .left-side {
+        position: relative;
+        width: 50%;
+        background-color: transparent;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #333;
+    }
+
+    .contact-info {
+        margin-bottom: 20px;
+    }
+
+    .contact-info i {
+        font-size: 20px;
+        color: #007BFF;
+        margin-right: 10px;
+    }
+
+    .contact-info h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+    .contact-info p {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .right-side {
+        width: 50%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007BFF;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    
+    </style>
+</head>
+<body>
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+        <h1 class="sitename">Sakshatkar'</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+
+          {% if session.get('user_name') %}
+            <li><a href="{{url_for('blog')}}">Blog</a></li>
+          {% endif %}
+
+          <li><a href="{{url_for('about')}}">About</a></li>
+          <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+          <li><a href="{{url_for('contact')}}">Contact</a></li>
+          <!-- Add this CSS in your <style> section or CSS file -->
+                <style>
+
+                  .alert h1 {
+                    font-size: 1.5rem; /* Font size for the heading */
+                    color: #31708f; /* Dark blue text color */
+                    margin-right: 15px; /* Space between heading and icon */
+                }
+                
+                
+                .badge {
+                    background-color: #d9534f;
+                    color: white; /* White text color */
+                    padding: 4px 4px; /* Padding for the badge */
+                    border-radius: .5rem; /* Rounded corners for the badge */
+                    font-weight: bold; /* Bold text */
+                    margin-bottom: -180px;
+                }
+                
+                .position-relative {
+                    position: relative; /* Position relative for positioning child elements */
+                }
+                
+                .position-absolute {
+                    position: absolute; /* Position absolute for badge placement */
+                }
+                </style>
+
+                {% if session.get('user_name') %}
+                    <li><a href="{{url_for('published_data')}}">Publish Interview</a></li>
+                {% endif %}
+
+
+                <!-- Your updated HTML with online indicator -->
+                <ul class="menu-list">
+                  {% if session.get('user_name') %}
+                    <li class="online-indicator">
+                      <a href="{{ url_for('user') }}" class="notification-icon">
+                        <div class="alerts alert-infos" role="alert">
+                          <i class="fas fa-bell position-relative">
+                            {% if unread_count > 0 %}
+                              <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                            {% endif %}
+                          </i>
+                        </div>
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+                <style>
+                  /* Apply general styling to the list */
+.menu-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-list .online-indicator {
+  font-size: 24px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Style the link */
+.menu-list .online-indicator a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Adjust the icon size */
+.menu-list .online-indicator a i {
+  font-size: 18px;
+}
+
+/* Add hover effect */
+.menu-list .online-indicator a:hover {
+  color: transparent; /* Change this color as needed */
+  cursor: pointer;
+}
+
+                </style>
+                
+
+
+
+
+          <ul>
+            {% if session.get('user_name') %}
+                <li style="list-style: none; font-size: 18px; position: relative;">
+                  <a href="#" style="text-decoration: none; color: white; font-weight: bold;" id="userDropdown">
+                    {% if session.get('profile_image') %}
+                        <!-- If user has uploaded a profile image, display it -->
+                        <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
+                    {% else %}
+                        <!-- If no profile image, show a default human icon -->
+                        <i class="fas fa-user-circle" style="font-size: 30px; margin-right: 10px;"></i>
+                    {% endif %}
+                    {{ session['user_name'] }}
+                    <!-- Dropdown icon (Font Awesome) -->
+                    <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+                </a>
+                
+                    
+                    <!-- Dropdown menu -->
+                    <ul id="dropdownMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: #333; list-style: none; padding: 10px; border-radius: 5px;">
+                        <li style="padding: 5px 0;">
+                            <a href="{{ url_for('profile') }}" style="color: white; text-decoration: none;">
+                                <!-- Dashboard icon (Font Awesome) -->
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li style="padding: 5px 0;">
+                          <a href="{{ url_for('privacy') }}" style="color: white; text-decoration: none;">
+                              <!-- Shield icon for privacy (Font Awesome) -->
+                              <i class="fas fa-shield-alt"></i> Privacy Policy
+                          </a>
+                      </li>
+                      
+                        <li style="padding: 5px 0;">
+                            <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
+                                <!-- Logout icon (Font Awesome) -->
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+        
+                <!-- Script to toggle dropdown -->
+                <script>
+                    document.getElementById('userDropdown').addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const dropdownMenu = document.getElementById('dropdownMenu');
+                        dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+                    });
+        
+                    // Optional: Hide dropdown when clicking outside
+                    window.addEventListener('click', function(event) {
+                        const dropdownMenu = document.getElementById('dropdownMenu');
+                        if (!event.target.closest('#userDropdown')) {
+                            dropdownMenu.style.display = 'none';
+                        }
+                    });
+                </script>
+        
+            {% else %}
+                <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+            {% endif %}
+        </ul>
+
+        <ul>
+          <li>
+              <button id="theme-toggle" onclick="toggleTheme()" style="background-color: transparent; border: none;">
+                  <i class="fas fa-sun" id="theme-icon"></i>
+              </button>
+          </li>
+      </ul>
+
+      <script>
+        // Function to toggle between light and dark modes
+        function toggleTheme() {
+            // Toggle dark mode class on body
+            document.body.classList.toggle('dark-mode');
+
+            // Change the icon based on the current theme
+            const themeIcon = document.getElementById('theme-icon');
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+    </script>
+        
+        <!-- Include Font Awesome in your project -->
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        
+        
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <div class="contact-container">
+    <!-- Left Side: Image -->
+    <div class="left-side">
+      <div class="contact-info">
+        <h3><i class="fas fa-map-marker-alt"></i> Address</h3>
+        Shri Ramswaroop Memorial University is a private university in Barabanki, Uttar Pradesh, India
+      </div>
+      <div class="contact-info">
+        <h3><i class="fas fa-phone"></i> Phone</h3>
+        <p>+91 9699234605</p>
+        <p>+91 6398184799</p>
+
+      </div>
+      <div class="contact-info">
+        <h3><i class="fas fa-envelope"></i> Email</h3>
+        <p>sakshatakr@gmail.com</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Form -->
+    <div class="right-side">
+      <div class="rsdata">
+        <h1>Contact Us</h1>
+        <form action="/contact" method="post">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+  </div>
+  </div>
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe Now</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Subscribe to Unlock Full Access</h1>
+        <p class="text-center">Choose a subscription plan and unlock all interview questions for the selected duration.</p>
+        
+        <div class="row justify-content-center">
+            <!-- 1 Month Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">1 Month</h5>
+                        <p class="card-text">$0.1</p>
+                        <div id="paypal-button-1-month"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Months Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">3 Months</h5>
+                        <p class="card-text">$0.2</p>
+                        <div id="paypal-button-3-months"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6 Months Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">6 Months</h5>
+                        <p class="card-text">$0.3</p>
+                        <div id="paypal-button-6-months"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12 Months Subscription -->
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">12 Months</h5>
+                        <p class="card-text">$0.4</p>
+                        <div id="paypal-button-12-months"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function renderPayPalButton(duration, amount, containerId) {
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amount
+                            },
+                            description: duration + " subscription"
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Subscription successful for ' + duration + '! Thank you, ' + details.payer.name.given_name + '.');
+                        // Redirect to a success page or call backend to save the subscription
+                        window.location.href = '/process_subscription?duration=' + encodeURIComponent(duration);
+                    });
+                }
+            }).render(containerId);
+        }
+
+        // Render PayPal buttons for each subscription type
+        renderPayPalButton('1 Month', '0.1', '#paypal-button-1-month');
+        renderPayPalButton('3 Months', '0.2', '#paypal-button-3-months');
+        renderPayPalButton('6 Months', '0.3', '#paypal-button-6-months');
+        renderPayPalButton('12 Months', '0.4', '#paypal-button-12-months');
+    </script>
+</body>
+</html>

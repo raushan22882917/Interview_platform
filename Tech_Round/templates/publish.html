@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Published Scores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+        table {
+            margin: 20px auto;
+            width: 90%;
+        }
+        th, td {
+            text-align: center;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Published Scores</h1>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Position</th>
+                    <th>Question 1</th>
+                    <th>Answer 1</th>
+                    <th>Question 2</th>
+                    <th>Answer 2</th>
+                    <th>Question 3</th>
+                    <th>Answer 3</th>
+                    <th>Question 4</th>
+                    <th>Answer 4</th>
+                    <th>Question 5</th>
+                    <th>Answer 5</th>
+                    <th>User Email</th>
+                    <th>Created At</th>
+                    <th>Likes</th>
+                    <th>Dislikes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in published_scores %}
+                <tr>
+                    <td>{{ score.id }}</td>
+                    <td>{{ score.position }}</td>
+                    <td>{{ score.question_1 }}</td>
+                    <td>{{ score.answer_1 }}</td>
+                    <td>{{ score.question_2 }}</td>
+                    <td>{{ score.answer_2 }}</td>
+                    <td>{{ score.question_3 }}</td>
+                    <td>{{ score.answer_3 }}</td>
+                    <td>{{ score.question_4 }}</td>
+                    <td>{{ score.answer_4 }}</td>
+                    <td>{{ score.question_5 }}</td>
+                    <td>{{ score.answer_5 }}</td>
+                    <td>{{ score.user_email }}</td>
+                    <td>{{ score.created_at }}</td>
+                    <td>{{ score.like_count }}</td>
+                    <td>{{ score.dislike_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Comments</h2>
+        {% for publish_id, comment_list in comments.items() %}
+            <h4>Comments for Publish ID: {{ publish_id }}</h4>
+            <ul>
+                {% for comment in comment_list %}
+                    <li>{{ comment.user_email }}: {{ comment.comment }} ({{ comment.created_at }})</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

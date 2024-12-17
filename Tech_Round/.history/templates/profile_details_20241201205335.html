@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            background-color: #f8f9fa;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .sidebar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            color: #495057;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        .separator {
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .content-section {
+            display: none;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        .streak-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .streak-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100px;
+        }
+        .streak-item.locked {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .streak-item.unlocked {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .streak-level {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .streak-icon {
+            font-size: 30px;
+        }
+
+        .contributions-container {
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          
+          h1 {
+            margin-bottom: 10px;
+          }
+          
+          #loading {
+            font-size: 14px;
+            margin-bottom: 20px;
+          }
+          .calendar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .calendar-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .month {
+            width: 16%;  /* Adjusted to make it fit 6 months in a row */
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .month h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        
+        .day {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            border-radius: 4px;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .day .score {
+            font-size: 8px;
+            color: white;
+        }
+        
+        .day:hover {
+            opacity: 0.8;
+        }
+
+        .graph-container {
+            margin: 0 auto;  /* Centers the graph */
+            padding: 20px;
+            background-color: #f8f9fa;  /* Light gray background */
+            border-radius: 10px;  /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+        }
+    
+        
+    
+        
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            .graph-container {
+                padding: 10px;  /* Less padding on smaller screens */
+            }
+    
+            .graph-container h2 {
+                font-size: 20px;  /* Smaller font size for titles */
+            }
+    
+            .graph-container .plotly-graph {
+                height: 300px;  /* Smaller graph on mobile */
+            }
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+          }
+        
+          .table th {
+            background-color: #6c5ce7;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            font-size: 16px;
+          }
+        
+          .table td {
+            padding: 8px 12px;
+            color: #333;
+            font-size: 14px;
+          }
+        
+          .table tbody tr:nth-child(odd) {
+            background-color: #dfe6e9;
+          }
+        
+          .table tbody tr:nth-child(even) {
+            background-color: #b2bec3;
+          }
+        
+          .table tbody tr:hover {
+            background-color: #ffeaa7;
+            cursor: pointer;
+          }
+        
+          .table i {
+            margin-right: 5px;
+          }
+        
+          .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+          }
+        
+          .calendar-card {
+            width: 250px;
+            height: 250px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+          }
+        
+          .card-header {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+          }
+        
+
+        
+          .days_data {
+            font-size: 80px;
+            font-weight: bold;
+            color: #ffeb3b;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          }
+
+          #educationDisplay .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #educationDisplay .card-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        #educationDisplay .row p {
+            margin-bottom: 1rem;
+        }
+        #educationDisplay .row p strong {
+            color: #333;
+            font-weight: 500;
+        }
+        #educationDisplay .text-end p {
+            font-weight: 600;
+            color: #555;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .text-muted {
+            font-style: italic;
+            color: #888;
+        }
+
+        #scoreChart{
+            width: 400px;
+            height: 400px;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="#">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+                    <style>
+    
+    #userDropdown {
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    #userDropdown img
+    {
+      margin-right: 5px; /* Adjusted to 5px for a smaller gap */
+      border-radius: 50%;
+    }
+    
+    /* Dropdown Menu Styles */
+    #dropdownMenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      background-color: #222;
+      color: white;
+      list-style: none;
+      padding: 12px 0;
+      border-radius: 8px;
+      width: 200px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+      z-index: 10;
+      margin-top: 10px;
+      margin-right: 100px;
+    }
+    
+    /* Dropdown Item Styles */
+    #dropdownMenu li {
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      transition: background 0.3s ease;
+    }
+    
+    #dropdownMenu li:hover {
+      background-color: #333;
+    }
+    
+    #dropdownMenu li:last-child {
+      border-bottom: none;
+    }
+    
+    
+    
+    /* Button for Theme Toggle */
+    #theme-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    
+    #theme-text{
+      color: white;
+      text-decoration: none;
+      display: flex;
+      font-size: 14px;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    #theme-icon{
+      font-size:14px;
+    }
+    /* Hover and Active Styles */
+    #dropdownMenu a:hover {
+      color: #aaa;
+    }
+    
+    .dropdown-items{
+      font-size: 12px;
+    }
+    
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .dropdown-item{
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    
+    
+    #hero h1 {
+      color: #a7ffeb; /* Light teal color */
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
+    }
+    
+    /* Subtitle */
+    #hero h2 {
+      color: #ffeb3b; /* Yellow color to pop against dark background */
+      font-size: 2rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Body text */
+    #hero{
+      color: #ffffff; /* White color */
+      font-size: 1.2rem;
+      line-height: 1.6;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Button styling */
+    #hero .btn {
+      background-color: #ff5722; /* Bright orange for contrast */
+      color: #ffffff;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    
+    #hero .btn:hover {
+      background-color: #e64a19; /* Darker orange on hover */
+    }
+                  </style>
+                  
+                  {% if session.get('user_name') %}
+                      <li>
+                          <a href="{{ url_for('forum') }}">
+                            <i class="fas fa-comments"></i> <!-- This is an example icon for a community -->
+                          </a>
+                      </li>
+                  {% endif %}
+    
+                  
+                  <ul>
+                      {% if session.get('user_name') %}
+                          <li style="list-style: none; font-size: 16px; position: relative;">
+                            <a href="#" id="userDropdown">
+                              {% if session.get('profile_image') %}
+                                  <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="32" height="32">
+                              {% else %}
+                                  <i class="fas fa-user-circle" style="font-size: 32px;"></i>
+                              {% endif %}
+                              <span>{{ session['user_name'] }}</span>
+                              <i class="fas fa-caret-down" style="margin-left: 5px;"></i> <!-- Dropdown icon -->
+                          </a>
+                          
+                  
+                              <!-- Dropdown Menu -->
+                              <ul id="dropdownMenu">
+                                  <li style="text-align: center; font-weight: bold;border-radius: 50%;">
+                                      <img src="{{ url_for('static', filename='uploads/' + (session.get('profile_image') if session.get('profile_image') else '')) }}" alt="Profile Image" width="48" height="48" style="margin-bottom: 10px; border-radius: 50%;" />
+                                      {% if not session.get('profile_image') %}
+                                        <i class="fa fa-user" style="font-size: 48px; color: #888;"></i>
+                                      {% endif %}
+                                      
+                                      <div class="dropdown-items">{{ session['email'] }}</div>
+    
+                                  </li>
+                                  <li><a href="{{ url_for('profile') }}"><i class="fas fa-tachometer-alt"></i><span class="dropdown-item">Dashboard</span></a></li>
+                                  <li><a href="{{ url_for('privacy') }}"><i class="fas fa-shield-alt"></i><span class="dropdown-item">Privacy</span></a></li>
+                                  <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i><span class="dropdown-item">Logout</span></a></li>
+                                  <li>
+                                    <a>
+                                      <button id="theme-toggle" onclick="toggleTheme()">
+                                          <i class="fas fa-sun" id="theme-icon"></i>
+                                          <span id="theme-text">Light</span>
+                                      </button>
+                                    </a>
+                                  </li>
+                              </ul>
+                          </li>
+    
+    
+                  
+                          <!-- Toggle Dropdown Script -->
+                          <script>
+                              document.getElementById('userDropdown').addEventListener('click', function(event) {
+                                  event.preventDefault();
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                              });
+                  
+                              // Hide dropdown when clicking outside
+                              window.addEventListener('click', function(event) {
+                                  const dropdownMenu = document.getElementById('dropdownMenu');
+                                  if (!event.target.closest('#userDropdown')) {
+                                      dropdownMenu.style.display = 'none';
+                                  }
+                              });
+                  
+                              // Toggle Theme Function
+                              function toggleTheme() {
+                                  const themeIcon = document.getElementById('theme-icon');
+                                  const themeText = document.getElementById('theme-text');
+                                  if (themeIcon.classList.contains('fa-sun')) {
+                                      themeIcon.classList.replace('fa-sun', 'fa-moon');
+                                      themeText.textContent = 'Dark';
+                                  } else {
+                                      themeIcon.classList.replace('fa-moon', 'fa-sun');
+                                      themeText.textContent = 'Light';
+                                  }
+                              }
+                          </script>
+                      {% else %}
+                          <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                      {% endif %}
+                  </ul>
+    
+    
+                  <ul class="menu-list">
+                    {% if session.get('user_name') %}
+                      <li class="online-indicator">
+                        <a href="{{ url_for('user') }}" class="notification-icon">
+                          <div class="alerts alert-infos" role="alert">
+                            <i class="fas fa-bell position-relative">
+                              {% if unread_count > 0 %}
+                                <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                              {% endif %}
+                            </i>
+                          </div>
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                  
+    
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+    
+    <div class="sidebar">
+        <!-- Profile Image Section -->
+        <div class="text-center mb-4">
+            <!-- Profile Image -->
+            {% if profile_image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ profile_image) }}" alt="Profile Image" class="rounded-circle profile-image">
+            {% else %}
+            <img src="https://via.placeholder.com/150" alt="Profile Image" class="rounded-circle profile-image">
+            {% endif %}
+        
+            <!-- Upload Form -->
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                <label for="profile_image" class="form-label fw-bold">Upload Profile Image</label>
+                <input type="file" name="profile_image" id="profile_image" class="form-control mb-2">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Update</button>
+            </form>
+            <div class="separator"></div>
+        
+            <!-- Social Media Links -->
+            
+        </div>
+        
+
+        <!-- Separator -->
+        <div class="separator"></div>
+
+        <!-- Sidebar Buttons -->
+        <a class="nav-link" data-target="educationSection">
+            <i class="fas fa-graduation-cap"></i> Education
+        </a>
+        <a class="nav-link" data-target="techRoundSection">
+            <i class="fas fa-laptop-code"></i> Tech Round
+        </a>
+        <a class="nav-link" data-target="hrRoundSection">
+            <i class="fas fa-users"></i> HR Round
+        </a>
+        
+        <a class="nav-link" data-target="codeRoundSection">
+            <i class="fas fa-code"></i> Code Round
+        </a>
+
+        <div class="separator"></div>
+        <div class="separator"></div>
+
+
+        <div class="mt-4">
+            {% if education_details and education_details[7] %}
+            <p>
+                <strong><i class="fab fa-linkedin fa-lg text-primary"></i></strong>
+                <a href="{{ education_details[7] }}" target="_blank" class="text-decoration-none text-primary ms-2">
+                    LinkedIn Profile
+                </a>
+            </p>
+            {% else %}
+            <p class="text-muted"><i class="fab fa-linkedin fa-lg text-secondary"></i> LinkedIn not provided</p>
+            {% endif %}
+    
+            {% if education_details and education_details[8] %}
+            
+            <p>
+                <strong><i class="fab fa-github fa-lg text-dark"></i></strong>
+                <a href="{{ education_details[9] }}" target="_blank" class="text-decoration-none text-dark ms-2">
+                    GitHub Profile
+                </a>
+            </p>
+            
+            {% else %}
+            <p class="text-muted"><i class="fab fa-instagram fa-lg text-secondary"></i> Instagram not provided</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Education Section (Visible by Default) -->
+        <div id="educationSection" class="content-section active">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-graduation-cap"></i> Educational Details</h4>
+                    <button class="btn btn-outline-light btn-sm" onclick="toggleEditForm()">Edit Details <i class="fas fa-edit"></i></button>
+                </div>
+                <div class="card-body">
+                    <!-- Display Educational Details -->
+                     <div style="display:flex; justify-content: space-between;">
+                        <div id="educationDisplay" class="card shadow-sm mt-4">
+                            
+                            <div class="card-body">
+                                {% if education_details %}
+                                    <p><strong><i class="fas fa-user"></i> Name:</strong> {{ education_details[2] }} {{ education_details[3] }}</p>
+                                    <p><strong><i class="fas fa-university"></i> College Name:</strong> {{ education_details[4] }}</p>
+                                    <p><strong><i class="fas fa-calendar-alt"></i> Date of Birth:</strong> {{ education_details[5] }}</p>
+                                    <p><strong><i class="fas fa-book-reader"></i> Year of Study:</strong> {{ education_details[6] }}</p>
+                                    <p><strong><i class="fas fa-graduation-cap"></i> Graduation Year:</strong> {{ education_details[7] }}</p>
+                                {% else %}
+                                    <p class="text-muted"><i class="fas fa-exclamation-circle"></i> No educational details found. Click "Edit" to add them.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                    <div class="card-container">
+                        <div class="calendar-card">
+                          <div class="card-header">Remaining Days</div>
+                          <div class="card-body">
+                            <div class="days_data">{{ remaining_days[1] if remaining_days and remaining_days|length == 2 and remaining_days[1] is integer else 0 }}</div>
+    
+                          </div>
+                        </div>
+                      </div>
+                </div>
+        
+                    <!-- Edit Form -->
+                    <div id="educationForm" style="display: none;">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label"><i class="fas fa-user"></i> First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control" value="{{ education_details[0] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label"><i class="fas fa-user"></i> Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control" value="{{ education_details[1] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="college_name" class="form-label"><i class="fas fa-university"></i> College Name</label>
+                                <input type="text" name="college_name" id="college_name" class="form-control" value="{{ education_details[2] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dob" class="form-label"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                                <input type="date" name="dob" id="dob" class="form-control" value="{{ education_details[3] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="year_of_study" class="form-label"><i class="fas fa-book-reader"></i> Year of Study</label>
+                                <input type="text" name="year_of_study" id="year_of_study" class="form-control" value="{{ education_details[4] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="graduation_year" class="form-label"><i class="fas fa-graduation-cap"></i> Graduation Year</label>
+                                <input type="text" name="graduation_year" id="graduation_year" class="form-control" value="{{ education_details[5] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="linkedin_url" class="form-label"><i class="fab fa-linkedin"></i> LinkedIn URL</label>
+                                <input type="url" name="linkedin_url" id="linkedin_url" class="form-control" value="{{ education_details[6] if education_details else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="instagram_url" class="form-label"><i class="fab fa-instagram"></i> Instagram URL</label>
+                                <input type="url" name="instagram_url" id="instagram_url" class="form-control" value="{{ education_details[7] if education_details else '' }}">
+                            </div>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Details</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div>
+              
+                  
+                <table border="1" class="table table-striped">
+                    <thead>
+                      <thead>
+                        <tr>
+                            <th style="text-align: center;"><i class="fas fa-envelope"></i> Email</th>
+                            <th style="text-align: center;"><i class="fas fa-dollar-sign"></i> Amount</th>
+                            <th style="text-align: center;"><i class="fas fa-calendar-day"></i> Date</th>
+                            <th style="text-align: center;"><i class="fas fa-calendar-month"></i> Months</th>
+                        </tr>
+                    </thead>
+                    
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment[0] }}</td>
+                                <td>{{ payment[1] }}</td>
+                                <td>{{ payment[2] }}</td>
+                                <td>{{ payment[3] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+        <!-- Tech Round Section -->
+        <div id="techRoundSection" class="content-section">
+            <style>
+                /* General card styling */
+                .card-container {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                    flex-wrap: wrap; /* Allow the cards to wrap on smaller screens */
+                }
+        
+                .metric {
+                    padding: 1rem;
+                    border-radius: 8px;
+                    width: calc(33.333% - 1rem); /* Three cards in a row */
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 1rem;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+        
+                /* Card content */
+                .metric h4 {
+                    margin-bottom: 1rem;
+                    font-size: 1.2rem;
+                    color: #fff;
+                    font-weight: 600;
+                }
+        
+                .metric i {
+                    margin-right: 10px;
+                    color: #fff;
+                }
+        
+                /* Metric Value styling */
+                .metric-value {
+                    font-weight: bold;
+                    color: #fff;
+                }
+        
+                /* Card Colors */
+                .metric-blue {
+                    background-color: #007bff;
+                }
+        
+                .metric-green {
+                    background-color: #28a745;
+                }
+        
+                .metric-orange {
+                    background-color: #fd7e14;
+                }
+        
+                .metric-purple {
+                    background-color: #6f42c1;
+                }
+        
+                .metric-red {
+                    background-color: #dc3545;
+                }
+        
+                .metric-yellow {
+                    background-color: #ffc107;
+                }
+        
+                /* Hover Effect */
+                .metric:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+        
+                /* Ensuring responsiveness */
+                @media (max-width: 768px) {
+                    .metric {
+                        width: calc(50% - 1rem); /* Two cards in a row on smaller screens */
+                    }
+                }
+        
+                @media (max-width: 480px) {
+                    .metric {
+                        width: 100%; /* One card per row on very small screens */
+                    }
+                }
+            </style>
+        </head>
+        <body>
+        
+        <div class="card-container">
+            <!-- Performance Metrics Cards -->
+            <div class="metric metric-purple">
+                <h4><i class="fas fa-sync-alt"></i> Average Score of Last 3 Attempts</h4>
+                <p><strong>Average:</strong> <span class="metric-value">{{ average_score_last_3 }}</span></p>
+            </div>
+        
+            <div class="metric metric-green">
+                <h4><i class="fas fa-clipboard-check"></i> Positions Well Prepared</h4>
+                <p><strong>Prepared:</strong> <span class="metric-value">{{ positions_well_prepared }}</span></p>
+            </div>
+        
+            <div class="metric metric-orange">
+                <h4><i class="fas fa-chart-line"></i> Percentage Scored Above 70%</h4>
+                <p><strong>Percentage:</strong> <span class="metric-value">{{ percentage_scored_above_70 }}%</span></p>
+            </div>
+        </div>
+        
+        <style>
+            /* Table Styling */
+            table {
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+    
+            th, td {
+                text-align: center;
+                padding: 12px;
+            }
+    
+            th {
+                background-color: #007bff;
+                color: white;
+            }
+    
+            td {
+                background-color: #f9f9f9;
+            }
+    
+            /* Card Style for Table */
+            .container {
+                margin-top: 50px;
+            }
+    
+            .collapse {
+                background-color: #f9f9f9;
+            }
+    
+            /* Button Styling */
+            .btn-primary {
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+            }
+    
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+    
+            /* Badge Styling */
+            .badge-success {
+                background-color: #28a745;
+            }
+    
+            .badge-danger {
+                background-color: #dc3545;
+            }
+    
+            /* Custom Chart Container */
+            .chart-container {
+                margin-top: 15px;
+                display: flex;
+                width: 300px;
+                height: 300px;
+                justify-content: center;
+                align-items: center;
+                background-color: #f1f1f1;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+    
+            .chart-container canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+    
+            /* Row spacing */
+            .mb-3 {
+                margin-bottom: 1rem;
+            }
+
+            th i {
+                margin-right: 8px;
+              }
+              th i.fa-list-ol {
+                color: #007bff; /* Blue for Attempt Number */
+              }
+              th i.fa-chart-line {
+                color: #28a745; /* Green for Score */
+              }
+              th i.fa-percentage {
+                color: #17a2b8; /* Teal for %Q/A */
+              }
+              th i.fa-check-circle {
+                color: #ffc107; /* Yellow for Status */
+              }
+              th i.fa-calendar-alt {
+                color: #6f42c1; /* Purple for Interview Date */
+              }
+              th i.fa-file-pdf {
+                color: #dc3545; /* Red for Download PDF */
+              }
+        </style>
+    
+    
+    <div class="container mt-5">
+        <!-- Main Table -->
+        <table class="table table-bordered shadow-sm">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-briefcase"></i>Position</th>
+                    <th><i class="fas fa-tools"></i>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in user_data %}
+                <tr>
+                    <td>
+                        {% if "machine learning" in entry.position.lower() %}
+                          <i class="fas fa-robot" style="color: #007bff; margin-right: 8px;"></i> {{ entry.position }}
+                        {% elif "developer" in entry.position.lower() %}
+                          <i class="fas fa-laptop-code" style="color: #28a745; margin-right: 8px;"></i> {{ entry.position }}
+                        {% elif "manager" in entry.position.lower() %}
+                          <i class="fas fa-user-tie" style="color: #ffc107; margin-right: 8px;"></i> {{ entry.position }}
+                        {% else %}
+                          <i class="fas fa-briefcase" style="color: #6c757d; margin-right: 8px;"></i> {{ entry.position }}
+                        {% endif %}
+                      </td>
+                      
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#subTable1">
+                            View Details <i class="fas fa-chevron-down"></i>
+                          </button>
+                    </td>
+                </tr>
+                <tr class="collapse" id="subTable{{ loop.index }}">
+                    <td colspan="2">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-list-ol"></i>Attempt Number</th>
+                                    <th><i class="fas fa-chart-line"></i>Score</th>
+                                    <th><i class="fas fa-percentage"></i>Q/A</th>
+                                    <th><i class="fas fa-check-circle"></i>Status</th>
+                                    <th><i class="fas fa-calendar-alt"></i>Interview Date</th>
+                                    <th><i class="fas fa-file-pdf"></i>Download PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in all_results[entry.position][0] %}
+                                <tr>
+                                    <td>{{ result[1] }}</td>
+                                    <td>{{ (result[2] / 50) * 100 }}%</td>
+                                    <td>{{ result[2] }}</td>
+                                    <td>
+                                        {% if result[2] >= 45 %}
+                                        <span class="badge badge-success">Passed</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ result[3] }}</td>
+                                    <td>
+                                        <a href="{{ url_for('download_pdf', position_name=result[0], part_number=result[1]) }}">Download PDF</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+    
+                        <!-- Sub-table Chart -->
+                        <div class="chart-container">
+                            <canvas id="chart{{ loop.index }}" width="100" height="100"></canvas>
+                        </div>
+    
+                        <!-- Chart.js Script to Plot Data -->
+                        <script>
+                            var ctx = document.getElementById('chart{{ loop.index }}').getContext('2d');
+                            var data = {
+                                labels: [{% for result in all_results[entry.position][0] %} "{{ result[3] }}", {% endfor %}],
+                                datasets: [
+                                    {
+                                        label: 'Score (%)',
+                                        data: [{% for result in all_results[entry.position][0] %} {{ (result[2] / 50) * 100 }}, {% endfor %}],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: '%Q/A',
+                                        data: [{% for result in all_results[entry.position][0] %} {{ result[2] }}, {% endfor %}],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            };
+    
+                            var options = {
+                                responsive: true,
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Interview Date'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Score / %Q/A'
+                                        }
+                                    }
+                                }
+                            };
+    
+                            new Chart(ctx, {
+                                type: 'line',  // Type of chart (line chart)
+                                data: data,
+                                options: options
+                            });
+                        </script>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+        </div>
+
+        <!-- Code Round Section -->
+        <div id="codeRoundSection" class="content-section">
+            <div class="calendar-container">
+                {% for month_index in range(0, 12, 6) %}
+                    <div class="calendar-row">
+                        {% for month in calendar_data[month_index:month_index+6] %}
+                            <div class="month">
+                                <h3>{{ month.name }}</h3>
+                                <div class="days">
+                                    {% for day in month.days %}
+                                        <div class="day" style="background-color: {{ day.color }};">
+                                            {{ day.day }}
+                                            <span class="score">{{ day.score }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="separator"></div>
+            <div class="separator"></div>
+            <div class="streak-container">
+                {% for streak in streak_data %}
+                <div class="streak-item {{ streak.status }}">
+                    <div class="warrior-icon">⚔️</div> <!-- Warrior Icon -->
+                    <div class="streak-level">Level {{ streak.level }}</div>
+                    <div class="streak-icon">{{ streak.icon }}</div> <!-- Lock/Unlock Icon -->
+                </div>
+                {% endfor %}
+            </div>
+            <div class="separator"></div>
+            <div class="separator"></div>
+
+            <div class="graph-container">
+                <div class="plotly-graph">
+                    {{ graph_html | safe }}  
+                </div>
+            </div>
+            
+        </div>
+
+        <div id="hrRoundSection" class="content-section">
+            <div class="container">
+                <div>
+                    <p><strong>Total Score (All Attempts):</strong> {{ total_score }}</p>
+                    <p><strong>Average Score (All Attempts):</strong> {{ average_score }}</p>
+                </div>
+            
+                <!-- Table for each attempt -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Attempt ID</th>
+                            <th>Total Score</th>
+                            <th>Average Score</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.id }}</td>
+                            <td>{{ attempt.total_score }}</td>
+                            <td>{{ attempt.average_score }}</td>
+                            <td>{{ attempt.date }}</td>
+                            <td>
+                                <a href="/download/{{ attempt.file }}" class="btn btn-primary">Download PDF</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            
+                <!-- Graph for Total Score and Average Score over Time -->
+                <div>
+                    <canvas id="scoreChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            
+            <!-- Include Chart.js -->
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            
+            <script>
+                var ctx = document.getElementById('scoreChart').getContext('2d');
+                var scoreChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ dates | tojson }},
+                        datasets: [
+                            {
+                                label: 'Total Score',
+                                data: {{ total_scores | tojson }},
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Average Score',
+                                data: {{ average_scores_hr | tojson }},
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                fill: false,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Score'
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+            
+            
+        </div>
+        
+    </div>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const grid = document.getElementById('grid');
+        const status = document.getElementById('status');
+        const userEmail = "raushan2288.jnvbanka@gmail.com"; // Replace with the logged-in user's email
+        
+        try {
+          // Fetch data from the API
+          const response = await fetch(`/api/user-activity?email=${userEmail}`);
+          const data = await response.json();
+      
+          if (!response.ok) {
+            status.textContent = `Error: ${data.error}`;
+            return;
+          }
+      
+          status.textContent = 'Rendering activity graph...';
+      
+          // Generate the contribution graph
+          const activityDates = data.reduce((acc, item) => {
+            acc[item.date] = item.score;
+            return acc;
+          }, {});
+      
+          const startDate = new Date(new Date().getFullYear(), 0, 1); // Start of the year
+          const today = new Date();
+          const daysInYear = Math.ceil((today - startDate) / (1000 * 60 * 60 * 24));
+      
+          for (let i = 0; i < daysInYear; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            const dateString = currentDate.toISOString().split('T')[0];
+            const score = activityDates[dateString] || 0;
+      
+            const box = document.createElement('div');
+            box.classList.add('box');
+      
+            // Assign color based on score
+            if (score === 0) {
+              box.classList.add('none');
+            } else if (score < 3) {
+              box.classList.add('low');
+            } else if (score < 7) {
+              box.classList.add('medium');
+            } else {
+              box.classList.add('high');
+            }
+      
+            grid.appendChild(box);
+          }
+      
+          status.textContent = 'Activity graph rendered successfully.';
+        } catch (error) {
+          status.textContent = `Error: ${error.message}`;
+        }
+      });
+      
+</script>
+    <script>
+        // JavaScript to toggle content visibility
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                // Hide all content sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the targeted content section
+                const targetId = link.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    </script>
+
+    <script>
+        function toggleEditForm() {
+            const displayDiv = document.getElementById('educationDisplay');
+            const formDiv = document.getElementById('educationForm');
+    
+            if (displayDiv.style.display === 'none') {
+                displayDiv.style.display = 'block';
+                formDiv.style.display = 'none';
+            } else {
+                displayDiv.style.display = 'none';
+                formDiv.style.display = 'block';
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const subTables = document.querySelectorAll('tr[id^="subTable"]');
+        
+            subTables.forEach((subTable, index) => {
+                const rows = subTable.querySelectorAll('tbody tr');
+                const labels = [];
+                const scores = [];
+                const percentages = [];
+        
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        const interviewDate = cells[4].innerText;
+                        const scorePercentage = parseFloat(cells[1].innerText);
+                        const adjustedPercentage = parseFloat(cells[2].innerText);
+        
+                        labels.push(interviewDate);
+                        scores.push(scorePercentage);
+                        percentages.push(adjustedPercentage);
+                    }
+                });
+        
+                const ctx = document.getElementById(`chart${index + 1}`).getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Score (100%)',
+                                data: scores,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            },
+                            {
+                                label: 'Adjusted %Q/A',
+                                data: percentages,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Interview Date'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        
+    </script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

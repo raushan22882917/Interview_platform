@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - E.S.T.C.V</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            background-color: #4a90e2;
+            color: white;
+            padding: 30px 20px;
+            width: 30%;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar li .icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 50px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        button:hover {
+            background-color: #357ab7;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                text-align: center;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            form {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Welcome to the E.S.T.C.V chatbot! Here's how it works:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter your coding question.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide examples and solutions.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases with edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate the test cases and code performance.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h1>Start Your Journey!</h1>
+            <form action="/start" method="POST">
+                <label for="question">Enter your coding question:</label>
+                <textarea id="question" name="question" rows="6" required></textarea>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

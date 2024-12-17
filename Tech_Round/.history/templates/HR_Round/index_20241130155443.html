@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Include your existing CSS styles here */
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="company-name-display" style="display: none;"></div> <!-- Company name display -->
+        <div id="chat-box"></div>
+        <div class="input-container" id="company-name-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()">Start Interview</button>
+        </div>
+
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer will appear here..." readonly>
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        let companyName = "";
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at {company_name}?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?",
+            "Describe a challenging situation you faced and how you resolved it.",
+            "What motivates you to perform well at work?",
+            "How do you handle criticism or feedback from your manager?",
+            "Can you share an example of how you worked effectively in a team?",
+            "What is your approach to time management and meeting deadlines?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let formattedQuestions = [];
+        let recognition;
+
+        // Initialize speech recognition
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = "en-US";
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                console.log("Voice recognition started...");
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("user-answer").value = transcript; // Show recognized text
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                alert("There was an issue with speech recognition. Please try again.");
+            };
+
+            recognition.onend = () => {
+                console.log("Voice recognition ended.");
+            };
+        }
+
+        // Start the interview
+        function startInterview() {
+            companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+
+            localStorage.setItem("companyName", companyName);
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterviewFromStorage(companyName) {
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+
+            formattedQuestions = questions.map(question => question.replace("{company_name}", companyName));
+
+            askQuestion();
+            document.getElementById("answer-container").style.display = "block";
+        }
+
+        // Display and speak question
+        function askQuestion() {
+            if (currentQuestionIndex < formattedQuestions.length) {
+                const question = formattedQuestions[currentQuestionIndex];
+                appendMessage("Bot", question);
+                speakQuestion(question);
+
+                // Activate microphone for answer input
+                recognition.start();
+            }
+        }
+
+        // Append message to chat
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Speak the question
+        function speakQuestion(question) {
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value;
+            if (userAnswer.trim() === "") {
+                alert("Please provide an answer!");
+                return;
+            }
+
+            fetch('/submit_answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    company_name: companyName,
+                    question_index: currentQuestionIndex,
+                    user_answer: userAnswer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage("User", userAnswer);
+                appendMessage("Bot", "Your answer has been submitted successfully.");
+                currentQuestionIndex++;
+                document.getElementById("user-answer").value = ""; // Clear the input
+
+                if (currentQuestionIndex < formattedQuestions.length) {
+                    setTimeout(askQuestion, 2000); // Ask the next question
+                } else {
+                    appendMessage("Bot", "You have completed the interview!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        // Initialize speech recognition on page load
+        window.onload = initSpeechRecognition;
+    </script>
+</body>
+</html>

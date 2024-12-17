@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .sidebar {
+            width: 25%;
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .sidebar h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+
+        .content {
+            width: 70%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+
+        .content h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .feedback-table th, .feedback-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .feedback-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .feedback-table td {
+            background-color: #f9f9f9;
+        }
+
+        .feedback-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .feedback-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .feedback-summary {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .feedback-summary li {
+            margin-bottom: 15px;
+        }
+
+        .feedback-summary h3 {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Sidebar with Instructions -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Review your progress and feedback:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Examples provided.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Solution explained.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases checked.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Code reviewed.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validation completed.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="content">
+            <h1>Final Feedback Summary</h1>
+            
+            <!-- Feedback Table -->
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Your Input</th>
+                        <th>Feedback</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for step, data in responses.items() %}
+                    <tr>
+                        <td>{{ step }}</td>
+                        <td>{{ data['input'] }}</td>
+                        <td class="feedback-text">{% if data['feedback'] | safe %}{{ data['feedback'] | safe }}{% else %}No issues{% endif %}</td>
+                        <td>{{ data['score'] }} / 5</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Total Score -->
+            <p><strong>Total Score:</strong> {{ total_score }} / {{ 5 * responses|length }}</p>
+
+            <!-- Full Feedback Section -->
+            <h2>Full Feedback</h2>
+            <ul class="feedback-summary">
+                {% for step, data in responses.items() %}
+                <li>
+                    <h3>{{ step }}</h3>
+                    <p class="feedback-text">{{ data['feedback'] if data['feedback'] else "No issues with your input." }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Back Button -->
+            <a href="{{ url_for('estcv') }}" class="back-btn">GO BACK!</a>
+        </div>
+    </div>
+
+    <script>
+        // Function to convert **word** to bold and add line breaks
+        document.addEventListener("DOMContentLoaded", function() {
+            const feedbackTextElements = document.querySelectorAll('.feedback-text');
+            
+            feedbackTextElements.forEach(element => {
+                // Replace **word** with <strong>word</strong> and add line breaks
+                let text = element.innerHTML;
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/\n/g, '<br>');
+                text = text.replace(/\*/g,'<b')
+                element.innerHTML = text;
+            });
+        });
+    </script>
+</body>
+</html>

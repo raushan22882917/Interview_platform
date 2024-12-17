@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            height:
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-box {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #timer {
+            text-align: center;
+            font-size: 18px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        /* Professional wave animation */
+        .wave {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+            visibility: hidden;
+        }
+
+        .wave div {
+            width: 8px;
+            height: 20px;
+            background-color: #007bff;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        .wave div:nth-child(1) {
+            animation-delay: -0.4s;
+        }
+
+        .wave div:nth-child(2) {
+            animation-delay: -0.2s;
+        }
+
+        .wave div:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h3 class="text-center">AI Interview Bot</h3>
+        <div id="chat-box"></div>
+        <div id="company-name-container" class="input-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()"><i class="fas fa-play"></i> Start Interview</button>
+        </div>
+        <div id="company-name-display" style="display:none;"></div>
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+    </div>
+
+    <div id="timer" style="display: none;">Speak in: 3s</div>
+    <div class="wave" id="wave-animation">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        const questions = [
+            "What is your greatest strength?",
+            "Describe a challenge you faced at work.",
+            "Where do you see yourself in five years?"
+        ];
+
+        // Start the interview by displaying the first question
+        function startInterview() {
+            const companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name to start the interview.");
+                return;
+            }
+
+            document.getElementById("company-name-display").innerHTML = `<strong>Interview for:</strong> ${companyName}`;
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("answer-container").style.display = "flex";
+
+            askQuestion();
+        }
+
+        // Ask the current question
+        function askQuestion() {
+            const chatBox = document.getElementById("chat-box");
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+                chatBox.innerHTML += `<p><strong>Bot:</strong> ${question}</p>`;
+                speakQuestion(question);
+                scrollToBottom();
+            } else {
+                chatBox.innerHTML += `<p><strong>Bot:</strong> The interview is over. Thank you!</p>`;
+                document.getElementById("answer-container").style.display = "none";
+                scrollToBottom();
+            }
+        }
+
+        // Scroll chat box to the bottom
+        function scrollToBottom() {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Submit the user's answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value.trim();
+            if (!userAnswer) {
+                alert("Please enter your answer.");
+                return;
+            }
+
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p><strong>You:</strong> ${userAnswer}</p>`;
+            document.getElementById("user-answer").value = "";
+            currentQuestionIndex++;
+            askQuestion();
+        }
+
+        // Show the wave animation while the bot speaks
+        function speakQuestion(question) {
+            const wave = document.getElementById("wave-animation");
+            wave.style.visibility = "visible";
+
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+
+            speech.onend = function () {
+                wave.style.visibility = "hidden";
+            };
+        }
+    </script>
+</body>
+</html>

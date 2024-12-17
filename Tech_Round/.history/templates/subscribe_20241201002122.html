@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Plans</title>
+    <style>
+        .subscription-plans {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+        }
+        .card {
+            width: 200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .card h3 {
+            margin-bottom: 20px;
+        }
+        #paypal-box {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose a Subscription Plan</h1>
+    <div class="subscription-plans">
+        <div class="card">
+            <h3>1 Month</h3>
+            <p>$0.10</p>
+            <button onclick="openPaypalBox(0.10)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>3 Months</h3>
+            <p>$0.20</p>
+            <button onclick="openPaypalBox(0.20)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>6 Months</h3>
+            <p>$0.30</p>
+            <button onclick="openPaypalBox(0.30)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>12 Months</h3>
+            <p>$0.40</p>
+            <button onclick="openPaypalBox(0.40)">Subscribe</button>
+        </div>
+    </div>
+
+    <!-- Hidden Paypal Box to Open After Clicking Subscribe Button -->
+    <div id="paypal-box">
+        <div id="paypal-button"></div>
+    </div>
+
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+        var subscriptionAmount;
+
+        function openPaypalBox(amount) {
+            subscriptionAmount = amount;
+            document.getElementById("paypal-box").style.display = "block";
+            createPaypalButton();
+        }
+
+        function createPaypalButton() {
+            paypal.Button.render({
+                env: 'sandbox', // Or 'live' for production
+                commit: true,
+                payment: function() {
+                    return paypal.request.post('/payment', {amount: subscriptionAmount}).then(function(data) {
+                        return data.paymentID;
+                    });
+                },
+                onAuthorize: function(data) {
+                    return paypal.request.post('/execute', {
+                        paymentID: data.paymentID,
+                        payerID: data.payerID
+                    }).then(function(res) {
+                        if (res.success) {
+                            alert('Subscription successful!');
+                            // Optionally, redirect to a success page or update subscription status in the database
+                        }
+                    });
+                }
+            }, '#paypal-button');
+        }
+    </script>
+</body>
+</html>

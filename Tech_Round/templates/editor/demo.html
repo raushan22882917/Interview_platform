@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Evaluator</title>
+    <script src="https://unpkg.com/monaco-editor/min/vs/loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+     <!-- Favicons -->
+<link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <style>
+        /* Basic styles */
+
+
+        h1 {
+            margin-bottom: 20px;
+            color: #3c3c3c; /* Darker text color for the heading */
+        }
+
+        #container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        #question-container, #editor-container {
+            width: 45%; /* Adjusted width for the question and editor sections */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff; /* White background for content areas */
+            transition: transform 0.2s; /* Smooth transition on hover */
+        }
+
+        #question-container:hover, #editor-container:hover {
+            transform: scale(1.02); /* Slightly enlarge the container on hover */
+        }
+
+        label {
+            margin: 10px 0;
+            display: block;
+            font-weight: bold; /* Make labels bold */
+            color: #333333; /* Dark text for labels */
+        }
+
+        select, input {
+            padding: 10px;
+            border: 2px solid #ff69b4; /* Pink border for inputs and selects */
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s; /* Smooth transition for border color */
+        }
+
+        select:focus, input:focus {
+            border-color: #32cd32; /* Lime green border on focus */
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4500; /* Orange background for buttons */
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        button:hover {
+            background-color: #ff6347; /* Lighter orange on hover */
+        }
+
+        #editor {
+            height: 300px;
+            width: 100%;
+            border: 2px solid #9370db; /* Lavender border around the editor */
+            border-radius: 5px;
+        }
+
+        #output {
+            margin-top: 20px;
+            background-color: #f0f8ff; /* Alice blue background for output */
+            padding: 10px;
+            border: 1px solid #add8e6; /* Light blue border for output */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            overflow-x: auto; /* Allow horizontal scrolling for long tables */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #dcdcdc;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        body.dark-mode #question-container,
+        body.dark-mode #editor-container {
+            background-color: #1e1e1e; /* Darker background for content areas */
+            border-color: #333333; /* Darker border for inputs */
+        }
+
+        body.dark-mode select,
+        body.dark-mode input {
+            border: 2px solid #bb86fc; /* Purple border for inputs and selects in dark mode */
+        }
+
+        body.dark-mode button {
+            background-color: #bb86fc; /* Purple background for buttons */
+        }
+
+        body.dark-mode button:hover {
+            background-color: #3700b3; /* Darker purple on hover */
+        }
+
+        .mode-toggle {
+            margin: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Question container */
+#question-container {
+    background-color: #ffffff; /* White background for the container */
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Label styles */
+label {
+    font-size: 18px;
+    color: #333; /* Dark gray color for text */
+}
+
+/* Dropdown styles */
+#questionDropdown {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3498db; /* Bright blue border */
+    border-radius: 5px;
+    background-color: #eaf7ff; /* Light blue background */
+    font-size: 16px;
+    color: #333; /* Dark gray color for text */
+    margin-bottom: 20px;
+}
+
+/* Question details */
+#question-details {
+    border-top: 2px solid #3498db; /* Bright blue border at the top */
+    padding-top: 20px;
+}
+
+/* Title styles */
+#question-title {
+    font-size: 24px;
+    color: #e74c3c; /* Bright red color for title */
+    margin: 10px 0;
+}
+
+/* Text styles */
+#question-text {
+    font-size: 16px;
+    color: #2c3e50; /* Dark blue-gray color */
+    margin-bottom: 15px;
+}
+
+/* Header styles for input/output */
+h3 {
+    font-size: 18px;
+    color: #8e44ad; /* Purple color */
+    margin-top: 20px;
+}
+
+/* Preformatted text styles */
+pre {
+    background-color: #f7f9fc; /* Very light gray background */
+    border: 1px solid #3498db; /* Bright blue border */
+    border-radius: 5px;
+    padding: 10px;
+    overflow-x: auto; /* Enable horizontal scrolling if necessary */
+    color: #34495e; /* Darker blue-gray for text */
+}
+    </style>
+</head>
+<body>
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              
+    
+              <li><a href="{{url_for('blog')}}">Blog</a></li>
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <li><a href="#">Publish Interview</a></li>
+    
+              <ul>
+                {% if session.get('user_name') %}
+                    <li style="list-style: none; font-size: 18px;">
+                        <a href="{{ url_for('profile') }}" style="text-decoration: none; color: #007bff;">
+                            {% if session.get('profile_image') %}
+                                <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="30" height="30" style="border-radius: 50%;">
+                            {% else %}
+                                {{ session['user_name'][0] }}
+                            {% endif %}
+                        </a>
+                    </li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+
+ <!-- Light mode icon -->
+
+<div id="container" style="margin-bottom:50px; margin-top:100px;">
+    <!-- <div class="mode-toggle" id="modeToggle"><i class="fas fa-sun"></i></div> -->
+    <div id="question-container">
+        <label for="questionDropdown">Select Question:</label>
+        <select id="questionDropdown"></select>
+
+        <div id="question-details">
+            <h2 id="question-title">Question Title</h2>
+            <p id="question-text">This is where the question text will go.</p>
+            <h3>Input:</h3>
+            <pre id="input-example"></pre>
+            <h3>Expected Output:</h3>
+            <pre id="expected-output"></pre>
+            <a href="{{ url_for('leaderboard')}}"><button>Leaderboard</button></a>
+        </div>
+    </div>
+
+    <div id="editor-container">
+        <div class="editor-controls">
+            <label for="language">Select Language:</label>
+            <select id="language">
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+            </select>
+            <input type="text" id="className" placeholder="Class Name (Java only)" style="display:none;" />
+            <button id="run">Run Code</button>
+        </div>
+        <div id="editor"></div>
+        <div id="output"></div>
+    </div>
+</div>
+
+<footer id="footer" class="footer dark-background">
+    <div class="container">
+      <h3 class="sitename">Sakshatkar'</h3>
+      <p>Your go-to platform for mastering technical interviews and advancing your career in tech. We're here to help you succeed with comprehensive resources and practice problems.</p>
+      <div class="social-links d-flex justify-content-center">
+        <a href="https://twitter.com/Sakshatkar'" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+        <a href="https://facebook.com/Sakshatkar'" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/Sakshatkar'" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/company/Sakshatkar'" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <span>Copyright</span> <strong class="px-1 sitename">Sakshatkar'</strong> <span>All Rights Reserved</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+    // Initialize Monaco Editor
+    require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor/min/vs' }});
+    require(['vs/editor/editor.main'], function () {
+        const editor = monaco.editor.create(document.getElementById('editor'), {
+            value: '',
+            language: 'python'
+        });
+
+        document.getElementById('language').addEventListener('change', function() {
+            const language = this.value;
+            monaco.editor.setModelLanguage(editor.getModel(), language);
+            document.getElementById('className').style.display = language === 'java' ? 'block' : 'none';
+        });
+
+        document.getElementById('run').addEventListener('click', async function() {
+            const code = editor.getValue();
+            const language = document.getElementById('language').value;
+            const className = document.getElementById('className').value || 'user_code'; // Default class name if not provided
+            const questionId = document.getElementById('questionDropdown').value; // Get the selected question ID
+
+            const response = await fetch('/evaluate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, language, class_name: className, question_id: questionId })
+            });
+
+            const result = await response.json();
+            // Convert JSON result to a table
+            displayOutputAsTable(result);
+        });
+
+        // Sample questions (you can fetch this from your server)
+        const questions = [
+            {
+                title: "Addition Function",
+                question: "Write a function to add two numbers.",
+                input: "2 3\n",
+                expected_output: "5\n"
+            },
+            {
+                title: "Multiplication Function",
+                question: "Write a function to multiply two numbers.",
+                input: "2 3\n",
+                expected_output: "6\n"
+            },
+            {
+                title: "Even Number Check",
+                question: "Check if a number is even.",
+                input: "4\n",
+                expected_output: "True\n"
+            },
+            {
+                title: "String Reversal",
+                question: "Reverse a string.",
+                input: "abcd\n",
+                expected_output: "dcba\n"
+            },
+            {
+                title: "Factorial Calculation",
+                question: "Calculate factorial of a number.",
+                input: "5\n",
+                expected_output: "120\n"
+            }
+        ];
+
+        // Populate the question dropdown
+        const questionDropdown = document.getElementById('questionDropdown');
+        questions.forEach((q, index) => {
+            const option = document.createElement('option');
+            option.value = index; // Use the index as the question ID
+            option.textContent = q.title;
+            questionDropdown.appendChild(option);
+        });
+
+        // Function to update the displayed question based on selection
+        function updateQuestionDetails() {
+            const selectedQuestion = questions[questionDropdown.value];
+            document.getElementById('question-title').innerText = selectedQuestion.title;
+            document.getElementById('question-text').innerText = selectedQuestion.question;
+            document.getElementById('input-example').innerText = selectedQuestion.input;
+            document.getElementById('expected-output').innerText = selectedQuestion.expected_output;
+            editor.setValue(''); // Clear the editor when changing questions
+        }
+
+        // Set default question
+        updateQuestionDetails();
+
+        // Add event listener to update question when dropdown changes
+        questionDropdown.addEventListener('change', updateQuestionDetails);
+
+        // Dark/Light mode toggle
+        const modeToggle = document.getElementById('modeToggle');
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.body.classList.contains('dark-mode') ? 'fa-moon' : 'fa-sun';
+            modeToggle.innerHTML = `<i class="fas ${icon}"></i>`;
+        });
+
+        // Function to display output as a table
+        function displayOutputAsTable(result) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous output
+            const table = document.createElement('table');
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            for (const key in result) {
+                const th = document.createElement('th');
+                th.innerText = key;
+                headerRow.appendChild(th);
+            }
+            table.appendChild(headerRow);
+
+            // Create data row
+            const dataRow = document.createElement('tr');
+            for (const key in result) {
+                const td = document.createElement('td');
+                td.innerText = result[key];
+                dataRow.appendChild(td);
+            }
+            table.appendChild(dataRow);
+
+            outputDiv.appendChild(table);
+        }
+    });
+</script>
+
+</body>
+</html>

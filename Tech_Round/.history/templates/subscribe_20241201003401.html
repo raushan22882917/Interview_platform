@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Plans</title>
+    <style>
+        .subscription-plans {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+        }
+        .card {
+            width: 200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .card h3 {
+            margin-bottom: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            overflow: auto;
+        }
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .paypal-container, .qr-container {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose a Subscription Plan</h1>
+    <div class="subscription-plans">
+        <div class="card">
+            <h3>1 Month</h3>
+            <p>$0.10</p>
+            <button onclick="openModal(0.10)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>3 Months</h3>
+            <p>$0.20</p>
+            <button onclick="openModal(0.20)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>6 Months</h3>
+            <p>$0.30</p>
+            <button onclick="openModal(0.30)">Subscribe</button>
+        </div>
+        <div class="card">
+            <h3>12 Months</h3>
+            <p>$0.40</p>
+            <button onclick="openModal(0.40)">Subscribe</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="paypal-modal" class="modal">
+        <div class="modal-content">
+            <!-- Left Side (PayPal button) -->
+            <div class="paypal-container">
+                <h2>Complete Payment</h2>
+                <div id="paypal-box">
+                    <div id="paypal-button"></div>
+                </div>
+            </div>
+
+            <!-- Right Side (QR code and UID) -->
+            <div class="qr-container">
+                <h2>QR Code & UID</h2>
+                <img id="qr-code" src="https://via.placeholder.com/150" alt="QR Code">
+                <br><br>
+                <label for="uid">Enter UID:</label>
+                <input type="text" id="uid" placeholder="Enter UID">
+                <button onclick="submitUid()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+        var subscriptionAmount;
+
+        // Open the modal
+        function openModal(amount) {
+            subscriptionAmount = amount;
+            document.getElementById("paypal-modal").style.display = "block";
+            createPaypalButton();
+        }
+
+        // Close the modal when clicked outside the content
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("paypal-modal")) {
+                document.getElementById("paypal-modal").style.display = "none";
+            }
+        }
+
+        // Create PayPal button
+        function createPaypalButton() {
+            paypal.Button.render({
+                env: 'sandbox', // Or 'live' for production
+                commit: true,
+                payment: function() {
+                    return paypal.request.post('/payment', {
+                        amount: subscriptionAmount
+                    }).then(function(data) {
+                        return data.paymentID;
+                    });
+                },
+                onAuthorize: function(data) {
+                    return paypal.request.post('/execute', {
+                        paymentID: data.paymentID,
+                        payerID: data.payerID
+                    }).then(function(res) {
+                        if (res.success) {
+                            alert('Subscription successful!');
+                            document.getElementById("paypal-modal").style.display = "none";
+                        }
+                    });
+                }
+            }, '#paypal-button');
+        }
+
+        // Submit UID (example for handling QR code UID)
+        function submitUid() {
+            var uid = document.getElementById("uid").value;
+            alert('UID Submitted: ' + uid);
+            // You can send this UID to the server for further processing if needed
+        }
+    </script>
+</body>
+</html>

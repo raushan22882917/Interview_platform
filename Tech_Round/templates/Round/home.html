@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            width: 250px;
+            border-radius: 10px;
+            background-color: #1E88E5; /* Same background color for all cards */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            padding-bottom: 20px;
+            color: white; /* White text on the colored background */
+        }
+
+        .card .position-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card .attempt-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .card .attempt-icon i {
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        .card-header {
+            padding: 60px 20px 20px; /* Space for icons */
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        /* Floating SVG */
+        .floating-svg {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            opacity: 0.2; /* Make it subtle */
+        }
+
+        .buttons {
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100px;
+            color: white;
+        }
+
+        #hr-round {
+            background-color: #2196F3;
+        }
+
+        #tech-round {
+            background-color: #FF5722;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <!-- Card 1 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">2</span>
+            </div>
+            <div class="card-header">
+                <h2>Software Engineer</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">4</span>
+            </div>
+            <div class="card-header">
+                <h2>Data Scientist</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">5</span>
+            </div>
+            <div class="card-header">
+                <h2>Product Manager</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">3</span>
+            </div>
+            <div class="card-header">
+                <h2>UX Designer</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">1</span>
+            </div>
+            <div class="card-header">
+                <h2>QA Engineer</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+            <div class="position-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="attempt-icon">
+                <i class="fas fa-check-circle"></i>
+                <span id="attempts">6</span>
+            </div>
+            <div class="card-header">
+                <h2>DevOps Engineer</h2>
+                <svg class="floating-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="buttons">
+                <button class="btn" id="hr-round">HR Round</button>
+                <button class="btn" id="tech-round">Tech Round</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Updated Font Awesome CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    
+</body>
+</html>

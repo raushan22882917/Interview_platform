@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Chat container */
+        #chat-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Chat Box */
+        #chat-box {
+            width: 100%;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Input container for company name */
+        .input-container {
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .input-container input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Input container for user answers */
+        #answer-container {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        #answer-container input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        #answer-container button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        #answer-container button:hover {
+            background-color: #218838;
+        }
+
+        /* Chat bubbles */
+        .User, .Bot {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .User {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+            margin-left: auto;
+            color: #333;
+        }
+
+        .Bot {
+            background-color: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        .Bot, .User {
+            transition: all 0.3s ease;
+        }
+
+        /* Timer */
+        #timer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #ff9800;
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Company name display */
+        #company-name-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 16px;
+            color: #007bff;
+        }
+
+        /* Responsive design */
+        @media (max-width: 500px) {
+            #chat-container {
+                width: 95%;
+            }
+
+            .input-container input, #answer-container input {
+                width: 100%;
+            }
+
+            .input-container button, #answer-container button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+
+        .wave {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+            visibility: hidden;
+        }
+
+        .wave div {
+            width: 8px;
+            height: 20px;
+            background-color: #007bff;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        .wave div:nth-child(1) {
+            animation-delay: -0.4s;
+        }
+
+        .wave div:nth-child(2) {
+            animation-delay: -0.2s;
+        }
+
+        .wave div:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="company-name-container" class="input-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()">Start Interview</button>
+        </div>
+        <div id="company-name-display" style="display:none;"></div>
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <div id="timer" style="display: none;">Speak in: 3s</div>
+    <div class="wave" id="wave-animation">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+
+    
+
+    <script>
+        let companyName = "";
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at {company_name}?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?",
+            "Describe a challenging situation you faced and how you resolved it.",
+            "What motivates you to perform well at work?",
+            "How do you handle criticism or feedback from your manager?",
+            "Can you share an example of how you worked effectively in a team?",
+            "What is your approach to time management and meeting deadlines?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let formattedQuestions = [];
+
+        // Check if company name is stored in localStorage
+        if (localStorage.getItem("companyName")) {
+            companyName = localStorage.getItem("companyName");
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterview() {
+            companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+
+            // Save company name to localStorage
+            localStorage.setItem("companyName", companyName);
+
+            // Display the company name in the top right corner
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterviewFromStorage(companyName) {
+            // Hide the company name input box and show the company name display
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+
+            // Replace placeholder with company name in questions
+            formattedQuestions = questions.map(question => question.replace("{company_name}", companyName));
+
+            // Display the first question
+            askQuestion();
+            document.getElementById("answer-container").style.display = "block";
+        }
+
+        // Display question and speak it
+        function askQuestion() {
+            if (currentQuestionIndex < formattedQuestions.length) {
+                const question = formattedQuestions[currentQuestionIndex];
+                appendMessage("Bot", question);
+                speakQuestion(question);
+
+                // Automatically start speech recognition after the question is read
+                setTimeout(() => {
+                    startSpeechRecognition();  // Automatically start listening after question
+                }, 2000); // Adjust the timeout if needed
+            }
+        }
+
+        // Append message to the chat box
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        // Speak the question using the Web Speech API
+        function speakQuestion(question) {
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+            speech.onend = function() {
+                console.log("Question read complete.");
+            };
+        }
+
+        // Start the speech recognition
+        function startSpeechRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;  // Stop after recognizing the user's speech
+            recognition.interimResults = true;
+
+            recognition.onresult = function(event) {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("user-answer").value = transcript; // Display the result in the input box
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event);
+            };
+
+            recognition.onend = function() {
+                recognition.stop(); // Stop recognition once it's finished
+            };
+
+            recognition.start();
+        }
+
+
+        // Show the wave animation while the bot speaks
+        function speakQuestion(question) {
+            const wave = document.getElementById("wave-animation");
+            wave.style.visibility = "visible";
+
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+
+            speech.onend = function () {
+                wave.style.visibility = "hidden";
+            };
+        }
+        // Submit the answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value.trim();
+            if (userAnswer === "") {
+                alert("Please provide an answer.");
+                return;
+            }
+
+            appendMessage("User", userAnswer);
+
+            // Send the answer to the server
+            fetch('/submit_answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    company_name: companyName,
+                    question_index: currentQuestionIndex,
+                    user_answer: userAnswer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.feedback && data.score) {
+                    appendMessage("Bot", `Feedback: ${data.feedback}`);
+                    appendMessage("Bot", `Score: ${data.score}/5`);
+                } else {
+                    appendMessage("Bot", "Next Question.....");
+                }
+
+                // Increment question index
+                currentQuestionIndex++;
+
+                // Ask the next question
+                if (currentQuestionIndex < formattedQuestions.length) {
+                    setTimeout(askQuestion, 2000);
+                } else {
+                    appendMessage("Bot", "You have completed the interview!");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script>
+        // Show the wave animation when the bot reads the question
+        function speakQuestion(question) {
+            const wave = document.getElementById("wave-animation");
+            wave.style.visibility = "visible";
+
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+
+            speech.onend = function () {
+                wave.style.visibility = "hidden";
+                console.log("Question read complete.");
+            };
+        }
+
+        // Keep the rest of your script unchanged
+    </script>
+</body>
+</html>

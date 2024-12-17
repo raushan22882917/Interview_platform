@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - E.S.T.C.V</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p>Welcome to the E.S.T.C.V chatbot! Here's how it works:</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter your coding question.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide examples and solutions.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Test cases with edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate the test cases and code performance.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h1>Start Your Journey!</h1>
+            <form action="/start" method="POST">
+                <label for="question">Enter your coding question:</label>
+                <textarea id="question" name="question" rows="6" required></textarea>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

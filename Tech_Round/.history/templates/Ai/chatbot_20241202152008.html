@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Chatbot Interface</h1>
+        <div id="chatbox">
+            <div id="question-input">
+                <h2>Enter Your Question:</h2>
+                <textarea id="question" rows="4"></textarea>
+                <button id="submit-question">Submit Question</button>
+            </div>
+
+            <div id="steps" style="display: none;">
+                <h2>Choose a Step:</h2>
+                <div id="step-buttons">
+                    {% for step in steps %}
+                        <button class="step-btn" data-step="{{ step }}">{{ step }}</button>
+                    {% endfor %}
+                </div>
+                <div id="step-input" style="display: none;">
+                    <h2 id="step-title"></h2>
+                    <textarea id="step-response" rows="4"></textarea>
+                    <button id="submit-step">Submit Step</button>
+                </div>
+            </div>
+        </div>
+        <button id="final-submit" style="display: none;">Final Submit</button>
+        <div id="feedback" style="display: none;"></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#submit-question').click(function() {
+                const question = $('#question').val();
+                $.post('/submit_question', JSON.stringify({ question: question }), function(response) {
+                    $('#question-input').hide();
+                    $('#steps').show();
+                });
+            });
+
+            $('.step-btn').click(function() {
+                const step = $(this).data('step');
+                $('#step-title').text(`Step: ${step}`);
+                $('#step-input').data('step', step).show();
+            });
+
+            $('#submit-step').click(function() {
+                const step = $('#step-input').data('step');
+                const input = $('#step-response').val();
+                $.post('/submit_step', JSON.stringify({ step: step, input: input }), function(response) {
+                    $('#chatbox').append(`<p><strong>${step}:</strong> ${response.feedback} (Score: ${response.score})</p>`);
+                    $('#step-input').hide();
+                });
+            });
+
+            $('#final-submit').click(function() {
+                $.post('/final_submit', function(response) {
+                    $('#feedback').show().html(`<h2>Total Score: ${response.total_score}</h2>`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

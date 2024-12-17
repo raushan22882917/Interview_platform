@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Round</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="hrRoundSection" class="content-section">
+        <div class="container mt-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mt-3">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Button section in the top-right corner -->
+            <div class="position-absolute top-0 end-0 p-3">
+                <button type="button" class="btn btn-primary" onclick="toggleForm()">Add New Question</button>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+
+            <!-- Form for the Question (Initially hidden) -->
+            <div id="questionForm" style="display:none;" class="mt-4">
+                <form method="POST">
+                    <!-- Question Text with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-question-circle"></i></span>
+                        <textarea class="form-control" id="question_text" name="question_text" placeholder="Enter the interview question..." required></textarea>
+                    </div>
+
+                    <!-- Question Type with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-tasks"></i></span>
+                        <input type="text" class="form-control" id="question_type" name="question_type" placeholder="Enter Answer of the question">
+                    </div>
+
+                    <!-- Difficulty Level with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-chart-line"></i></span>
+                        <input type="text" class="form-control" id="difficulty_level" name="difficulty_level" placeholder="Enter difficulty level (e.g., Easy, Medium, Hard)">
+                    </div>
+
+                    <!-- Category with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                        <input type="text" class="form-control" id="category" name="category" placeholder="Enter question category">
+                    </div>
+
+                    <!-- Subtopic with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-book"></i></span>
+                        <input type="text" class="form-control" id="subtopic" name="subtopic" placeholder="Enter subtopic (e.g., Arrays, OOP)">
+                    </div>
+
+                    <!-- Job Role with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                        <input type="text" class="form-control" id="job_role" name="job_role" placeholder="Enter job role (e.g., Software Engineer)">
+                    </div>
+
+                    <!-- Experience Level with icon -->
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                        <input type="text" class="form-control" id="experience_level" name="experience_level" placeholder="Enter experience level (e.g., 1-3 years)">
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Save Question</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Display Fetched Questions -->
+            <div class="mt-5">
+                <h3>List of Questions</h3>
+                <div class="row">
+                    {% for question in questions %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ question[2] }} - {{ question[3] }} </h6>
+                                <h5 class="card-title">{{ question[1] }}</h5>
+
+                                <p class="card-text" id="questionText{{ loop.index }}">
+                                    {{ question[1]|truncate(100) }}  <!-- Initially truncate the question text -->
+                                </p>
+                                <a href="#" class="card-link" onclick="toggleReadMore({{ loop.index }})" id="readMore{{ loop.index }}">Read More</a>
+                                <p class="mt-2"><small>Posted by: {{ question[7] }}</small></p> <!-- Publisher email -->
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle the visibility of the full question text
+        function toggleReadMore(index) {
+            var fullText = document.getElementById("questionText" + index);
+            var readMoreLink = document.getElementById("readMore" + index);
+
+            if (fullText.style.display === "none") {
+                fullText.style.display = "block";
+                readMoreLink.innerHTML = "Read Less";
+            } else {
+                fullText.style.display = "none";
+                readMoreLink.innerHTML = "Read More";
+            }
+        }
+
+        // JavaScript function to toggle the form visibility
+        function toggleForm() {
+            var form = document.getElementById("questionForm");
+            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+        }
+    </script>
+
+    <!-- Bootstrap 5 JS (to enable the close button on flash messages) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

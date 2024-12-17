@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Score Graph and Table</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Style the canvas to make the graph visible */
+        #bestScoreChart {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Best Score Graph and Table for Each Position</h2>
+
+    <!-- Dropdown for selecting the position -->
+    <label for="positionSelect">Select Position:</label>
+    <select id="positionSelect">
+        {% for entry in all_results %}
+        <option value="{{ entry.position }}">{{ entry.position }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Canvas for the Chart -->
+    <canvas id="bestScoreChart"></canvas>
+
+    <!-- Table Container -->
+    <div id="tableContainer"></div>
+
+    <!-- Script to handle the chart generation, updates, and table rendering -->
+    <script>
+        // Initialize an empty object to hold the data for each position
+        var graphData = {};
+
+        {% for entry in all_results %}
+        graphData["{{ entry.position }}"] = [];  // Create an array for each position
+
+        {% for result in all_results[entry.position][0] %}
+        // Push each result (Best Score, Interview Date, and Percentage) into the array
+        graphData["{{ entry.position }}"].push({
+            attempt_number: {{ result[1] }},
+            best_score: {{ result[2] }},
+            interview_date: "{{ result[3] }}",
+            percentage: {{ (result[2] / 50) * 100 if result[2] is not none else 0 }}
+        });
+        {% endfor %}
+        {% endfor %}
+
+        // Function to create the chart
+        function createChart(position) {
+            var ctx = document.getElementById('bestScoreChart').getContext('2d');
+            var bestScores = graphData[position].map(entry => entry.best_score);
+            var interviewDates = graphData[position].map(entry => entry.interview_date);
+
+            return new Chart(ctx, {
+                type: 'line',  // You can change this to 'bar', 'line', etc.
+                data: {
+                    labels: interviewDates,  // X-axis: Interview dates
+                    datasets: [{
+                        label: 'Best Score (out of 50)',
+                        data: bestScores,  // Y-axis: Best Scores
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 50  // Set Y-axis max to 50
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to render the table for the selected position
+        function renderTable(position) {
+            var tableContainer = document.getElementById('tableContainer');
+            var data = graphData[position];
+
+            // Create the table HTML
+            var tableHTML = `
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Attempt Number</th>
+                        <th>Best Score</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Interview Date</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            // Loop through each data entry and build the table rows
+            var previousPercentage = null;
+            data.forEach(function (entry, index) {
+                var status = '';
+                if (index === 0) {
+                    status = `<span style="color: green;">&#9650;</span> <span style="color: red;">&#9660;</span>`;
+                } else if (previousPercentage !== null) {
+                    if (entry.percentage > previousPercentage) {
+                        status = `<span style="color: green;">&#9650;</span>`;
+                    } else if (entry.percentage < previousPercentage) {
+                        status = `<span style="color: red;">&#9660;</span>`;
+                    } else {
+                        status = `<span style="color: gray;">&#8596;</span>`;
+                    }
+                }
+                
+                tableHTML += `
+                <tr>
+                    <td>${entry.attempt_number}</td>
+                    <td>${entry.best_score}</td>
+                    <td>${entry.percentage.toFixed(2)}%</td>
+                    <td>${status}</td>
+                    <td>${entry.interview_date}</td>
+                </tr>`;
+
+                previousPercentage = entry.percentage;  // Track the previous percentage
+            });
+
+            tableHTML += '</tbody></table>';
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        // Initialize the chart and table for the first position
+        var positionSelect = document.getElementById('positionSelect');
+        var selectedPosition = positionSelect.value;
+        var chart = createChart(selectedPosition);
+        renderTable(selectedPosition);
+
+        // Update the chart and table when the position is changed
+        positionSelect.addEventListener('change', function() {
+            var position = this.value;
+            var bestScores = graphData[position].map(entry => entry.best_score);
+            var interviewDates = graphData[position].map(entry => entry.interview_date);
+
+            // Update chart with new data
+            chart.data.labels = interviewDates;
+            chart.data.datasets[0].data = bestScores;
+            chart.update();
+
+            // Update the table
+            renderTable(position);
+        });
+    </script>
+</body>
+</html>

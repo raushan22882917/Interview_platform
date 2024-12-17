@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTCV Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .chat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .feedback {
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .step-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E.S.T.C.V Chatbot</h1>
+        <div class="chat-box">
+            <p>Welcome! Please enter your coding question below:</p>
+            <form id="start-form" action="/start" method="POST">
+                <textarea name="question" id="question" rows="4" placeholder="Enter your coding question..." required></textarea><br>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+        
+        <div id="step-box">
+            <p class="step-title">Step: Example</p>
+            <form id="step-form">
+                <textarea name="user_input" id="user_input" rows="4" placeholder="Enter example input-output pairs..." required></textarea><br>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="feedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const stepBox = document.getElementById("step-box");
+        const feedbackBox = document.getElementById("feedback");
+
+        // Step by step logic
+        const handleStep = async (userInput) => {
+            const response = await fetch('/step', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `user_input=${userInput}`,
+            });
+
+            const data = await response.json();
+
+            // Update feedback
+            feedbackBox.innerHTML = `<p>${data.feedback}</p>`;
+
+            // If there is a next step, update the step
+            if (data.next_step) {
+                document.querySelector('.step-title').textContent = `Step: ${data.next_step}`;
+                document.querySelector('textarea').placeholder = `Enter your ${data.next_step.toLowerCase()}...`;
+            } else {
+                // All steps are completed
+                document.querySelector('.step-title').textContent = `Final Feedback`;
+                document.querySelector('textarea').style.display = 'none';
+            }
+        };
+
+        // Form submission
+        document.getElementById("step-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const userInput = document.getElementById("user_input").value;
+            handleStep(userInput);
+        });
+    </script>
+</body>
+</html>

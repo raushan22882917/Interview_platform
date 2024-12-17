@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step: {{ step }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Include Ace Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-QrVZib2cfMdeXKi9UfuGdV7WxUkeUzxQkIpJHoO88hn/HqJkUSYjm7j4mXfi0ZyAhFjqRwsn/s7ZB++oTgMbJg==" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar">
+            <h1>Instructions</h1>
+            <p><strong>Step:</strong> {{ step }}</p>
+            <ul>
+                <li><span class="icon">💡</span><strong>Step 1:</strong> Enter examples and outputs.</li>
+                <li><span class="icon">📝</span><strong>Step 2:</strong> Provide a solution explanation.</li>
+                <li><span class="icon">🧪</span><strong>Step 3:</strong> Enter test cases including edge cases.</li>
+                <li><span class="icon">💻</span><strong>Step 4:</strong> Write and submit your code.</li>
+                <li><span class="icon">🔍</span><strong>Step 5:</strong> Validate your solution and check time complexity.</li>
+            </ul>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="content">
+            <h3>{{ step }} - Question: {{ question }}</h3>
+
+            {% if step in responses %}
+                <p><strong>Previous Feedback:</strong> {{ responses[step]['feedback'] }}</p>
+                <p><strong>Your Input:</strong> {{ responses[step]['input'] }}</p>
+            {% endif %}
+
+            <form method="POST">
+                <label for="user_input">Enter your code for this step:</label><br>
+
+                <!-- Ace Code Editor -->
+                <div id="code_editor" style="height: 300px; width: 100%;"></div>
+
+                <br><br>
+                <label for="language">Select Language:</label>
+                <select id="language" name="language">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="ruby">Ruby</option>
+                    <!-- Add more languages as needed -->
+                </select>
+
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+
+            <p><strong>Current Step: </strong>{{ step }}</p>
+
+            {% if step != 'Validation' %}
+                <p><strong>Next Step:</strong> {{ next_step }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Ace Editor Initialization -->
+    <script>
+        var editor = ace.edit("code_editor");
+        editor.setTheme("ace/theme/monokai");
+
+        // Set default language
+        editor.session.setMode("ace/mode/javascript");
+
+        // Change language based on selection
+        document.getElementById("language").addEventListener("change", function() {
+            var lang = this.value;
+            switch(lang) {
+                case "javascript":
+                    editor.session.setMode("ace/mode/javascript");
+                    break;
+                case "python":
+                    editor.session.setMode("ace/mode/python");
+                    break;
+                case "java":
+                    editor.session.setMode("ace/mode/java");
+                    break;
+                case "cpp":
+                    editor.session.setMode("ace/mode/c_cpp");
+                    break;
+                case "ruby":
+                    editor.session.setMode("ace/mode/ruby");
+                    break;
+                default:
+                    editor.session.setMode("ace/mode/javascript");
+                    break;
+            }
+        });
+
+        // Handle form submission
+        document.querySelector("form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var code = editor.getValue();
+            var language = document.getElementById("language").value;
+
+            // Here you can send the code and language to the backend for processing
+            console.log("User code:", code);
+            console.log("Selected language:", language);
+
+            // You can submit the form or use AJAX to send the data
+        });
+    </script>
+</body>
+</html>

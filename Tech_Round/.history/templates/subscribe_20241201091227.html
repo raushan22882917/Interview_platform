@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+
+        .subscription-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 22%;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .subscription-card h4 {
+            margin-top: 0;
+        }
+
+        .btn-subscribe {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .btn-subscribe:hover {
+            background-color: #45a049;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        .paypal-box {
+            width: 45%;
+            text-align: center;
+        }
+
+        .qr-code-box {
+            width: 45%;
+            text-align: center;
+        }
+
+        .input-uid {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .subscription-card {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px;
+            width: 20%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        }
+
+        .subscription-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subscription-card h4 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #4CAF50;
+        }
+
+        .subscription-card p {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .subscription-card ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 20px 0 0;
+        }
+
+        .subscription-card ul li {
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .subscription-card ul li i {
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .btn-subscribe {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .btn-subscribe:hover {
+            background: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        .instructions h4 {
+            font-size: 1.2em;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .instructions p {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .instructions b {
+            color: #333;
+        }
+/* Adjusted styling */
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.paypal-box h3, .qr-code-box h3 {
+    font-size: 1.5em;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+.btn-submit {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.input-uid {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    flex: 1;
+}
+
+
+
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Subscription Cards -->
+        <div class="subscription-card">
+            <h4>1 Month</h4>
+            <p>Price: $0.1</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4>3 Months</h4>
+            <p>Price: $0.2</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4>6 Months</h4>
+            <p>Price: $0.3</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+        <div class="subscription-card">
+            <h4>12 Months</h4>
+            <p>Price: $0.4</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Access to all features</li>
+                <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
+                <li><i class="fas fa-check-circle"></i> Premium content</li>
+                <li><i class="fas fa-check-circle"></i> Free updates</li>
+                <li><i class="fas fa-check-circle"></i> Exclusive offers</li>
+            </ul>
+            <button class="btn-subscribe" onclick="openModal()">Subscribe</button>
+        </div>
+    </div>
+<!-- Modal for Subscription -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <!-- PayPal Box -->
+        <div class="paypal-box">
+            <h3>
+                <i class="fab fa-paypal" style="color: #003087; margin-right: 10px;"></i>
+                Subscribe to our Service
+            </h3>
+            <div id="paypal-button"></div>
+            <div class="instructions" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px;">
+                <h4 style="margin-bottom: 10px;">
+                    <i class="fas fa-info-circle" style="color: #4CAF50; margin-right: 10px;"></i>
+                    Instructions:
+                </h4>
+                <ol style="line-height: 1.8; margin-left: 20px; font-size: 16px;">
+                    <li>
+                        <i class="fas fa-qrcode" style="color: #4CAF50; margin-right: 8px;"></i>
+                        Scan the QR code using your PhonePe app or any other UPI payment app.
+                    </li>
+                    <li>
+                        <i class="fas fa-rupee-sign" style="color: #4CAF50; margin-right: 8px;"></i>
+                        Complete the payment by entering the required amount.
+                    </li>
+                    <li>
+                        <i class="fas fa-receipt" style="color: #4CAF50; margin-right: 8px;"></i>
+                        After the payment, note down the <b>Transaction ID (UID)</b>.
+                    </li>
+                    <li>
+                        <i class="fas fa-keyboard" style="color: #4CAF50; margin-right: 8px;"></i>
+                        Enter your UID (Transaction ID) in the text field provided below.
+                    </li>
+                </ol>
+                
+                <p style="margin-top: 10px; font-style: italic; color: #555;">
+                    Example UID: <b style="color: #333;">TXN1234567890</b>
+                </p>
+            </div>
+        </div>
+        
+        <!-- QR Code and UID Input Section -->
+        <div class="qr-code-box">
+            <h3>
+                <i class="fas fa-qrcode" style="color: #4CAF50; margin-right: 10px;"></i>
+                PhonePe QR Code
+            </h3>
+            <img src="static/assets/img/phone.jpg" alt="PhonePe QR Code" style="width: 100%; max-width: 200px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+
+            <h3 style="margin-top: 30px;">
+                <i class="fas fa-user" style="color: #FF5722; margin-right: 10px;"></i>
+                Enter your UID
+            </h3>
+            <div id="qr-code"></div>
+
+            <div class="uid-input-box" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+                <input type="text" id="uid-input" class="input-uid" 
+                       style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" 
+                       placeholder="Enter your UID" required>
+                <button class="btn-submit" style="display: flex; align-items: center; padding: 10px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="submitUid()">
+                    <i class="fas fa-paper-plane" style="margin-right: 5px;"></i>
+                    Submit
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+    function openModal() {
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+</script>
+<script>
+    // Open Modal when Subscribe button is clicked
+    function openModal() {
+        document.getElementById("paymentModal").style.display = "flex";
+    }
+
+    // Close Modal when user clicks outside
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("paymentModal")) {
+            document.getElementById("paymentModal").style.display = "none";
+        }
+    }
+
+    // Submit UID and email to the backend for saving
+    function submitUid() {
+        var uid = document.getElementById('uid-input').value;
+
+        if (uid) {
+            // Send UID to the Flask backend using AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/submit_uid", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert("UID submitted successfully!");
+                }
+            };
+
+            // Get the email from session using a global JS variable (assuming you set this variable server-side)
+            var email = window.email;  // The email should be set in the session and passed to JavaScript.
+
+            xhr.send("uid=" + encodeURIComponent(uid) + "&email=" + encodeURIComponent(email));
+        } else {
+            alert('Please enter your UID.');
+        }
+    }
+
+    // PayPal Button integration
+    var CREATE_PAYMENT_URL = 'http://127.0.0.1:5000/payment';
+    var EXECUTE_PAYMENT_URL = 'http://127.0.0.1:5000/execute';
+
+    paypal.Button.render({
+        env: 'sandbox',  // Or 'production'
+        commit: true,  // Show a 'Pay Now' button
+
+        payment: function(data, actions) {
+            return actions.request.post(CREATE_PAYMENT_URL).then(function(data) {
+                return data.paymentID;
+            });
+        },
+
+        onAuthorize: function(data, actions) {
+            return actions.request.post(EXECUTE_PAYMENT_URL, {
+                paymentID: data.paymentID,
+                payerID: data.payerID
+            }).then(function(res) {
+                if(res.success) {
+                    alert('Payment Successful!');
+                } else {
+                    alert('Payment Failed!');
+                }
+            });
+        }
+
+    }, '#paypal-button');
+</script>
+
+</body>
+</html>

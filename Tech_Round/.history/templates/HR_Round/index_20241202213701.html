@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5; /* Light gray */
+            margin: 0;
+            padding: 0;
+            color: #000; /* Black text */
+        }
+        
+        #wave-animation {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 20px 0;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 200px;
+            height: 150px;
+            z-index: 1000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wave-bar {
+            width: 10px;
+            height: 40px;
+            background: #000; /* Black wave bars */
+            border-radius: 5px;
+            animation: wave 1s infinite ease-in-out;
+        }
+        
+        /* Wave animation delays remain unchanged */
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.6s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.8s; }
+        
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(2); }
+        }
+        
+        #timer {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #000; /* Black text */
+        }
+        
+        #video-feed {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            height: 150px;
+            z-index: 1000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        #video-feed video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        #chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff; /* White background for content */
+            background-repeat: repeat; /* Repeat the image across the container */
+            background-size: 50px 50px; /* Adjust the size of the image, you can change these values */
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            color: #333;  /* Default text color */
+            margin-top: 100px;
+        }
+        
+        /* Optional: You can style the text with email and username */
+        #chat-container::before {
+            content: attr(data-user); /* Use this to add the username/email to the background */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: black;
+            z-index: 1;
+            opacity: 0.5;
+        }
+        
+        
+        
+        #chat-box {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #e0e0e0; /* Light gray background */
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #000; /* Black button */
+            color: #fff; /* White text */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #333; /* Darker gray */
+        }
+        
+        .Bot, .User {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #dcdcdc; /* Light gray */
+            color: #000; /* Black text */
+            transition: background 0.3s ease;
+        }
+        
+        .Bot {
+            justify-content: flex-end;
+        }
+        
+        .User {
+            justify-content: flex-start;
+        }
+        
+        /* Icons are kept as text for simplicity */
+        .Bot::before, .User::before {
+            font-family: 'Arial';
+            margin-right: 10px;
+        }
+        
+        #chat-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .message-container {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .bot-message, .user-message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button i {
+            margin-right: 5px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+
+
+    
+    <p>{{ message }}</p>
+    <div id="chat-container">
+        <div id="chat-box" class="chat-box"></div>
+    
+        <!-- Company Name Input Section -->
+        <div id="company-name-container" class="input-container">
+            <input type="text" id="company-name" placeholder="Enter company name...">
+            <button onclick="startInterview()">
+                <i class="fa fa-play"></i> Start Interview
+            </button>
+        </div>
+    
+        <!-- Company Name Display Section -->
+        <div id="company-name-display" style="display:none;"></div>
+    
+        <!-- User Answer Input Section -->
+        <div class="input-container" id="answer-container" style="display: none;">
+            <input type="text" id="user-answer" placeholder="Your answer...">
+            <button onclick="submitAnswer()">
+                <i class="fa fa-paper-plane"></i> Submit
+            </button>
+        </div>
+    </div>
+    
+    
+
+    <div id="timer" style="display: none;">Speak in: 3s</div>
+    <div id="wave-animation">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+    </div>
+
+
+    <div id="video-feed">
+        <video id="video" autoplay></video>
+    </div>
+
+
+
+    <script>
+        let companyName = "";
+        const questions = [
+            "Can you tell me about yourself?",
+            "Why do you want to work at {company_name}?",
+            "What are your greatest strengths?",
+            "Where do you see yourself in five years?",
+            "Why should we hire you over other candidates?",
+            "Describe a challenging situation you faced and how you resolved it.",
+            "What motivates you to perform well at work?",
+            "How do you handle criticism or feedback from your manager?",
+            "Can you share an example of how you worked effectively in a team?",
+            "What is your approach to time management and meeting deadlines?"
+        ];
+        
+
+        let currentQuestionIndex = 0;
+        let formattedQuestions = [];
+
+        // Check if company name is stored in localStorage
+        if (localStorage.getItem("companyName")) {
+            companyName = localStorage.getItem("companyName");
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterview() {
+            companyName = document.getElementById("company-name").value.trim();
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+
+            // Save company name to localStorage
+            localStorage.setItem("companyName", companyName);
+
+            // Display the company name in the top right corner
+            startInterviewFromStorage(companyName);
+        }
+
+        function startInterviewFromStorage(companyName) {
+            // Hide the company name input box and show the company name display
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+
+            // Replace placeholder with company name in questions
+            formattedQuestions = questions.map(question => question.replace("{company_name}", companyName));
+
+            // Display the first question
+            askQuestion();
+            document.getElementById("answer-container").style.display = "block";
+        }
+
+        // Display question and speak it
+        function askQuestion() {
+            if (currentQuestionIndex < formattedQuestions.length) {
+                const question = formattedQuestions[currentQuestionIndex];
+                appendMessage("Bot", question);
+                speakQuestion(question);
+
+                // Automatically start speech recognition after the question is read
+                setTimeout(() => {
+                    startSpeechRecognition();  // Automatically start listening after question
+                }, 2000); // Adjust the timeout if needed
+            }
+        }
+
+        // Append message to the chat box
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender);
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+
+        // Speak the question using the Web Speech API
+        function speakQuestion(question) {
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+            speech.onend = function() {
+                console.log("Question read complete.");
+            };
+        }
+
+        // Start the speech recognition
+        function startSpeechRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;  // Stop after recognizing the user's speech
+            recognition.interimResults = true;
+
+            recognition.onresult = function(event) {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("user-answer").value = transcript; // Display the result in the input box
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event);
+            };
+
+            recognition.onend = function() {
+                recognition.stop(); // Stop recognition once it's finished
+            };
+
+            recognition.start();
+        }
+
+
+        
+
+
+        // Submit the answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById("user-answer").value.trim();
+            if (userAnswer === "") {
+                alert("Please provide an answer.");
+                return;
+            }
+
+            appendMessage("User", userAnswer);
+
+            // Send the answer to the server
+            fetch('/submit_answer_hr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    company_name: companyName,
+                    question_index: currentQuestionIndex,
+                    user_answer: userAnswer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.feedback && data.score) {
+                    appendMessage("Bot", `Feedback: ${data.feedback}`);
+                    appendMessage("Bot", `Score: ${data.score}/5`);
+                } else {
+                    appendMessage("Bot", "");
+                }
+
+                // Increment question index
+                currentQuestionIndex++;
+
+                // Ask the next question
+                if (currentQuestionIndex < formattedQuestions.length) {
+                    setTimeout(askQuestion, 2000);
+                } else {
+                    appendMessage("Bot", "You have completed the interview!");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Clear any previously stored company name
+            localStorage.removeItem("companyName");
+    
+            // Show the company name input container
+            document.getElementById("company-name-container").style.display = "flex";
+            document.getElementById("company-name-display").style.display = "none";
+            document.getElementById("answer-container").style.display = "none";
+        });
+    
+        function startInterview() {
+            const companyNameInput = document.getElementById("company-name");
+            companyName = companyNameInput.value.trim();
+    
+            if (!companyName) {
+                alert("Please enter a company name.");
+                return;
+            }
+    
+            // Save the company name to localStorage
+            localStorage.setItem("companyName", companyName);
+    
+            // Hide the input container and show the company name display
+            document.getElementById("company-name-container").style.display = "none";
+            document.getElementById("company-name-display").style.display = "block";
+            document.getElementById("company-name-display").textContent = `Interviewing for: ${companyName}`;
+    
+            // Prepare questions and show the answer container
+            formattedQuestions = questions.map(question => question.replace("{company_name}", companyName));
+            askQuestion();
+            document.getElementById("answer-container").style.display = "flex";
+        }
+    </script>
+    
+    <script>
+        function speakQuestion(question) {
+            const wave = document.getElementById("wave-animation");
+    
+            // Show wave animation
+            wave.style.display = "flex";
+    
+            const speech = new SpeechSynthesisUtterance(question);
+            window.speechSynthesis.speak(speech);
+    
+            speech.onstart = function () {
+                wave.style.display = "flex";
+            };
+    
+            speech.onend = function () {
+                wave.style.display = "none";
+                console.log("Question read complete.");
+            };
+        }
+    </script>
+    <script>
+         // Initialize video feed
+         const videoElement = document.getElementById("video");
+         const constraints = {
+             video: true
+         };
+ 
+         navigator.mediaDevices.getUserMedia(constraints)
+             .then(function(stream) {
+                 videoElement.srcObject = stream;
+             })
+             .catch(function(error) {
+                 console.error("Error accessing webcam:", error);
+             });
+    </script>
+    <script>
+        const user_email = '{{ user_email }}';  // From Flask context (rendered by Jinja)
+        
+        document.getElementById('chat-container').setAttribute('data-user', `(${user_email})`);
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .form-section {
+            margin-top: 20px;
+        }
+        .button-group {
+            margin-bottom: 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-header {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Flash Messages -->
+         <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Profile Header Section -->
+        <div class="text-center mb-4" style="display: flex;">
+            <h1 class="mb-3">Welcome to Your Profile</h1>
+            {% if profile_image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ profile_image) }}" alt="Profile Image" class="profile-image">
+            {% else %}
+            <img src="https://via.placeholder.com/150" alt="Profile Image" class="profile-image">
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                <label for="profile_image" class="form-label">Upload Profile Image</label>
+                <input type="file" name="profile_image" id="profile_image" class="form-control mb-2">
+                <button type="submit" class="btn btn-primary">Update Profile Image</button>
+            </form>
+        </div>
+        </div>
+
+        <div>
+        <div class="button-group text-center">
+            <button class="btn btn-info btn-lg" data-bs-toggle="collapse" data-bs-target="#educationSection">Education</button>
+            <button class="btn btn-success btn-lg" data-bs-toggle="collapse" data-bs-target="#techRoundSection">Tech Round</button>
+            <button class="btn btn-warning btn-lg" data-bs-toggle="collapse" data-bs-target="#codeRoundSection">Code Round</button>
+        </div>
+
+        <!-- Education Section -->
+        <div class="collapse" id="educationSection">
+            <div class="card form-section">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#educationSection">
+                    <h2>Educational Details</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ education_details.first_name if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ education_details.last_name if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="college_name" class="form-label">College Name</label>
+                            <input type="text" name="college_name" id="college_name" class="form-control" value="{{ education_details.college_name if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="dob" class="form-label">Date of Birth</label>
+                            <input type="date" name="dob" id="dob" class="form-control" value="{{ education_details.dob if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="year_of_study" class="form-label">Year of Study</label>
+                            <input type="text" name="year_of_study" id="year_of_study" class="form-control" value="{{ education_details.year_of_study if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="graduation_year" class="form-label">Graduation Year</label>
+                            <input type="text" name="graduation_year" id="graduation_year" class="form-control" value="{{ education_details.graduation_year if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+                            <input type="url" name="linkedin_url" id="linkedin_url" class="form-control" value="{{ education_details.linkedin_url if education_details else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="instagram_url" class="form-label">Instagram URL</label>
+                            <input type="url" name="instagram_url" id="instagram_url" class="form-control" value="{{ education_details.instagram_url if education_details else '' }}">
+                        </div>
+                        <button type="submit" class="btn btn-success">Save Details</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Round Section -->
+        <div class="collapse" id="techRoundSection">
+            <div class="card form-section">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#techRoundSection">
+                    <h2>Tech Round Performance</h2>
+                </div>
+                <div class="card-body">
+                    <p>Details about your tech round performance will appear here.</p>
+                    <div class="form-section">
+                        <h2>Performance Metrics</h2>
+                        <p>Average Score: {{ average_score }}</p>
+                        <p>Positions Well Prepared: {{ positions_well_prepared }}</p>
+                        <p>Percentage Scored Above 70%: {{ percentage_scored_above_70 }}%</p>
+                        <p>Average Score of Last 3 Attempts: {{ average_score_last_3 }}</p>
+                    </div>
+            
+                    <!-- User Data Section -->
+                    <div class="form-section">
+                        <h2>Positions Performance</h2>
+                        {% for data in user_data %}
+                        <div class="mb-4">
+                            <h4>{{ data.position }}</h4>
+                            <p>Total Attempts: {{ data.total_attempts }}</p>
+                            <p>Top Score: {{ data.top_score }}</p>
+                            <p>Average of Last 3 Attempts: {{ data.average_last_3_attempts }}</p>
+                            <p>Feedback: {{ data.overall_feedback }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="container mt-5">
+                    <!-- Main Table -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in user_data %}
+                            <tr>
+                                <td>{{ entry.position }}</td>
+                                <td>
+                                    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#subTable{{ loop.index }}">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="subTable{{ loop.index }}">
+                                <td colspan="2">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Attempt Number</th>
+                                                <th>Score</th>
+                                                <th>%Q/A</th>
+                                                <th>Status</th>
+                                                <th>Interview Date</th>
+                                                <th>Download PDF</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for result in all_results[entry.position][0] %}
+                                            <tr>
+                                                <td>{{ result[1] }}</td>
+                                                <td>{{ (result[2] / 50) * 100 }}%</td>
+                                                <td>{{ result[2] }}</td>
+                                                <td>
+                                                    {% if result[2] >= 45 %}
+                                                    <span class="badge bg-success">Passed</span>
+                                                    {% else %}
+                                                    <span class="badge bg-danger">Failed</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ result[3] }}</td>
+                                                <td>
+                                                    <a href="{{ url_for('download_pdf', position_name=result[0], part_number=result[1]) }}">Download PDF</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <!-- Sub-table Chart -->
+                                    <div style="width: 300px; height: 300px;">
+                                        <canvas id="chart{{ loop.index }}" width="100" height="100"></canvas>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+                    <!-- Add further tech round related content here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Round Section -->
+        <div class="collapse" id="codeRoundSection">
+            <div class="card form-section">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#codeRoundSection">
+                    <h2>Code Round Performance</h2>
+                </div>
+                <div class="card-body">
+                    <p>Details about your code round performance will appear here.</p>
+                        <div>{{ graph_html | safe }}</div>
+
+                    <!-- Add further code round related content here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+        
+        
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const subTables = document.querySelectorAll('tr[id^="subTable"]');
+    
+        subTables.forEach((subTable, index) => {
+            const rows = subTable.querySelectorAll('tbody tr');
+            const labels = [];
+            const scores = [];
+            const percentages = [];
+    
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 0) {
+                    const interviewDate = cells[4].innerText;
+                    const scorePercentage = parseFloat(cells[1].innerText);
+                    const adjustedPercentage = parseFloat(cells[2].innerText);
+    
+                    labels.push(interviewDate);
+                    scores.push(scorePercentage);
+                    percentages.push(adjustedPercentage);
+                }
+            });
+    
+            const ctx = document.getElementById(`chart${index + 1}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Score (100%)',
+                            data: scores,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                        {
+                            label: 'Adjusted %Q/A',
+                            data: percentages,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Interview Date'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+    
+</script>        
+        <!-- Performance Metrics Section -->
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

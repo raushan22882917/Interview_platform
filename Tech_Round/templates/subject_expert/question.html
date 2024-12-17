@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+</head>
+<body>
+    <h1>Question for Level: {{ level }}</h1>
+    <p>{{ question }}</p>
+    <form action="{{ url_for('check_answer') }}" method="POST">
+        <textarea name="answer" rows="4" cols="50" required></textarea><br>
+        <input type="hidden" name="correct_answer" value="{{ answers }}">
+        <button type="submit">Submit Answer</button>
+    </form>
+    <form action="{{ url_for('navigate') }}" method="POST">
+        <input type="hidden" name="level" value="{{ level }}">
+        <input type="hidden" name="index" value="{{ index }}">
+        <button type="submit" name="direction" value="prev" {% if index == 0 %}disabled{% endif %}>Previous</button>
+        <button type="submit" name="direction" value="next" {% if index == length - 1 %}disabled{% endif %}>Next</button>
+    </form>
+</body>
+</html>

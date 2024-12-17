@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+<link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Vendor CSS Files -->
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    <title>Select Mode</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4c3; /* Light green background */
+            color: #333; /* Dark text color */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full height for centering */
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex; /* Create a flexible box layout */
+            max-width: 1200px; /* Limit the maximum width */
+            padding: 20px;
+            border-radius: 12px; /* Increased radius for softer corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            background-color: #ffffff; /* White background for content */
+        }
+
+        /* Left Column */
+        .instructions {
+            flex: 1; /* Take up one part of the flex container */
+            padding-right: 20px; /* Space between columns */
+        }
+
+        /* Headings */
+        h1 {
+            color: #2e7d32; /* Dark green for main heading */
+            font-size: 2.5em; /* Large heading size */
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #1b5e20; /* Even darker green for instructions */
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        /* Instructions List */
+        ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding: 0;
+        }
+
+        li {
+            background-color: #dce775; /* Light green for list items */
+            margin: 10px 0; /* Margin between items */
+            padding: 15px; /* Padding inside items */
+            border-radius: 8px; /* Rounded corners */
+            font-weight: 500; /* Slightly bolder text */
+            transition: transform 0.2s; /* Scale effect on hover */
+        }
+
+        li:hover {
+            transform: scale(1.02); /* Slightly enlarge on hover */
+        }
+
+        /* Right Column */
+        .mode-selection {
+            flex: 1; /* Take up one part of the flex container */
+            display: flex; /* Align buttons in a column */
+            flex-direction: column; /* Stack buttons vertically */
+            justify-content: center; /* Center buttons vertically */
+            align-items: center; /* Center buttons horizontally */
+        }
+
+        /* Button Styles */
+        .mode-button {
+            display: flex; /* Allow icon and text in the button */
+            align-items: center; /* Align items in the center */
+            background-color: #4caf50; /* Green background for buttons */
+            color: white; /* White text */
+            padding: 15px 25px; /* Button padding */
+            border: none; /* Remove border */
+            border-radius: 8px; /* Rounded corners */
+            font-size: 1.2em; /* Increase font size */
+            margin: 15px 0; /* Margin between buttons */
+            cursor: pointer; /* Pointer on hover */
+            transition: background-color 0.3s, transform 0.2s; /* Transition for hover effects */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for buttons */
+            width: 80%; /* Button width */
+        }
+
+        .mode-button:hover {
+            background-color: #388e3c; /* Darker green on hover */
+            transform: translateY(-2px); /* Lift effect on hover */
+        }
+
+        /* SVG Icon Styles */
+        .icon {
+            margin-right: 10px; /* Space between icon and text */
+            width: 24px; /* Icon width */
+            height: 24px; /* Icon height */
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column; /* Stack columns on small screens */
+                margin: 20px; /* Smaller margin on mobile */
+            }
+
+            h1 {
+                font-size: 2em; /* Smaller font size on mobile */
+            }
+
+            .mode-button {
+                padding: 10px 20px; /* Smaller button padding on mobile */
+                font-size: 1em; /* Adjust font size for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center">
+            <h1 class="sitename">Sakshatkar'</h1>
+          </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{url_for('index')}}" class="active">Home</a></li>
+    
+              {% if session.get('user_name') %}
+                <li><a href="{{url_for('blog')}}">Blog</a></li>
+              {% endif %}
+    
+              <li><a href="{{url_for('about')}}">About</a></li>
+              <!-- <li><a href="{{url_for('login')}}">Login</a></li> -->
+              <li><a href="{{url_for('contact')}}">Contact</a></li>
+              <!-- Add this CSS in your <style> section or CSS file -->
+                    <style>
+    
+                      .alert h1 {
+                        font-size: 1.5rem; /* Font size for the heading */
+                        color: #31708f; /* Dark blue text color */
+                        margin-right: 15px; /* Space between heading and icon */
+                    }
+                    
+                    
+                    .badge {
+                        background-color: #d9534f;
+                        color: white; /* White text color */
+                        padding: 4px 4px; /* Padding for the badge */
+                        border-radius: .5rem; /* Rounded corners for the badge */
+                        font-weight: bold; /* Bold text */
+                        margin-bottom: -180px;
+                    }
+                    
+                    .position-relative {
+                        position: relative; /* Position relative for positioning child elements */
+                    }
+                    
+                    .position-absolute {
+                        position: absolute; /* Position absolute for badge placement */
+                    }
+                    </style>
+    
+                    {% if session.get('user_name') %}
+                        <li><a href="{{url_for('hr_round')}}">Publish Interview</a></li>
+                    {% endif %}
+    
+    
+                    <!-- Your updated HTML with online indicator -->
+                    <ul class="menu-list">
+                      {% if session.get('user_name') %}
+                        <li class="online-indicator">
+                          <a href="{{ url_for('user') }}" class="notification-icon">
+                            <div class="alerts alert-infos" role="alert">
+                              <i class="fas fa-bell position-relative">
+                                {% if unread_count > 0 %}
+                                  <span class="badge badge-danger position-absolute unread-badge">{{ unread_count }}</span>
+                                {% endif %}
+                              </i>
+                            </div>
+                          </a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                    
+                    <style>
+                      /* Apply general styling to the list */
+    .menu-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .menu-list .online-indicator {
+      font-size: 24px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    /* Style the link */
+    .menu-list .online-indicator a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Adjust the icon size */
+    .menu-list .online-indicator a i {
+      font-size: 18px;
+    }
+    
+    /* Add hover effect */
+    .menu-list .online-indicator a:hover {
+      color: transparent; /* Change this color as needed */
+      cursor: pointer;
+    }
+    
+                    </style>
+                    
+    
+    
+    
+    
+              <ul>
+                {% if session.get('user_name') %}
+                    <li style="list-style: none; font-size: 18px; position: relative;">
+                      <a href="#" style="text-decoration: none; color: white; font-weight: bold;" id="userDropdown">
+                        {% if session.get('profile_image') %}
+                            <!-- If user has uploaded a profile image, display it -->
+                            <img src="{{ url_for('static', filename='uploads/' + session['profile_image']) }}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
+                        {% else %}
+                            <!-- If no profile image, show a default human icon -->
+                            <i class="fas fa-user-circle" style="font-size: 30px; margin-right: 10px;"></i>
+                        {% endif %}
+                        {{ session['user_name'] }}
+                        <!-- Dropdown icon (Font Awesome) -->
+                        <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+                    </a>
+                    
+                        
+                        <!-- Dropdown menu -->
+                        <ul id="dropdownMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: #333; list-style: none; padding: 10px; border-radius: 5px;">
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('profile') }}" style="color: white; text-decoration: none;">
+                                    <!-- Dashboard icon (Font Awesome) -->
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li style="padding: 5px 0;">
+                              <a href="{{ url_for('privacy') }}" style="color: white; text-decoration: none;">
+                                  <!-- Shield icon for privacy (Font Awesome) -->
+                                  <i class="fas fa-shield-alt"></i> Privacy Policy
+                              </a>
+                          </li>
+                          
+                            <li style="padding: 5px 0;">
+                                <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
+                                    <!-- Logout icon (Font Awesome) -->
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+            
+                    <!-- Script to toggle dropdown -->
+                    <script>
+                        document.getElementById('userDropdown').addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+                        });
+            
+                        // Optional: Hide dropdown when clicking outside
+                        window.addEventListener('click', function(event) {
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            if (!event.target.closest('#userDropdown')) {
+                                dropdownMenu.style.display = 'none';
+                            }
+                        });
+                    </script>
+            
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" style="text-decoration: none; color: white;">Login</a></li>
+                {% endif %}
+            </ul>
+    
+            <ul>
+              <li>
+                  <button id="theme-toggle" onclick="toggleTheme()" style="background-color: transparent; border: none;">
+                      <i class="fas fa-sun" id="theme-icon"></i>
+                  </button>
+              </li>
+          </ul>
+    
+          <script>
+            // Function to toggle between light and dark modes
+            function toggleTheme() {
+                // Toggle dark mode class on body
+                document.body.classList.toggle('dark-mode');
+    
+                // Change the icon based on the current theme
+                const themeIcon = document.getElementById('theme-icon');
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+        </script>
+            
+            <!-- Include Font Awesome in your project -->
+            <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            
+            
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+    
+        </div>
+      </header>
+    <div class="container">
+        <!-- Left Column for Instructions -->
+        <div class="instructions">
+            <h1>Select Answer Mode for {{ topic }}</h1>
+            <h2>Instructions:</h2>
+            <ul>
+                <li>Choose your preferred answer mode from the options below.</li>
+                <li>Each mode provides a different way to answer questions.</li>
+                <li>In <strong>Text</strong> mode, you can type your answers.</li>
+                <li>In <strong>Audio</strong> mode, you can record your answers using your microphone.</li>
+                <li>In <strong>Video</strong> mode, you can record your answers using your camera.</li>
+                <li>Make sure your device is connected to the internet.</li>
+                <li>Use a quiet place for better audio quality in audio mode.</li>
+                <li>Ensure your camera works properly for video mode.</li>
+                <li>Click on the selected mode to proceed to the questions.</li>
+                <li>Good luck, and enjoy the quiz!</li>
+            </ul>
+        </div>
+
+        <!-- Right Column for Mode Selection -->
+        <div class="mode-selection">
+            <a href="{{ url_for('questionstech', topic=topic, mode='text') }}">
+                <button class="mode-button">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/document.png" alt="Text Mode" class="icon"> Text
+                </button>
+            </a>
+            <a href="{{ url_for('questionstech', topic=topic, mode='audio') }}">
+                <button class="mode-button">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/microphone.png" alt="Audio Mode" class="icon"> Audio
+                </button>
+            </a>
+            <a href="{{ url_for('questionstech', topic=topic, mode='video') }}">
+                <button class="mode-button">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/video.png" alt="Video Mode" class="icon"> Video
+                </button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
